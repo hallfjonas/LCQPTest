@@ -5,16 +5,16 @@ lcqp.Q
 lcqp.g
 lcqp.L
 lcqp.R
-lcqp.A\*
-lcqp.lbA\*
-lcqp.ubA\*
-lcqp.lb\*
-lcqp.ub\*
-lcqp.params\*
-lcqp.x0\*
-lcqp.y0\*
+lcqp.A*
+lcqp.lbA*
+lcqp.ubA*
+lcqp.lb*
+lcqp.ub*
+lcqp.params*
+lcqp.x0*
+lcqp.y0*
 
-\*: Can be empty.
+*: Can be empty.
 ```
 
 Each test problem is generated from within the `RunBenchmark.m` script, which calls the different solver types and stores all benchmark data to the directory `saved_variables`. The script `CreatePerformancePlot.m` reads the benchmark data and creates performance plots.
