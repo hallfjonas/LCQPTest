@@ -16,8 +16,7 @@ lcqp.y0*
 
 *: Can be empty.
 ```
-
-Each test problem is generated from within the `RunBenchmark.m` script, which calls the different solver types and stores all benchmark data to the directory `saved_variables`. The script `CreatePerformancePlot.m` reads the benchmark data and creates performance plots.
+The data is assumed to be passed as dense matrices/vectors. Each test problem is generated from within the `RunBenchmark.m` script, which calls the different solver types and stores all benchmark data to the directory `saved_variables`. The script `CreatePerformancePlot.m` reads the benchmark data and creates performance plots.
 
 ## Extending the test framework
-
+Simply place a new directory containing a `main.m` function as described above into the `Problems` directory. Make sure that the directory does not exist yet. The name of the directory will be used as problem identifier.
