@@ -73,11 +73,31 @@ lcqp_sparse.stats = stats;
 lcqp_sparse.iter = stats.iters_total;
 lcqp_sparse.exit_flag = stats.exit_flag;
 
+%% Method 3) Solve using LCQP OSQP
+params.qpSolver = 2;
+
+if ((~isempty(lb) && ~all(lb == -inf)) || (~isempty(ub) && ~all(ub == inf)))
+    A = [A; eye(size(Q))];
+    lbA = [lbA; lb];
+    ubA = [ubA; ub];
+end
+
+tic;
+[w_opt, ~, stats] = LCQPanther(sparse(Q), g, sparse(L), sparse(R), sparse(A), lbA, ubA, params);
+lcqp_osqp.time_vals = toc;
+lcqp_osqp.obj_vals = obj(w_opt);
+lcqp_osqp.compl_vals = phi(w_opt);
+lcqp_osqp.w_opt = w_opt;
+lcqp_osqp.stats = stats;
+lcqp_osqp.iter = stats.iters_total;
+lcqp_osqp.exit_flag = stats.exit_flag;
+
 %% Save plot maps
 solution_map = containers.Map;
 solution_map("IPOPT Penalty") = ipopt_pen_solver;
 solution_map("LCQP Dense") = lcqp_dense;
 solution_map("LCQP Sparse") = lcqp_sparse;
+solution_map("LCQP OSQP") = lcqp_osqp;
 
 if ~exist('saved_variables', 'dir')
    mkdir('saved_variables')
