@@ -7,7 +7,10 @@ addpath("~/lcqpOASES/interfaces/matlab");
 
 % LCQP MATLAB solver (and dependencies)
 addpath("~/LCQP");
-addpath("~/qpOASES/interfaces/matlab"); % qpOASES
+addpath("~/qpOASES/interfaces/matlab");
+
+% Load CasADi
+addpath("~/casadi-matlab2014b-v3.5.5/");
 
 %% Perapre list of problems
 files = dir('Problems');
@@ -42,5 +45,28 @@ for i = 1:length(files)
     fprintf("Sourcing file %s.\n", main_file);
     run(main_file);
     
+    if (~exist('A', 'var'))
+        A = [];
+    end
+    
+    if (~exist('lbA', 'var'))
+        lbA = [];
+    end
+    
+    if (~exist('ubA', 'var'))
+        ubA = [];
+    end
+    
+    if (~exist('lb', 'var'))
+        lb = -inf(size(Q,1),1);
+    end
+    
+    if (~exist('ub', 'var'))
+        ub = -lb;
+    end
+    
     RunSolvers(problem_name, Q, g, L, R, A, lbA, ubA, lb, ub, params);
 end
+
+%% Create Performance Plots
+run('CreatePerformancePlot.m');
