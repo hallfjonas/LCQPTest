@@ -1,6 +1,9 @@
 %% Clean and Load
 close all; clear all; clc;
 
+% Load LCQPanther interface
+addpath('~/LCQPanther/interfaces/matlab')
+
 % Load CasADi
 addpath("~/casadi-matlab2014b-v3.5.5/");
 import casadi.*;
