@@ -7,6 +7,10 @@ import casadi.*
 Q_Fun = Function('Q_fun', {x}, {hessian(J, x)});
 problem.Q = full(Q_Fun(zeros(size(x))));
 
+% Linear objective term
+J_Jac_Fun = Function('J_Jac_fun', {x}, {jacobian(J, x)});
+problem.g = full(J_Jac_Fun(zeros(size(x))))';
+    
 % Linearize constraints (no check is done if they are nonlinear...
 if (~isempty(constr))
     Constr = Function('Constr', {x}, {constr});
@@ -17,10 +21,6 @@ if (~isempty(constr))
     constr_constant = Constr(zeros(size(x)));
     problem.lbA = lbA - full(constr_constant);
     problem.ubA = ubA - full(constr_constant);
-
-    % Linear objective term
-    J_Jac_Fun = Function('J_Jac_fun', {x}, {jacobian(J, x)});
-    problem.g = full(J_Jac_Fun(zeros(size(x))))';
 end
 
 % Complementarities
