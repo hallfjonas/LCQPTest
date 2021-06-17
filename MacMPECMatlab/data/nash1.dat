@@ -1,0 +1,15 @@
+param:	InitPoints:	iptx1	iptx2	:=
+ 	run_a		0	0
+ 	run_b		5	5
+	run_c		10	10
+ 	run_d		10	0	
+ 	run_e		0	10	;
+
+for {run in InitPoints}
+{
+  let x[1] := iptx1[run];
+  let x[2] := iptx2[run];
+  solve;
+};
+
+

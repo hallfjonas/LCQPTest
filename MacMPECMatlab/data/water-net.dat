@@ -1,0 +1,24 @@
+# data file for water-net.mod
+# AMPL codinng Sven Leyffer, University of Dundee, March 2000.
+
+set nodes        := NW  E  CC  W  SW  S  SE  N;
+set reservoirs   := NW  E;
+set consumers    := CC  W  SW  S  SE  N;
+
+set arcs := (NW ,  W) (NW , CC) (NW ,  N)		# ... NW.(W,CC,N)
+            (E  ,  N) (E  , CC) (E  ,  S) (E  , SE)	# ... E.(N,CC,S,SE)
+            (CC ,  W) (CC , SW) (CC ,  S) (CC ,  N)	# ... CC.(W,SW,S,N)
+            (S  , SE) (S  , SW) (SW ,  W);		# ... S.SE, S.SW, SW.W
+
+# ... node data
+param:		demand,	height,		x,	y,	supply,	wcost,	pcost := 
+      NW        0.0     6.50         1200    3600       2.500   0.20    1.02
+      E         0.0     3.25         4000    2200       6.000   0.17    1.02
+      CC        1.212   3.02         2000    2300	 .	 .	 .
+      W         0.452   5.16          750    2400	 .	 .	 .
+      SW        0.245   4.20          900    1200	 .	 .	 .
+      S         0.652   1.50         2000    1000	 .	 .	 .
+      SE        0.252   0.00         4000     900	 .	 .	 .
+      N         0.456   6.30         3700    3500	 .	 .	 . ;
+
+
