@@ -5,4 +5,4 @@ close all; clear all; clc;
 addpath("helpers");
 
 % Build and solve
-BuildAndSolveFLP4('flp4-s-1.dat');
+[x, problem] = BuildAndSolvePortfl('portfl6.dat');
