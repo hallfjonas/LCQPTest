@@ -1,6 +1,9 @@
 %% Clean and Load
 close all; clear all; clc;
 
+% Load Helpers
+addpath("helpers");
+
 % Load LCQPanther interface
 addpath('~/LCQPanther/interfaces/matlab')
 
