@@ -58,14 +58,16 @@ for p = 1:np
     end
 end
 
+%% TODO: WHAT IF ALL FAIL??
+%% TODO: CURRENTLY LOOKS LIKE SNOPT IS WINNING BUT WE WIN MOST OF THE TIME ...
+
 % Then get the performance ratio
 for p = 1:np
-    for s = 1:ns
-        
+    for s = 1:ns        
         % Failed solutions are set to max val
         if (exit_flag(p,s) ~= 0)
-            t(p,s) = max_t_per_problem(p) + 1;
-            f(p,s) = max_f_per_problem(p) + 1;
+            t(p,s) = max(max_t_per_problem) + 1;
+            f(p,s) = max(max_f_per_problem) + 1;
         end
         
         % Bring objective value >= 1
