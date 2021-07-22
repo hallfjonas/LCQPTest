@@ -88,14 +88,13 @@ ubg = [];
 compl_L = {};
 compl_R = {};
 
-% Random (relative) initial positions and velocities in [-1, 1]
-p0 = zeros(nMasses,1);
-v0 = zeros(nMasses,1);
-p0(1) = 2*round(rand())-1;
-v0(1) = 2*round(rand())-1;
-for i=2:nMasses
-    p0(i) = -p0(i-1);
-    v0(i) = -v0(i-1);
+% Fixed initial positions and velocities in [-1, 1]
+if (nMasses == 2)
+    p0 = [-1; 1];
+    v0 = [1; -1];
+elseif (nMasses == 3)
+    p0 = [1; -1; 0];
+    v0 = [1; 0; -1];
 end
 x0 = [p0; v0];
 
@@ -212,11 +211,14 @@ g = {g{:}, Xkj(1:2*nMasses)};
 lbg = [lbg; -tol*ones(2*nMasses,1)];
 ubg = [ubg; tol*ones(2*nMasses,1)];
     
+%% Build a forward simulation initial guess
+forward_sim = BuildInitialGuess(ode_and_cost, x0, zeros(nu,1), nz, h, N, nMasses, false);
+
 %% Capture the LCQP
 % Name classification
 % States and box constraints
 problem.x = vertcat(w{:});
-problem.x0 = w0;
+problem.x0 = forward_sim;
 problem.lb = lbw;
 problem.ub = ubw;
 

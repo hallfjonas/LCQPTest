@@ -27,31 +27,32 @@ end
 figure; box on; grid on;
 
 for j = 1:size(timevals,2)
-    subplot(4,1,1);
+    subplot(3,2,1);
     plot(1:size(timevals,1), timevals(:, j), 'DisplayName', names{j}, 'Color', colors{j}); hold on;
     set(gca,'yscale','log');
     title('Timings');
     legend();
     
-    subplot(4,1,2);
+    subplot(3,2,2);
     plot(1:size(objvals,1), objvals(:, j), 'DisplayName', names{j}, 'Color', colors{j}); hold on;
     title('Objective Value');
     legend();
     
-    subplot(4,1,3);
-    yyaxis right;
+    subplot(3,2,3); 
     plot(1:size(complvals,1), abs(complvals(:, j)), 'DisplayName', names{j}, 'Color', colors{j}); hold on;
     set(gca,'yscale','log');
     title('Complementarity violation');
     legend();
     
-    yyaxis left;
-    plot(1:size(complvals,1), output_flags, '--', 'DisplayName', ['outflag ', names{j}], 'Color', colors{j}); hold on;    
-    
-    subplot(4,1,4);
+    subplot(3,2,4);
     plot(1:size(rho_opt_vals,1), rho_opt_vals(:, j), 'DisplayName', names{j}, 'Color', colors{j}); hold on;
     set(gca,'yscale','log');
     title('$\rho_\mathrm {opt}$');
+    legend();
+
+    subplot(3,2,5);
+    plot(1:size(complvals,1), output_flags(:,j), '--', 'DisplayName', ['outflag ', names{j}], 'Color', colors{j}); hold on;    
+    title('Output Flag');
     legend();
 end
 end

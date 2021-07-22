@@ -1,19 +1,18 @@
-function [ problems ] = ReadMacMPECProblems()
 
-problems = containers.Map;
+function [problems] = ReadMacMPECProblems()
+
+problems = {};
 
 % Loop over all dat files
-files = dir('Problems/*.nl');
+files = dir('MacMPECMatlab/*.m');
+k = 1;
 for i = 1:length(files)
     
-    problem = {};
-    problem.file = files(i);
-    problem.name = problem.file.name;
-    problem.path = [problem.file.folder, '/', problem.name];
+    problems{k}.file = files(i);
+    problems{k}.name = files(i).name(1:end-2);   
     
-    problem.AMPLProblem = amplread(problem.path);
-    
-    problems(problem.name) = problem;
+    k = k+1;
 end
 
 end
+
