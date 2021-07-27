@@ -4,11 +4,16 @@ Q = problem.Q;
 g = problem.g;
 L = problem.L;
 R = problem.R;
-lbL = problem.lbL;
-lbR = problem.lbR;
+
+if (~isfield(problem, 'A'))
+    problem.A = [];
+    problem.lbA = [];
+    problem.ubA = [];
+end
+
 A = problem.A;
 lbA = problem.lbA;
-ubA = problem.ubA;
+ubA = problem.ubA;    
 
 import casadi.*;
 
@@ -23,8 +28,8 @@ Lmx = SX(L);
 Rmx = SX(R);
 
 % CasADi complementarity variables
-x1 = Lmx*x - lbL;
-x2 = Rmx*x - lbR;
+x1 = Lmx*x;
+x2 = Rmx*x;
 
 % CasADi objective and penalty term
 J_qp = x'*Qmx*x+gmx'*x;
@@ -38,11 +43,11 @@ IPOPTStruct.obj = J_qp + sigma*g_cc;
 IPOPTStruct.x = x;
 IPOPTStruct.sigma = sigma;
 IPOPTStruct.constr = Amx*x;
-IPOPTStruct.lb_constr = [lbA; lbL; lbR];
-IPOPTStruct.ub_constr = [ubA; inf(2*size(L,1),1)];
-IPOPTStruct.rho0 = problem.rho0;
-IPOPTStruct.beta = problem.beta;
-IPOPTStruct.rhoMax = problem.rhoMax;
+IPOPTStruct.lb_constr = [lbA; zeros(2*size(L,1), 1)];
+IPOPTStruct.ub_constr = [ubA; inf(2*size(L,1), 1)];
+IPOPTStruct.rho0 = 0.01;
+IPOPTStruct.beta = 2;
+IPOPTStruct.rhoMax = 100000;
 IPOPTStruct.Obj = Function('Obj', {x}, {J_qp});
 IPOPTStruct.Phi = Function('Phi', {x}, {g_cc});
 

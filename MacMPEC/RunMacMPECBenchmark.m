@@ -1,10 +1,6 @@
 %% Clear and Close
 clc; clear all; close all;
 
-%% Load Dirs
-addpath("solvers");
-addpath("plotters");
-
 %% Build benchmark
 benchmark = {};
 benchmark.problems = ReadMacMPECProblems();
@@ -13,27 +9,29 @@ benchmark.problems = ReadMacMPECProblems();
 % Each solver is assumed to take the input of a benchmark.problem struct
 % and return [x, y, stats]
 benchmark.solvers = { ...
-    struct('fun', 'SolveLCQP', 'name', 'LCQPow', 'color', 'red', 'lineStyle', '--'), ... 
-    struct('fun', 'SolveSNOPT', 'name', 'SNOPT', 'color', 'blue', 'lineStyle', ':'), ...
-    struct('fun', 'SolveKNITRO', 'name', 'KNITRO', 'color', 'green', 'lineStyle', '-.'), ...
-    % struct('fun', 'SolveIPOPT', 'name', 'IPOPT Pen', 'color', 'green') ...
-    %struct('fun', 'SolveLCQP_OSQP', 'name', 'LCQPow OSQP', 'color', 'blue'), ... 
-    %struct('fun', 'SolveLCQP_Leyffer3', 'name', 'LCQPow Leyffer 3', 'color', [0.1 0.1 0.1]), ... 
-    %struct('fun', 'SolveLCQP_Leyffer10', 'name', 'LCQPow Leyffer 10', 'color', [0.75 0.75 0.75]), ... 
+    struct('fun', 'SolveLCQP', 'name', 'LCQPow', 'lineStyle', '-'), ... 
+    struct('fun', 'SolveLCQP_OSQP', 'name', 'LCQPow OSQP', 'lineStyle', '-.'), ... 
+    struct('fun', 'SolveSNOPT', 'name', 'SNOPT', 'lineStyle', '-.'), ...
+    struct('fun', 'SolveIPOPT', 'name', 'IPOPT Penalty', 'lineStyle', ':') ...
+    
+    % struct('fun', 'SolveKNITRO', 'name', 'KNITRO', 'color', 'green', 'lineStyle', ':'), ...
 };
 
 %% Run Solvers
+addpath("solvers");
 for i = 1:length(benchmark.problems)
-    
     fprintf("Solving problem %s (%d/%d).\n", benchmark.problems{i}.name, i, length(benchmark.problems));
-    
     for j = 1:length(benchmark.solvers)
         solver = benchmark.solvers{j};
         benchmark.problems{i}.solutions{j} = feval(solver.fun, benchmark.problems{i}.name);
         benchmark.problems{i}.solutions{j}.solver = benchmark.solvers{j};
     end
 end
+save('solutions/lcqp_snopt_ipopt_osqp.mat');
 
 %% Create Performance Plots
-close all;
-PlotTimings(benchmark.problems);
+close all; clear all; clc;
+addpath("plotters");
+load('solutions/lcqp_snopt_ipopt_osqp.mat');
+% PlotTimings(benchmark.problems);
+PlotAccuracy(benchmark.problems);

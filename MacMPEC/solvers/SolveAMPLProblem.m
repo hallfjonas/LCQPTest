@@ -46,5 +46,4 @@ end
 % Solution struct
 solution.stats = stats;
 
-
 end

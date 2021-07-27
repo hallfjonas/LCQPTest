@@ -1,4 +1,4 @@
-function [solution] = SolveLCQP(name)
+function [solution] = SolveLCQP_OSQP(name)
 
 import casadi.*;
 
@@ -13,19 +13,16 @@ if (~isfield(problem, 'A'))
     problem.ubA = [];
 end
 
-if (~exist('lb'))
-    lb = [];
+if (exist('lb', 'var') && exist('ub', 'var'))
+    problem.A = [problem.A; eye(length(lb))];
+    problem.lbA = [problem.lbA; lb];
+    problem.ubA = [problem.ubA; ub];
 end
-
-if (~exist('ub'))
-    ub = [];
-end
-
-problem.lb = lb;
-problem.ub = ub;
 
 % Solve LCQP
 params.printLevel = 0;
+params.qpSolver = 2;
+params.stationarityTolerance = 1e-3;
 [solution.x,solution.y,solution.stats] = LCQPow(...
     problem.Q, ...
     problem.g, ...
@@ -35,8 +32,6 @@ params.printLevel = 0;
     problem.A, ...
     problem.lbA, ...
     problem.ubA, ...
-    problem.lb, ...
-    problem.ub, ...
     params ...
 );
 
@@ -45,12 +40,7 @@ if (exist('w'))
 else
     Obj = @(x) 1/2*x'*problem.Q*x + problem.g'*x;
 end
-
 solution.stats.obj = full(Obj(solution.x));
-
-solution.stats.n_x = size(problem.Q, 1);
-solution.stats.n_c = size(problem.A, 1);
-solution.stats.n_comp = size(problem.L, 1);
 
 end
 
