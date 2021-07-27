@@ -1,21 +1,25 @@
 %% Close and clear
 clc; close all; clear all;
-problem = ReadData('data');
+
+% Experiment 0: easier, 1: harder
+exp = '0';
+
+problem = ReadData(['data', exp]);
 
 % Regularization around 0.5
 problem.Q = problem.Q + problem.L'*problem.L;
 problem.g = problem.g - sum(problem.L,1)';
 
 %% Get Gurobi's solution
-gurobi_x_opt = readmatrix(fullfile('data', 'x_opt.txt'));
+gurobi_x_opt = readmatrix(fullfile(['sol', exp], 'x_opt_gurobi.txt'));
 
 %% Solve LCQP
 addpath("~/LCQPow/build/lib");
 params.qpSolver = 1;
 params.printLevel = 2;
-params.initialPenaltyParameter = 0.01;
-params.penaltyUpdateFactor = 1.25;
-params.stationarityTolerance = 1e-8;
+params.initialPenaltyParameter = 0.001;
+params.penaltyUpdateFactor = 1.2;
+% params.stationarityTolerance = 1e-7;
 params.maxIterations = 10000;
 
 [x, y, stats] = LCQPow( ...
@@ -36,7 +40,7 @@ params.maxIterations = 10000;
 );
 
 %% Write LCQPow solution
-writematrix(x, 'x_opt_LCQPow.txt')
+writematrix(x, fullfile(['sol', exp], 'x_opt_LCQPow.txt'));
 
 %% Compare Solutions
 problem.obj = @(x) 1/2*x'*problem.Q*x + problem.g'*x;

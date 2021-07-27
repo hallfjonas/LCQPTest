@@ -1,2 +1,4 @@
 *.asv
-AdsorptionCooling/data
+AdsorptionCooling/data0
+AdsorptionCooling/data1
+*.ipynb_checkpoints
