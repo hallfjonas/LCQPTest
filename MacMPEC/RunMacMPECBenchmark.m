@@ -33,5 +33,5 @@ save('solutions/lcqp_snopt_ipopt_osqp.mat');
 close all; clear all; clc;
 addpath("plotters");
 load('solutions/lcqp_snopt_ipopt_osqp.mat');
-% PlotTimings(benchmark.problems);
+PlotTimings(benchmark.problems);
 PlotAccuracy(benchmark.problems);

@@ -93,7 +93,7 @@ set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
 % Save as eps
-exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MacMPEC_obj.eps');
+exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MacMPEC_obj.pdf');
 % 
 % for s=1:ns
 %     solver = problems{1}.solutions{s}.solver;

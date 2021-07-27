@@ -118,7 +118,7 @@ set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
 % Save as eps
-exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MacMPEC_time.eps');
+exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MacMPEC_time.pdf');
 
 end
 
