@@ -48,9 +48,16 @@ end
 for p = 1:np
     min_val = min_f_per_problem(p);
     max_val = max_f_per_problem(p);
+    
+    min_max_diff = max_val - min_val;
+    
     for s = 1:ns                
-        % Compute ratio
-        rf(p,s) = (f(p,s) - min_val)/(max_val - min_val);
+        % Compute ratio (only if difference min max diff is large enough)
+        if (min_max_diff > eps)
+            rf(p,s) = 1 + (f(p,s) - min_val)/min_max_diff;
+        else
+            rf(p,s) = 1;    
+        end
     end
 end
 
