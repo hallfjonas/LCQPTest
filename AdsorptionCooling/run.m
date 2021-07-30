@@ -9,14 +9,26 @@ problem = ReadData(['data', exp]);
 %% Get Gurobi's solution
 gurobi_x_opt = readmatrix(fullfile(['sol', exp], 'x_opt_gurobi.txt'));
 
+%% Regularization
+problem.Q = problem.Q + 2*problem.L'*problem.L;
+problem.g = problem.g - sum(problem.L,1)';
+min_eig = min(eig(problem.Q));
+if (min_eig < 0)
+    problem.Q = problem.Q - 10*min_eig*eye(size(problem.Q));
+end
+
 %% Solve LCQP
 addpath("~/LCQPow/build/lib");
 params.qpSolver = 1;
 params.printLevel = 2;
-params.solveZeroPenaltyFirst = false;
-params.initialPenaltyParameter = 10^5;
+params.initialPenaltyParameter = eps;
+params.penaltyUpdateFactor = 2;
 params.maxIterations = 10000;
+
+% if you want to try to initialize with gruobis solution do this:
 params.x0 = gurobi_x_opt;
+params.solveZeroPenaltyFirst = false;
+params.initialPenaltyParameter = 2.05e+03;
 
 [x, y, stats] = LCQPow( ...
     problem.Q, ...
