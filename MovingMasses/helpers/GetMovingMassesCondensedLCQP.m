@@ -277,4 +277,8 @@ problem.Phi = Function('Phi', {problem.x}, {Compl_L(problem.x)'*Compl_R(problem.
 % Function for obtaining all states
 problem.States = Function('States', {x}, {state_nodes});
 
+% Problem dimension
+problem.n_x = length(problem.lb);
+problem.n_c = length(problem.constr);
+problem.n_comp = length(problem.compl_L);
 end
