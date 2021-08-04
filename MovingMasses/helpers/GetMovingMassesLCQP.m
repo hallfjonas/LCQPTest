@@ -250,4 +250,8 @@ Compl_L = Function('Compl_L', {problem.x}, {problem.compl_L});
 Compl_R = Function('Compl_R', {problem.x}, {problem.compl_R});
 problem.Phi = Function('Phi', {problem.x}, {Compl_L(problem.x)'*Compl_R(problem.x)});
 
+% Problem dimension
+problem.n_x = length(ind_x);
+problem.n_c = length(problem.constr);
+problem.n_comp = length(problem.compl_L);
 end

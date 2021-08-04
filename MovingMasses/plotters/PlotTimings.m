@@ -44,13 +44,12 @@ for p = 1:np
                 max_t_per_problem(p) = t(p,s);
             end
         end
-        
-        if (solution.solver.name == "LCQPow")
-            n_x(p) = solution.stats.n_x;
-            n_c(p) = solution.stats.n_c;
-            n_comp(p) = solution.stats.n_comp;
-        end
     end
+    
+    % Store problem dimensions
+    n_x(p) = problem.casadi_formulation.n_x;
+    n_c(p) = problem.casadi_formulation.n_c;
+    n_comp(p) = problem.casadi_formulation.n_comp;
 end
 
 fprintf(" range(n_x) = [%d %d]\n", min(n_x), max(n_x));
