@@ -238,16 +238,6 @@ ubg = [ubg; tol*ones(2*nMasses,1)];
 %% Build a forward simulation initial guess
 forward_sim = BuildInitialGuess(ode_and_cost, x0, zeros(nu,1), nz, h, N, nMasses, true);
 
-z_vals = forward_sim(ind_z);
-
-figure; hold on; box on; grid on;
-for i=1:nMasses 
-    plot(linspace(h,T,N), z_vals(i:4*nMasses:end), 'r-', 'DisplayName', 'y');
-    plot(linspace(h,T,N), z_vals(nMasses+i:4*nMasses:end), 'r-','DisplayName',  'lam0');
-    plot(linspace(h,T,N), -z_vals(2*nMasses+i:4*nMasses:end), 'r-','DisplayName',  '-lam1');
-    plot(linspace(h,T,N), z_vals(3*nMasses+i:4*nMasses:end), 'r-','DisplayName',  'l');
-end
-
 %% Capture the LCQP
 % Name classification
 % States and box constraints
