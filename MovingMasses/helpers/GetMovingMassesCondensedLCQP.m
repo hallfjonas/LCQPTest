@@ -27,11 +27,10 @@ v = SX.sym('v', nMasses,1);       % Velocity
 y = SX.sym('y', nMasses, 1);               % Switching values
 lambda0 = SX.sym('lambda0', nMasses, 1);   % Refering to negative parts of v
 lambda1 = SX.sym('lambda1', nMasses, 1);   % Refering to positive parts of v
-l = SX.sym('l', nMasses, 1);               % Refering to 1 - y  
 
 % Combined
 x = [p; v];                             % states
-z = [y; lambda0; lambda1; l];           % algebraic states
+z = [y; lambda0; lambda1];              % algebraic states
 u = SX.sym('u', 1);                     % controls
 
 %% Dynamics                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
@@ -45,19 +44,18 @@ M_ODE = zeros(nx, nx + nz + nu);
 l_ODE = zeros(nx, 1);
 
 % Build ODE
-
 for i = 1:nMasses
     % pdot = v
     M_ODE(i,nMasses+i) = 1;
 
-    % vdot = ...
+    % vdot = p_(i-1) - 2*p_i + p_(i+1) - v_i + 0.3*(1 - 2*y_i)
     % Own position and velocity contributions
     M_ODE(nMasses+i,i) = -2;
     M_ODE(nMasses+i,nMasses + i) = -1;
 
-    % Friction
-    M_ODE(nMasses+i,2*nMasses + i) = -friction_coeff;
-    M_ODE(nMasses+i,5*nMasses + i) = friction_coeff;
+    % Friction (0.3*(1 - 2*y))
+    M_ODE(nMasses+i,2*nMasses + i) = -2*friction_coeff;
+    l_ODE(nMasses+i) = friction_coeff;
 
     % Attached to previous mass (or wall in first case)
     if (i > 1)
@@ -77,7 +75,7 @@ Mz = M_ODE(:,nx+1:nx+nz);
 Mu = M_ODE(:,nx+nz+1:end);
 M = eye(nx) - h*Mx;
 
-next_state = M\(x + h*(Mz*z + Mu*u));
+next_state = M\(x + h*(Mz*z + Mu*u + l_ODE));
 Next_State = Function('F_Condensed', {x, z, u}, {next_state});
 
 % Objective
@@ -85,10 +83,10 @@ f_q = x(1:2*nMasses)'*x(1:2*nMasses) + u'*u;
 
 % Regularization: Binary variables around 0.5
 reg_fact = 1e-8;
-f_q = f_q + reg_fact*((y-0.5)'*(y-0.5) + (l - 0.5)'*(l-0.5) + lambda0'*lambda0 + lambda1'*lambda1);
+f_q = f_q + reg_fact*((y-0.5)'*(y-0.5) + lambda0'*lambda0 + lambda1'*lambda1);
 
 % algebraic equations
-f_z = [v - (lambda0  - lambda1); l - (1 - y)];
+f_z = [v - (lambda0  - lambda1)];
 
 % RHS of ODE in the DAE
 dae_and_cost = Function('dae_and_cost',{x, u, z},{f_q, f_z});
@@ -98,11 +96,11 @@ f_x = [];
 for i = 1:nMasses
     f_x = [f_x; v(i)]; 
 end
-f_x = [f_x; -2*p(1) + p(2) - v(1) - 0.3*(2*y(1) - 1)];
+f_x = [f_x; -2*p(1) + p(2) - v(1) + 0.3*(1 - 2*y(1))];
 for i=2:nMasses-1
-    f_x = [f_x; p(i-1) - 2*p(i) + p(i+1) - v(i) - 0.3*(2*y(i) - 1)];
+    f_x = [f_x; p(i-1) - 2*p(i) + p(i+1) - v(i) + 0.3*(1 - 2*y(i))];
 end
-f_x = [f_x; p(nMasses-1) - 2*p(nMasses) - v(nMasses) - 0.3*(2*y(nMasses) - 1) + u];
+f_x = [f_x; p(nMasses-1) - 2*p(nMasses) - v(nMasses) + 0.3*(1 - 2*y(nMasses)) + u];
 ode_and_cost = Function('f_x',{x, u, z},{f_x, f_q, f_z});     
 
 
@@ -162,7 +160,7 @@ ind_total = [ind_x];
 y0 = 0.5*ones(size(y));
 lam0 = zeros(size(lambda0));
 lam1 = zeros(size(lambda1));
-z0 = [y0; lam0; lam1; 1-y0];
+z0 = [y0; lam0; lam1];
 
 % Box constraints on x, z, and u
 lb_x = -inf(nx, 1);
@@ -213,8 +211,7 @@ for k=0:N-1
     Ykj = Zkj(1:nMasses);
     Lambda0kj = Zkj(nMasses+1:2*nMasses);
     Lambda1kj = Zkj(2*nMasses+1:3*nMasses);
-    Lkj = Zkj(3*nMasses+1:end);
-    compl_L = {compl_L{:}, Ykj, Lkj};
+    compl_L = {compl_L{:}, Ykj, 1 - Ykj};
     compl_R = {compl_R{:}, Lambda1kj, Lambda0kj};
     
     % DAE and objective
