@@ -32,7 +32,7 @@ x1 = Lmx*x;
 x2 = Rmx*x;
 
 % CasADi objective and penalty term
-J_qp = x'*Qmx*x+gmx'*x;
+J_qp = 1/2*x'*Qmx*x+gmx'*x;
 g_cc = x1'*x2;
 
 % Linear Bounds
