@@ -8,7 +8,6 @@ LCQP_formulation = ObtainLCQP(problem.casadi_formulation);
 %% Set parameters
 params.initialPenaltyParameter = problem.casadi_formulation.rho0;
 params.penaltyUpdateFactor = problem.casadi_formulation.beta;
-params.stationarityTolerance = 1e-6;
 params.complementarityTolerance = problem.casadi_formulation.complementarityTolerance;
 params.maxRho = problem.casadi_formulation.rhoMax;
 params.printLevel = 0;

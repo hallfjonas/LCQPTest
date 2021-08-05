@@ -99,7 +99,7 @@ set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
 % Save as eps
-exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MM_obj.pdf');
+exportgraphics(f,'../../paper-lcqp-2/figures/benchmarks/IVOCP_obj.pdf');
 % 
 % for s=1:ns
 %     solver = problems{1}.solutions{s}.solver;

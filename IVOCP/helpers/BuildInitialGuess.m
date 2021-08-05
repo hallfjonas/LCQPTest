@@ -1,4 +1,4 @@
-function [w0] = BuildInitialGuess(ode, init_value, u_fixed, nz, h, N, nMasses, condensed)
+function [w0] = BuildInitialGuess(ode, init_value, nz, h, N)
 
 import casadi.*;
 
@@ -10,22 +10,16 @@ w0 = xk;
 for j=2:N+1    
 
     % "Solve" algebraic equations
-    for i=1:nMasses
-        if (xk(nMasses + i) > 0) 
-            zk(nMasses + i) = xk(nMasses + i);
-            zk(i) = 1;
-        else
-            zk(2*nMasses + i) = -xk(nMasses + i);
-            zk(i) = 0;
-        end
+    if (xk > 0) 
+        zk(1) = 1;
+        zk(2) = xk;
+    else
+        zk(1) = 0;
+        zk(2) = -xk;
     end
     
     % Do integration step
-    xk = xk + h*full(ode(xk, u_fixed, zk));
+    xk = xk + h*full(ode(xk, zk));
     
-    if (~condensed)
-        w0 = [w0; u_fixed; xk; zk];
-    else
-        w0 = [w0; u_fixed; zk];
-    end    
+    w0 = [w0; xk; zk];
 end

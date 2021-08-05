@@ -117,7 +117,7 @@ set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
 % Save as eps
-exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MovingMasses_time.pdf');
+exportgraphics(f,'../../paper-lcqp-2/figures/benchmarks/IVOCP_time.pdf');
 
 end
 

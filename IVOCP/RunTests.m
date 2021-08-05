@@ -32,12 +32,12 @@ u_bounded = false;
 
 % Add problems with 2 masses
 i = 1;
-for N = 50:5:50
-    for x00 = linspace(-1.9, -0.9, 100)
-        benchmark.problems{i}.T = T;
+for N = 50:5:60
+    for x00 = linspace(-1.9, -0.9, 20)
+        benchmark.problems{i}.T = 2;
         benchmark.problems{i}.N = N;    
         benchmark.problems{i}.x00 = x00;    
-        benchmark.problems{i}.casadi_formulation = GetIVOCPLCQPGeneral(T, N, x00);        
+        benchmark.problems{i}.casadi_formulation = GetIVOCP(2, N, x00);        
         i = i+1;
     end
 end

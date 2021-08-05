@@ -117,6 +117,6 @@ subplot(3,1,3);
 set(findall(gca, 'Type', 'Line'),'LineWidth',1.5);
 
 % Save as pdf
-exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MovingMasses_Trajectory.pdf');
+exportgraphics(f,'../../paper-lcqp-2/figures/benchmarks/IVOCP_Trajectory.pdf');
 
 end

@@ -137,14 +137,9 @@ end
 % Terminal cost
 J = J + (Xk_end-5/3)^2;
 
-% Create array containing all optimization variables
-x = vertcat(w{:});
-
 %% Capture the LCQP
 
 x0 = BuildInitialGuess(F, x00, nz, h, N); 
-
-plot(x0(ind_x));
 
 % States and box constraints
 problem.x = vertcat(w{:});
@@ -171,6 +166,7 @@ problem.indices_z = ind_z;
 % Update strategy
 problem.rho0 = 0.01;
 problem.beta = 2;
+problem.complementarityTolerance = 1e-12;
 problem.rhoMax = 10000;
 
 % Problem functions (for comparing solutions)
