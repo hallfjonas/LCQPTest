@@ -28,7 +28,6 @@ for p = 1:np
         
         % Update mins and max if solved
         if (exit_flag(p,s) == 0)
-            solution.solver.name
             f(p,s) = solution.obj;
         
             % Update minimum objective
