@@ -59,6 +59,6 @@ close all;
 %    PlotSolutions(benchmark.problems{i});
 %end
 addpath("plotters")
-%PlotSolutions(benchmark.problems{1});
+PlotSolutions(benchmark.problems{1});
 PlotTimings(benchmark.problems);
 PlotAccuracy(benchmark.problems);
