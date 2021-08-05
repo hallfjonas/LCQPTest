@@ -35,7 +35,7 @@ set(groot,'defaultLegendInterpreter','latex');
 %% Figure 1: Plot States
 % Positions
 
-f = figure(1);
+f = figure;
 
 % Colors
 cmap = colormap(winter);
@@ -117,6 +117,6 @@ subplot(3,1,3);
 set(findall(gca, 'Type', 'Line'),'LineWidth',1.5);
 
 % Save as pdf
-exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MovingMasses_Trajectory.pdf');
+exportgraphics(f,'../../paper-lcqp-2/figures/benchmarks/MovingMasses_Trajectory.pdf');
 
 end
