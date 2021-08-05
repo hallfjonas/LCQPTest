@@ -81,7 +81,7 @@ cmap = colormap(parula);
 cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
 col_indices = floor(linspace(1, size(cmap,1), ns));
 
-f = figure(2); 
+fig = figure; 
 for s=1:ns
     solver = problems{1}.solutions{s}.solver;
     
@@ -99,7 +99,7 @@ set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
 % Save as eps
-exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MM_obj.pdf');
+exportgraphics(fig,'../../paper-lcqp-2/figures/benchmarks/MM_obj.pdf');
 % 
 % for s=1:ns
 %     solver = problems{1}.solutions{s}.solver;

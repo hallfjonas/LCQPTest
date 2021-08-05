@@ -79,7 +79,7 @@ end
 
 %% Get the performance profile (of time)
 taut = unique(sort(reshape(rt, np*ns, 1)));
-taut = taut( ~isinf(taut) );
+taut = taut( ~isinf(taut) & ~isnan(taut) );
 rhot = zeros(length(taut), ns);
 for t = 1:length(taut)
     for s = 1:ns
@@ -98,7 +98,7 @@ cmap = colormap(parula);
 cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
 col_indices = floor(linspace(1, size(cmap,1), ns));
 
-f = figure(1); 
+f = figure; 
 for s=1:ns
     solver = problems{1}.solutions{s}.solver;
     
@@ -117,7 +117,7 @@ set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
 % Save as eps
-exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MovingMasses_time.pdf');
+exportgraphics(f,"../../paper-lcqp-2/figures/benchmarks/MovingMasses_time.pdf");
 
 end
 
