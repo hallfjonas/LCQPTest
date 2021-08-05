@@ -79,7 +79,7 @@ end
 
 %% Get the performance profile (of time)
 taut = unique(sort(reshape(rt, np*ns, 1)));
-taut = taut( ~isinf(taut) );
+taut = taut( ~isinf(taut) & ~isnan(taut) );
 rhot = zeros(length(taut), ns);
 for t = 1:length(taut)
     for s = 1:ns

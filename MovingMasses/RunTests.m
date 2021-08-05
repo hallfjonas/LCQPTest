@@ -28,12 +28,12 @@ benchmark.solvers = { ...
     %struct('fun', 'SolveLCQP_OSQP', 'name', 'LCQPow OSQP', 'color', 'blue'), ... 
 };
 
-u_bounded = false;
+u_bounded = true;
 
 % Add problems with 2 masses
 i = 1;
-for N = 50:5:50
-    for T = 2:0.2:3
+for N = 50:5:60
+    for T = 2:0.1:3
         benchmark.problems{i}.nMasses = 2;
         benchmark.problems{i}.T = T;
         benchmark.problems{i}.N = N;    
