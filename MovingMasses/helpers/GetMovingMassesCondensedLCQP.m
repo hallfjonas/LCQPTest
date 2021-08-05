@@ -86,7 +86,7 @@ reg_fact = 1e-8;
 f_q = f_q + reg_fact*((y-0.5)'*(y-0.5) + lambda0'*lambda0 + lambda1'*lambda1);
 
 % algebraic equations
-f_z = [v - (lambda0  - lambda1)];
+f_z = v - (lambda0  - lambda1);
 
 % RHS of ODE in the DAE
 dae_and_cost = Function('dae_and_cost',{x, u, z},{f_q, f_z});
@@ -142,7 +142,7 @@ lbw = [lbw; x0];
 ubw = [ubw; x0];
 
 % Save state nodes in variable (condensing)
-state_nodes = Xk;
+all_nodes = Xk;
 
 % Regularization on initial condition
 J = J + (Xk - x0)'*(Xk - x0);
@@ -191,7 +191,7 @@ for k=0:N-1
     Zkj = SX.sym(['Z', num2str(k)], nz);
     Xkj = Next_State(Xk, Zkj, Uk);
 
-    state_nodes = [state_nodes; Xkj];
+    all_nodes = [all_nodes; Uk; Xkj; Zkj];
 
     w = {w{:}, Zkj};
 
@@ -272,7 +272,7 @@ Compl_R = Function('Compl_R', {problem.x}, {problem.compl_R});
 problem.Phi = Function('Phi', {problem.x}, {Compl_L(problem.x)'*Compl_R(problem.x)});
 
 % Function for obtaining all states
-problem.States = Function('States', {x}, {state_nodes});
+problem.AllNodes = Function('States', {problem.x}, {all_nodes});
 
 % Problem dimension
 problem.n_x = length(problem.lb);

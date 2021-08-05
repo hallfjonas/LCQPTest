@@ -29,7 +29,7 @@ for p = 1:np
         % Update mins and max if solved
         if (exit_flag(p,s) == 0)
             solution.solver.name
-            f(p,s) = solution.stats.obj;
+            f(p,s) = solution.obj;
         
             % Update minimum objective
             if (f(p,s) < min_f_per_problem(p))
@@ -100,7 +100,7 @@ set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
 % Save as eps
-exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MacMPEC_obj.pdf');
+exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MM_obj.pdf');
 % 
 % for s=1:ns
 %     solver = problems{1}.solutions{s}.solver;

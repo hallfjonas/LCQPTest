@@ -7,10 +7,7 @@ zk = zeros(nz,1);
 
 w0 = xk;
 
-for i=2:N+1    
-    
-    % Do integration step
-    xk = xk + h*full(ode(xk, u_fixed, zk));
+for j=2:N+1    
 
     % "Solve" algebraic equations
     for i=1:nMasses
@@ -21,8 +18,10 @@ for i=2:N+1
             zk(2*nMasses + i) = -xk(nMasses + i);
             zk(i) = 0;
         end
-        zk(3*nMasses + i) = 1 - zk(i);
     end
+    
+    % Do integration step
+    xk = xk + h*full(ode(xk, u_fixed, zk));
     
     if (~condensed)
         w0 = [w0; u_fixed; xk; zk];

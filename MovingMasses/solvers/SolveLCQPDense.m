@@ -1,9 +1,9 @@
-function [solutions] = SolveLCQP_Leyffer5(problem)
+function [solutions] = SolveLCQPDense(problem)
 
 addpath("~/LCQPow/build/lib");
 
 %% Get formulation
-LCQP_formulation = ObtainLCQP(problem.casadi_formulation);
+LCQP_formulation = ObtainLCQP(problem.casadi_formulation_condensed);
 
 %% Set parameters
 params.initialPenaltyParameter = problem.casadi_formulation.rho0;
@@ -12,13 +12,12 @@ params.complementarityTolerance = problem.casadi_formulation.complementarityTole
 params.printLevel = 0;
 params.storeSteps = false;
 params.maxIterations = 10000;
-params.etaComplHist = 0.5;
-params.nComplHist = 5;
 params.qpSolver = 1;
 params.x0 = LCQP_formulation.x0;
+% params.y0 = GetDualGuess(LCQP_formulation, params.x0);
 
 %% Rund solver
-[x, ~, stats] = LCQPow( ...
+[x, y, stats] = LCQPow( ...
     sparse(LCQP_formulation.Q), LCQP_formulation.g, ...
     sparse(LCQP_formulation.L), sparse(LCQP_formulation.R), ...
     LCQP_formulation.lb_L, LCQP_formulation.ub_L, LCQP_formulation.lb_R, LCQP_formulation.ub_R, ...
@@ -27,7 +26,7 @@ params.x0 = LCQP_formulation.x0;
     params ...
 );
 
-solutions.x = x; %full(problem.casadi_formulation_condensed.AllNodes(x));
+solutions.x = full(problem.casadi_formulation_condensed.AllNodes(x));
 solutions.stats = stats;
 solutions.obj = full(problem.casadi_formulation.Obj(solutions.x));
 solutions.compl = full(problem.casadi_formulation.Phi(solutions.x));

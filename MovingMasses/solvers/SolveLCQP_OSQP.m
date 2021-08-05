@@ -6,24 +6,25 @@ addpath("~/LCQPow/build/lib");
 LCQP_formulation = ObtainLCQP(problem.casadi_formulation);
 
 %% Set parameters
-params.initialPenaltyParameter = LCQP_formulation.rho0;
-params.penaltyUpdateFactor = LCQP_formulation.beta;
-params.stationarityTolerance = 1e-3;
-params.printLevel = 0;
-params.storeSteps = false;
-params.maxIterations = 2000;
+params.initialPenaltyParameter = problem.casadi_formulation.rho0;
+params.penaltyUpdateFactor = problem.casadi_formulation.beta;
+params.complementarityTolerance = problem.casadi_formulation.complementarityTolerance;
+params.printLevel = 2;
+params.maxIterations = 1000;
+params.etaComplHist = 0.5;
+params.nComplHist = 3;
 params.qpSolver = 2;
 params.x0 = LCQP_formulation.x0;
 
+% OSQP needs the box constraints as regular constraints
 lb = LCQP_formulation.lb;
 ub = LCQP_formulation.ub;
 
 for i = 1:length(lb)
     if (lb(i) > -inf || ub(i) < inf)
-        row_idx = size(LCQP_formulation.A, 1)+1;
-        LCQP_formulation.A(row_idx, i) = 1;
-        LCQP_formulation.lbA(row_idx) = lb(i);
-        LCQP_formulation.ubA(row_idx) = ub(i);
+        LCQP_formulation.A(end+1, i) = 1;
+        LCQP_formulation.lbA(end+1) = lb(i);
+        LCQP_formulation.ubA(end+1) = ub(i);
     end
 end
 
@@ -31,6 +32,7 @@ end
 [x, ~, stats] = LCQPow( ...
     sparse(LCQP_formulation.Q), LCQP_formulation.g, ...
     sparse(LCQP_formulation.L), sparse(LCQP_formulation.R), ...
+    LCQP_formulation.lb_L, LCQP_formulation.ub_L, LCQP_formulation.lb_R, LCQP_formulation.ub_R, ...
     sparse(LCQP_formulation.A), LCQP_formulation.lbA, LCQP_formulation.ubA, ...
     params ...
 );

@@ -58,7 +58,7 @@ while(rho < IPOPT_formulation.rhoMax)
     stats.elapsed_time = stats.elapsed_time + toc;
     stats.iters_outer = stats.iters_outer + 1;
     
-    if (abs(full(IPOPT_formulation.Comp_fun(w_opt))) < 1e-13)
+    if (abs(full(IPOPT_formulation.Comp_fun(w_opt))) < problem.casadi_formulation.complementarityTolerance)
         stats.exit_flag = 0;
         break
     end

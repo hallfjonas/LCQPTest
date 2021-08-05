@@ -52,32 +52,12 @@ Jac_L = Function('L_Fun', {x}, {jacobian(compl_L, x)});
 problem.L = full(Jac_L(zeros(size(x))));
 Jac_R = Function('R_Fun', {x}, {jacobian(compl_R, x)});
 problem.R = full(Jac_R(zeros(size(x))));
-problem.obj = Function('Obj', {x}, {J});
 
-%% Complementarity linear terms (step towards generalization)
+%% Complementarity linear terms + affine term
 L_Fun = Function('compl_L', {x}, {compl_L});
 R_Fun = Function('compl_R', {x}, {compl_R});
-lin_L = full(L_Fun(zeros(size(x))));
-lin_R = full(R_Fun(zeros(size(x))));
+problem.lb_L = -full(L_Fun(zeros(size(x))));
+problem.lb_R = -full(R_Fun(zeros(size(x))));
+problem.ub_L = inf(size(problem.lb_L));
+problem.ub_R = inf(size(problem.lb_R));
 
-% Extend state dimension by one
-if (max(abs([lin_L; lin_R])) > eps)
-    % Regularization around 1
-    problem.Q = blkdiag(problem.Q, eps);
-    problem.g = [problem.g; -2];
-    
-    % Fix to 1
-    problem.lb = [problem.lb; 1];
-    problem.ub = [problem.ub; 1];
-    
-    % Add column to L and R
-    problem.L = [problem.L lin_L];
-    problem.R = [problem.R lin_R];
-    
-    % Add empty column to A
-    if (hasConstraints)
-        problem.A = [problem.A zeros(nrow(problem.A), 1)];
-        problem.lbA = [problem.lbA, 0];
-        problem.ubA = [problem.ubA, 0];
-    end        
-end
