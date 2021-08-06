@@ -44,7 +44,9 @@ stats.elapsed_time = stats.elapsed_time + toc;
 sigma = problem.casadi_formulation.sigma0;
 stats.iters_outer = 0;
 
-while(sigma > problem.casadi_formulation.complementarityTolerance)  
+ncomp = problem.casadi_formulation.n_comp;
+
+while(sigma > problem.casadi_formulation.complementarityTolerance/ncomp)  
         
     tic;
     sol = solver( ...
