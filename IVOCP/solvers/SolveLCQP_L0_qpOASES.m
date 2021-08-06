@@ -1,4 +1,4 @@
-function [solutions] = SolveLCQP_OSQP(problem)
+function [solutions] = SolveLCQP_Leyffer3(problem)
 
 addpath("~/LCQPow/build/lib");
 
@@ -11,21 +11,12 @@ params.penaltyUpdateFactor = problem.casadi_formulation.beta;
 params.complementarityTolerance = problem.casadi_formulation.complementarityTolerance;
 params.maxRho = problem.casadi_formulation.rhoMax;
 params.printLevel = 0;
+params.storeSteps = false;
 params.maxIterations = 10000;
-params.qpSolver = 2;
+params.etaComplHist = 0.9;
+params.nComplHist = 0;
+params.qpSolver = 1;
 params.x0 = LCQP_formulation.x0;
-
-% OSQP needs the box constraints as regular constraints
-lb = LCQP_formulation.lb;
-ub = LCQP_formulation.ub;
-
-for i = 1:length(lb)
-    if (lb(i) > -inf || ub(i) < inf)
-        LCQP_formulation.A(end+1, i) = 1;
-        LCQP_formulation.lbA(end+1) = lb(i);
-        LCQP_formulation.ubA(end+1) = ub(i);
-    end
-end
 
 %% Rund solver
 [x, ~, stats] = LCQPow( ...
@@ -33,10 +24,11 @@ end
     sparse(LCQP_formulation.L), sparse(LCQP_formulation.R), ...
     LCQP_formulation.lb_L, LCQP_formulation.ub_L, LCQP_formulation.lb_R, LCQP_formulation.ub_R, ...
     sparse(LCQP_formulation.A), LCQP_formulation.lbA, LCQP_formulation.ubA, ...
+    LCQP_formulation.lb, LCQP_formulation.ub, ...
     params ...
 );
 
-solutions.x = x;
+solutions.x = x; %full(problem.casadi_formulation_condensed.AllNodes(x));
 solutions.stats = stats;
 solutions.obj = full(problem.casadi_formulation.Obj(solutions.x));
 solutions.compl = full(problem.casadi_formulation.Phi(solutions.x));
