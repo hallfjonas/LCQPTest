@@ -168,6 +168,8 @@ problem.rho0 = 0.01;
 problem.beta = 2;
 problem.complementarityTolerance = 1e-12;
 problem.rhoMax = 10000;
+problem.sigma0 = 1;
+problem.betaSigma = 1/10;
 
 % Problem functions (for comparing solutions)
 problem.Obj = Function('Obj', {problem.x}, {problem.obj});

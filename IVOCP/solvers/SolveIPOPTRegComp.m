@@ -1,10 +1,10 @@
-function [solutions] = SolveIPOPT(problem)
+function [solutions] = SolveIPOPTRegComp(problem)
 
 import casadi.*
 addpath("~/LCQPow/build/lib");
 
 %% Get formulation
-IPOPT_formulation = ObtainIPOPTPen(problem.casadi_formulation);
+IPOPT_formulation = ObtainIPOPTRegComp(problem.casadi_formulation);
 
 %% Create NLP solver
 opts_ipopt = struct;
@@ -38,13 +38,13 @@ sol = solver( ...
     'lbg', IPOPT_formulation.lb_constr, ...
     'ubg', IPOPT_formulation.ub_constr, ...
     'p', 0);
+w_opt = sol.x;
 stats.elapsed_time = stats.elapsed_time + toc;
 
-w_opt = sol.x;
-
-rho = IPOPT_formulation.rho0;
+sigma = problem.casadi_formulation.sigma0;
 stats.iters_outer = 0;
-while(rho < IPOPT_formulation.rhoMax)  
+
+while(sigma > problem.casadi_formulation.complementarityTolerance)  
         
     tic;
     sol = solver( ...
@@ -53,10 +53,10 @@ while(rho < IPOPT_formulation.rhoMax)
         'ubx', IPOPT_formulation.ub, ...
         'lbg', IPOPT_formulation.lb_constr, ...
         'ubg', IPOPT_formulation.ub_constr, ...
-        'p', rho);    
-    stats.elapsed_time = stats.elapsed_time + toc;
-    
+        'p', sigma);
     w_opt = sol.x;
+    
+    stats.elapsed_time = stats.elapsed_time + toc;
     stats.iters_outer = stats.iters_outer + 1;
     
     if (abs(full(problem.casadi_formulation.Phi(w_opt))) < problem.casadi_formulation.complementarityTolerance)
@@ -64,10 +64,10 @@ while(rho < IPOPT_formulation.rhoMax)
         break
     end
 
-    rho = rho*IPOPT_formulation.beta;
+    sigma = sigma*problem.casadi_formulation.betaSigma;
 end
 
-stats.rho_opt = rho;
+stats.rho_opt = sigma;
 solutions.x = full(sol.x);
 solutions.obj = full(problem.casadi_formulation.Obj(solutions.x));
 solutions.compl = full(problem.casadi_formulation.Phi(solutions.x));
