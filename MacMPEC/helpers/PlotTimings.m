@@ -1,4 +1,4 @@
-function [] = PlotTimings(problems)
+function [] = PlotTimings(problems, exp_name)
 
 %% Prepare data arrays
 % Number of problems
@@ -44,26 +44,8 @@ for p = 1:np
                 max_t_per_problem(p) = t(p,s);
             end
         end
-        
-        if (solution.solver.name == "LCQPow")
-            n_x(p) = solution.stats.n_x;
-            n_c(p) = solution.stats.n_c;
-            n_comp(p) = solution.stats.n_comp;
-        end
     end
 end
-
-fprintf(" range(n_x) = [%d %d]\n", min(n_x), max(n_x));
-fprintf("  mean(n_x) = %f\n", mean(n_x));
-fprintf("median(n_x) = %f\n\n", median(n_x));
-
-fprintf(" range(n_c) = [%d %d]\n", min(n_c), max(n_c));
-fprintf("  mean(n_c) = %f\n", mean(n_c));
-fprintf("median(n_c) = %f\n\n", median(n_c));
-
-fprintf(" range(n_comp) = [%d %d]\n", min(n_comp), max(n_comp));
-fprintf("  mean(n_comp) = %f\n", mean(n_comp));
-fprintf("median(n_comp) = %f\n\n", median(n_comp));
 
 %% Get the performance ratio
 for p = 1:np
@@ -117,8 +99,11 @@ xlim([1 taut(end)]);
 set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
-% Save as eps
-exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MacMPEC_time.pdf');
+% Save as pdf
+exportgraphics(...
+    f, ...
+    ['../../paper-lcqp-2/figures/benchmarks/', exp_name, '_time.pdf'] ...
+);
 
 end
 

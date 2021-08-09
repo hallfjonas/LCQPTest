@@ -1,4 +1,4 @@
-function [] = PlotAccuracy(problems)
+function [] = PlotAccuracyMacMPEC(problems, exp_name)
 %% Prepare data arrays
 % Number of problems
 np = length(problems);
@@ -13,6 +13,10 @@ exit_flag = zeros(np, ns);
 % Performance ratios (assume all problems solved with same solvers)
 rf = zeros(np, ns);
 
+% Optimal solution vector according to homepage
+x_ast = zeros(np,1);
+mean_obj_dist = inf(1,ns);
+
 % Store minimum time per problem
 min_f_per_problem = inf(np,1);
 max_f_per_problem = -inf(np,1);
@@ -20,6 +24,7 @@ max_f_per_problem = -inf(np,1);
 %% Get the min&max solution time&obj for each problem
 for p = 1:np
     problem = problems{p};
+    x_ast(p) = GetMacMPECOptimalObjective(problem.name);
     for s = 1:ns
         solution = problem.solutions{s};
         
@@ -28,8 +33,7 @@ for p = 1:np
         
         % Update mins and max if solved
         if (exit_flag(p,s) == 0)
-            solution.solver.name
-            f(p,s) = solution.stats.obj;
+            f(p,s) = abs(solution.stats.obj - x_ast(p));
         
             % Update minimum objective
             if (f(p,s) < min_f_per_problem(p))
@@ -44,21 +48,20 @@ for p = 1:np
     end
 end
 
+%% Compute column averages after removing infs
+for j = 1:ns
+    mean_obj_dist(1,j) = mean(f(~isinf(f(:,j)),j));
+end
+
 %% Get the performance ratio
 for p = 1:np
-    min_val = min_f_per_problem(p);
-    max_val = max_f_per_problem(p);
-    
-    min_max_diff = max_val - min_val;
-    
-    for s = 1:ns                
-        % Compute ratio (only if difference min max diff is large enough)
-        if (min_max_diff > eps)
-            rf(p,s) = 1 + (f(p,s) - min_val)/min_max_diff;
-        else
-            rf(p,s) = 1;    
-        end
+    % Failed solutions are set to max val
+    if (exit_flag(p,s) ~= 0)
+        rf(p,s) = inf;
     end
+
+    % Compute ratio
+    rf(p,s) = f(p,s)/min_f_per_problem(p);
 end
 
 %% Get the performance profile (of time)
@@ -82,7 +85,7 @@ cmap = colormap(parula);
 cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
 col_indices = floor(linspace(1, size(cmap,1), ns));
 
-f = figure(2); 
+fig = figure(2); 
 for s=1:ns
     solver = problems{1}.solutions{s}.solver;
     
@@ -99,22 +102,11 @@ set(gca,'xscale','log');
 set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
-% Save as eps
-exportgraphics(f,'/home/syscop/paper-lcqp-2/figures/benchmarks/MacMPEC_obj.pdf');
-% 
-% for s=1:ns
-%     solver = problems{1}.solutions{s}.solver;
-%     
-%     figure; hold on; box on; grid on;
-%     plot( ...
-%         1:length(problems), exit_flag(:,s) ~= 0, ...
-%         'DisplayName', solver.name, ...
-%         'LineStyle', solver.lineStyle, ...
-%         'Color', cmap(col_indices(s),:) ...
-%     ); 
-%     xlabel('$\mathrm{problem}$');
-%     ylabel('$\mathrm{solved}$');
-%     legend();
-% end
+% Save as pdf
+exportgraphics(...
+    fig, ...
+    ['../../paper-lcqp-2/figures/benchmarks/', exp_name, '_obj.pdf'] ...
+);
+
 end
 
