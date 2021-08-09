@@ -1,5 +1,6 @@
 function [ problem ] = GetMovingMassesLCQP(nMasses, T, N, u_bounded)
 
+addpath("~/casadi-matlab2014b-v3.5.5");
 import casadi.*
 
 % Step size and number of nodes
