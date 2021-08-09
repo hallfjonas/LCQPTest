@@ -1,12 +1,6 @@
 %% Clean Up
 close all; clear all; clc;
 
-%% Load libraries
-addpath("~/LCQPow/build/lib");
-addpath("~/casadi-matlab2014b-v3.5.5");
-addpath("helpers");
-addpath("solvers");
-
 %% Build benchmark
 benchmark = {};
 benchmark.problems = {};
@@ -30,7 +24,7 @@ benchmark.solvers = { ...
 
 % Add problems with 2 masses
 i = 1;
-for N = 50:5:55
+for N = 50:5:100
     for x00 = linspace(-1.9, -0.9, 20)
         benchmark.problems{i}.T = 2;
         benchmark.problems{i}.N = N;    
@@ -41,6 +35,7 @@ for N = 50:5:55
 end
 
 %% Run solvers
+addpath("../solvers");
 for i = 1:length(benchmark.problems)
     for j = 1:length(benchmark.solvers)
         solver = benchmark.solvers{j};
@@ -49,12 +44,15 @@ for i = 1:length(benchmark.problems)
     end
 end
 
+save('solutions/sol.mat');
+
 %% Plot solutions
 close all;
 %for i = 1:length(benchmark.problems)
 %    PlotSolutions(benchmark.problems{i});
 %end
-addpath("plotters")
+addpath("../plotters")
+load('solutions/sol.mat');
 %PlotSolutions(benchmark.problems{1});
-PlotTimings(benchmark.problems);
-PlotAccuracy(benchmark.problems);
+PlotTimings(benchmark.problems, 'IVOCP');
+PlotAccuracy(benchmark.problems, 'IVOCP');

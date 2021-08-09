@@ -1,4 +1,4 @@
-function [] = PlotAccuracy(problems)
+function [] = PlotAccuracy(problems, exp_name)
 %% Prepare data arrays
 % Number of problems
 np = length(problems);
@@ -98,22 +98,11 @@ set(gca,'xscale','log');
 set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
-% Save as eps
-exportgraphics(f,'../../paper-lcqp-2/figures/benchmarks/IVOCP_obj.pdf');
-% 
-% for s=1:ns
-%     solver = problems{1}.solutions{s}.solver;
-%     
-%     figure; hold on; box on; grid on;
-%     plot( ...
-%         1:length(problems), exit_flag(:,s) ~= 0, ...
-%         'DisplayName', solver.name, ...
-%         'LineStyle', solver.lineStyle, ...
-%         'Color', cmap(col_indices(s),:) ...
-%     ); 
-%     xlabel('$\mathrm{problem}$');
-%     ylabel('$\mathrm{solved}$');
-%     legend();
-% end
+% Save as pdf
+exportgraphics(...
+    f, ...
+    ['../../paper-lcqp-2/figures/benchmarks/', exp_name, '_obj.pdf'] ...
+);
+
 end
 
