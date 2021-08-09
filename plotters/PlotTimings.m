@@ -52,17 +52,21 @@ for p = 1:np
     n_comp(p) = problem.casadi_formulation.n_comp;
 end
 
-fprintf(" range(n_x) = [%d %d]\n", min(n_x), max(n_x));
-fprintf("  mean(n_x) = %f\n", mean(n_x));
-fprintf("median(n_x) = %f\n\n", median(n_x));
+fID = fopen(['../../paper-lcqp-2/figures/benchmarks/', exp_name, '_dimensions.txt'], 'w');
 
-fprintf(" range(n_c) = [%d %d]\n", min(n_c), max(n_c));
-fprintf("  mean(n_c) = %f\n", mean(n_c));
-fprintf("median(n_c) = %f\n\n", median(n_c));
+fprintf(fID, " range(n_x) = [%d %d]\n", min(n_x), max(n_x));
+fprintf(fID, "  mean(n_x) = %f\n", mean(n_x));
+fprintf(fID, "median(n_x) = %f\n\n", median(n_x));
 
-fprintf(" range(n_comp) = [%d %d]\n", min(n_comp), max(n_comp));
-fprintf("  mean(n_comp) = %f\n", mean(n_comp));
-fprintf("median(n_comp) = %f\n\n", median(n_comp));
+fprintf(fID, " range(n_c) = [%d %d]\n", min(n_c), max(n_c));
+fprintf(fID, "  mean(n_c) = %f\n", mean(n_c));
+fprintf(fID, "median(n_c) = %f\n\n", median(n_c));
+
+fprintf(fID, " range(n_comp) = [%d %d]\n", min(n_comp), max(n_comp));
+fprintf(fID, "  mean(n_comp) = %f\n", mean(n_comp));
+fprintf(fID, "median(n_comp) = %f\n\n", median(n_comp));
+
+fclose(fID);
 
 %% Get the performance ratio
 for p = 1:np
