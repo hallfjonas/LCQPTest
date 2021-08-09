@@ -171,19 +171,29 @@ problem.rhoMax = 10000;
 problem.sigma0 = 1;
 problem.betaSigma = 1/10;
 
-% Problem functions (for comparing solutions)
-problem.Obj = Function('Obj', {problem.x}, {problem.obj});
-Compl_L = Function('Compl_L', {problem.x}, {problem.compl_L});
-Compl_R = Function('Compl_R', {problem.x}, {problem.compl_R});
-problem.Phi = Function('Phi', {problem.x}, {Compl_L(problem.x)'*Compl_R(problem.x)});
-
 % Problem dimension
 problem.n_x = length(problem.lb);
 problem.n_c = length(problem.constr);
 problem.n_comp = length(problem.compl_L);
-
 problem.nx = nx;
 problem.nz = nz;
+
+% Compute Analytic Solution
+x = linspace(-1.9,-0.9,1000);
+L = zeros(length(x), 1);
+for i = 1:length(x)
+    x0 = x(i);
+    ts = -x0/3;
+    L(i) = (8/3*ts^3 +8/3*x0*ts^2 + 8/9*x0^2*ts +1/3*T^3+1/3*x0*T^2+x0^2*T/9) + (T+(x0-5)/3)^2;
+end
+[~, ind_min] = min(L);
+x0_opt = x(ind_min);
+
+% Problem functions (for comparing solutions)
+problem.Obj = Function('Obj', {problem.x}, {abs(x(1) - x0_opt)});
+Compl_L = Function('Compl_L', {problem.x}, {problem.compl_L});
+Compl_R = Function('Compl_R', {problem.x}, {problem.compl_R});
+problem.Phi = Function('Phi', {problem.x}, {Compl_L(problem.x)'*Compl_R(problem.x)});
 
 end
 
