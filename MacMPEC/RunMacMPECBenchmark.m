@@ -33,9 +33,7 @@ save('solutions/sol.mat');
 
 %% Create Performance Plots
 close all; clear all; clc;
-addpath("../plotters");
-% load('solutions/sol.mat');
-PlotTimings(benchmark.problems);
-
-addpath("plotters");
-PlotAccuracyMacMPEC(benchmark.problems);
+load('solutions/sol.mat');
+addpath("helpers");
+PlotTimings(benchmark.problems, 'MacMPEC');
+% PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC');

@@ -1,15 +1,18 @@
 function [ obj_ast ] = GetMacMPECOptimalObjective( name )
     
 % Get Modpath
-[modpath, datpath] = GetPaths(name);
-[~, modfile] = fileparts(modpath);
+[~, ~, mac_name] = GetPaths(name);
 
 % Read MacMPEC solutions
-addpath('problem_table');
-sols = readtable('MacMPECSolutions.csv');
+sols = readtable('MacMPECTable.csv');
 
-[val, ind] = find(sols.modFile == modfile);
+for i = 1:length(sols.NAME)
+    if (matches(mac_name, sols.NAME{i}))
+        obj_ast = sols.solution(i);
+        return;
+    end
+end
 
-obj_ast = sols.solution(ind);
+error("NO SOLUTION AVAILABLE")
 
 end

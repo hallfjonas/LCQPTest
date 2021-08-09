@@ -1,4 +1,4 @@
-function[modpath, datpath] = GetPaths(name)
+function[modpath, datpath, corrected] = GetPaths(name)
 
 corrected = name;
 
@@ -32,7 +32,8 @@ if (startsWith(corrected, 'flp4'))
     
     % Try flp4s
     if (regexp(name, "flp4_[0-9]_s"))
-        datpath = ['data/flp4-s-', name(6), '.dat'];
+        corrected = ['flp4-s-', name(6)];
+        datpath = ['data/', corrected, '.dat'];
     end
     
     return;
