@@ -1,4 +1,4 @@
-function [] = PlotTimings(problems)
+function [] = PlotTimings(problems, exp_name)
 
 %% Prepare data arrays
 % Number of problems
@@ -79,7 +79,7 @@ end
 
 %% Get the performance profile (of time)
 taut = unique(sort(reshape(rt, np*ns, 1)));
-taut = taut( ~isinf(taut) & ~isnan(taut) );
+taut = taut( ~isinf(taut) );
 rhot = zeros(length(taut), ns);
 for t = 1:length(taut)
     for s = 1:ns
@@ -98,7 +98,7 @@ cmap = colormap(parula);
 cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
 col_indices = floor(linspace(1, size(cmap,1), ns));
 
-f = figure; 
+f = figure(1); 
 for s=1:ns
     solver = problems{1}.solutions{s}.solver;
     
@@ -116,8 +116,11 @@ xlim([1 taut(end)]);
 set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
-% Save as eps
-exportgraphics(f,"../../paper-lcqp-2/figures/benchmarks/MovingMasses_time.pdf");
+% Save as pdf
+exportgraphics(...
+    f, ...
+    ['../../paper-lcqp-2/figures/benchmarks/', exp_name, '_time.pdf'] ...
+);
 
 end
 
