@@ -13,9 +13,9 @@ benchmark.solvers = { ...
     struct('fun', 'SolveLCQP_OSQP', 'name', 'LCQPow OSQP', 'lineStyle', '--'), ... 
     struct('fun', 'SolveBARON', 'name', 'BARON', 'lineStyle', '-.') ...    
     struct('fun', 'SolveSNOPT', 'name', 'SNOPT', 'lineStyle', '-.'), ...
-    struct('fun', 'SolveIPOPT', 'name', 'IPOPT Penalty', 'lineStyle', ':') ...  
+    struct('fun', 'SolveIPOPT', 'name', 'IPOPT Penalty', 'lineStyle', '--'), ...
     struct('fun', 'SolveMINOS', 'name', 'MINOS', 'lineStyle', '-.') ...    
-    % struct('fun', 'SolveKNITRO', 'name', 'KNITRO', 'color', 'green', 'lineStyle', ':'), ...
+    struct('fun', 'SolveKNITRO', 'name', 'KNITRO', 'color', 'green', 'lineStyle', ':'),
 };
 
 %% Run Solvers
@@ -28,11 +28,14 @@ for i = 1:length(benchmark.problems)
         benchmark.problems{i}.solutions{j}.solver = benchmark.solvers{j};
     end
 end
-save('solutions/lcqp_snopt_ipopt_osqp.mat');
+
+save('solutions/sol.mat');
 
 %% Create Performance Plots
 close all; clear all; clc;
-addpath("plotters");
-load('solutions/lcqp_snopt_ipopt_osqp.mat');
+addpath("../plotters");
+% load('solutions/sol.mat');
 PlotTimings(benchmark.problems);
-PlotAccuracy(benchmark.problems);
+
+addpath("plotters");
+PlotAccuracyMacMPEC(benchmark.problems);
