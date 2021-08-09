@@ -2,7 +2,7 @@
 clc; close all; clear all;
 
 % Experiment 0: easier, 1: harder
-exp = '2';
+exp = '0';
 
 problem = ReadData(['data', exp]);
 
@@ -10,12 +10,25 @@ problem = ReadData(['data', exp]);
 gurobi_x_opt = readmatrix(fullfile(['sol', exp], 'x_opt_gurobi.txt'));
 
 %% Regularization
-problem.Q = problem.Q + 2*problem.L'*problem.L;
-problem.g = problem.g - sum(problem.L,1)';
+%problem.Q = problem.Q + 2*problem.L'*problem.L;
+%problem.g = problem.g - sum(problem.L,1)';
 min_eig = min(eig(problem.Q));
 if (min_eig < 0)
     problem.Q = problem.Q - 10*min_eig*eye(size(problem.Q));
 end
+
+%% In case of OSQP
+% OSQP needs the box constraints as regular constraints
+% lb = problem.lb;
+% ub = problem.ub;
+% 
+% for i = 1:length(lb)
+%     if (lb(i) > -inf || ub(i) < inf)
+%         problem.A(end+1, i) = 1;
+%         problem.lbA(end+1) = lb(i);
+%         problem.ubA(end+1) = ub(i);
+%     end
+% end
 
 %% Solve LCQP
 addpath("~/LCQPow/build/lib");
@@ -24,11 +37,15 @@ params.printLevel = 2;
 params.initialPenaltyParameter = eps;
 params.penaltyUpdateFactor = 2;
 params.maxIterations = 10000;
+params.maxRho = 1e7;
+params.stationarityTolerance = 1e-8;
+%params.etaComplHist = 0.5;
+%params.nComplHist = 3;
 
 % if you want to try to initialize with gruobis solution do this:
-params.x0 = gurobi_x_opt;
-params.solveZeroPenaltyFirst = false;
-params.initialPenaltyParameter = 2.05e+03;
+% params.x0 = gurobi_x_opt;
+% params.solveZeroPenaltyFirst = false;
+% params.initialPenaltyParameter = 2.05e+03;
 
 [x, y, stats] = LCQPow( ...
     problem.Q, ...
@@ -42,8 +59,6 @@ params.initialPenaltyParameter = 2.05e+03;
     problem.A, ...
     problem.lbA, ...
     problem.ubA, ...
-    problem.lb, ...
-    problem.ub, ...
     params ...
 );
 
