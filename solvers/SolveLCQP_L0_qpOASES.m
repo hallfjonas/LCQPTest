@@ -13,8 +13,8 @@ params.maxRho = problem.casadi_formulation.rhoMax;
 params.printLevel = 0;
 params.storeSteps = false;
 params.maxIterations = 10000;
-params.etaComplHist = 0.9;
-params.nComplHist = 0;
+params.etaDynamicPenalty = 0.9;
+params.nDynamicPenalty = 0;
 params.qpSolver = 1;
 params.x0 = LCQP_formulation.x0;
 
