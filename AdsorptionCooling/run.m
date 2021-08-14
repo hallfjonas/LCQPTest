@@ -19,16 +19,16 @@ end
 
 %% In case of OSQP
 % OSQP needs the box constraints as regular constraints
-% lb = problem.lb;
-% ub = problem.ub;
-% 
-% for i = 1:length(lb)
-%     if (lb(i) > -inf || ub(i) < inf)
-%         problem.A(end+1, i) = 1;
-%         problem.lbA(end+1) = lb(i);
-%         problem.ubA(end+1) = ub(i);
-%     end
-% end
+ lb = problem.lb;
+ ub = problem.ub;
+ 
+ for i = 1:length(lb)
+     if (lb(i) > -inf || ub(i) < inf)
+         problem.A(end+1, i) = 1;
+         problem.lbA(end+1) = lb(i);
+         problem.ubA(end+1) = ub(i);
+     end
+ end
 
 %% Solve LCQP
 addpath("~/LCQPow/build/lib");
@@ -39,8 +39,8 @@ params.penaltyUpdateFactor = 2;
 params.maxIterations = 10000;
 params.maxRho = 1e7;
 params.stationarityTolerance = 1e-8;
-%params.etaComplHist = 0.5;
-%params.nComplHist = 3;
+params.etaDynamicPenalty = 0.5;
+params.nDynamicPenalty = 0;
 
 % if you want to try to initialize with gruobis solution do this:
 % params.x0 = gurobi_x_opt;
@@ -48,15 +48,15 @@ params.stationarityTolerance = 1e-8;
 % params.initialPenaltyParameter = 2.05e+03;
 
 [x, y, stats] = LCQPow( ...
-    problem.Q, ...
+    sparse(problem.Q), ...
     problem.g, ...
-    problem.L, ...
-    problem.R, ...
+    sparse(problem.L), ...
+    sparse(problem.R), ...
     problem.lbL, ...
     problem.ubL, ...
     problem.lbR, ...
     problem.ubR, ...
-    problem.A, ...
+    sparse(problem.A), ...
     problem.lbA, ...
     problem.ubA, ...
     params ...
