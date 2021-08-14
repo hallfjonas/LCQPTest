@@ -13,11 +13,11 @@ ubA = problem.ubA;
 import casadi.*;
 
 % Create variables
-x = SX.sym('x', size(Q,1));
+x = SX.sym('x', size(Q,1),1);
 sigma = SX.sym('sigma',1);
 
 % Create SX matrices and vectors
-Qmx = SX(Q);
+Qmx = sparse(Q); %SX(Q);
 gmx = SX(g);
 Lmx = SX(L);
 Rmx = SX(R);
