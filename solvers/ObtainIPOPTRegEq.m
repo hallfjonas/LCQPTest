@@ -24,7 +24,7 @@ problem.obj = casadi_formulation.obj;
 
 % Penalty Parameter
 problem.sigma = SX.sym('sigma', 1);
-
+compl_sum = 0;
 for i=1:length(casadi_formulation.compl_L)
     % Impose non-negativity
     problem.constr = [problem.constr; casadi_formulation.compl_L{i}];
@@ -34,12 +34,13 @@ for i=1:length(casadi_formulation.compl_L)
     
     % Create sum of complementarity products
     compl_prod = casadi_formulation.compl_L{i}*casadi_formulation.compl_R{i};
-    
-    % Impose compl_prod = sigma
-    problem.constr = [problem.constr; compl_prod - problem.sigma];
-    problem.lb_constr = [problem.lb_constr; 0];
-    problem.ub_constr = [problem.ub_constr; 0];
+    compl_sum = compl_sum + compl_prod;
 end    
+
+% Impose compl_sum = sigma
+problem.constr = [problem.constr; compl_sum - problem.sigma];
+problem.lb_constr = [problem.lb_constr; 0];
+problem.ub_constr = [problem.ub_constr; 0];
 
 end
 
