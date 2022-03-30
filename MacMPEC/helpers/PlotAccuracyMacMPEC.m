@@ -48,6 +48,25 @@ for p = 1:np
     end
 end
 
+figure(3); hold on; grid on;
+for s = 1:ns
+    solver = problems{1}.solutions{s}.solver;
+    plot(eps + f(:,s), ...
+        'DisplayName', solver.name, ...
+        'LineStyle', solver.lineStyle)    
+end
+
+% Write names of problems on x axis
+xtags = [];
+for p = 1:np
+    pname = string(strrep(problems{p}.name,'_',' '));
+    xtags = [xtags, pname];
+end
+legend('Location', 'northeast');
+set(gca, 'YScale', 'log')
+set(gca,'xtick',1:np,'xticklabel',xtags);
+xtickangle(45);
+
 %% Compute column averages after removing infs
 for j = 1:ns
     mean_obj_dist(1,j) = mean(f(~isinf(f(:,j)),j));
