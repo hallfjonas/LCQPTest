@@ -6,9 +6,10 @@ import casadi.*;
 problemname = name;
 
 %% Create the LCQP
-cd MacMPECMatlab/WO_ampl;
+currdir = pwd;
+cd MacMPECMatlab/;
 run([name, '.m']);
-cd ../..;
+cd(currdir);
 
 if (~isfield(problem, 'A'))
     problem.A = [];

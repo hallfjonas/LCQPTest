@@ -3,9 +3,10 @@ function [solution] = SolveLCQP(name)
 import casadi.*;
 
 addpath("~/LCQPow/build/lib");
-cd MacMPECMatlab/WO_ampl/;
+currdir = pwd;
+cd MacMPECMatlab/;
 run([name, '.m']);
-cd ../..;
+cd(currdir);
 
 if (~isfield(problem, 'A'))
     problem.A = [];
