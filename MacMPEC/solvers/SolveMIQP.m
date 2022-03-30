@@ -85,13 +85,13 @@ if (exist('w'))
     Obj = Function('Obj', {w}, {obj});
 else
     Q = MIQP_formulation.Q(1:nV,1:nV);
-    g = MIQP_formulation.g(1:nV,1:nV);
+    g = MIQP_formulation.g(1:nV,1);
     Obj = @(x) 0.5*x'*Q*x + g'*x;
 end
 
 % Save the solution and stats
 % solutions.stats.elapsed_time = results.runtime;
-solutions.stats.exit_flag = 1- strcmp(results.status, 'OPTIMAL');
+solutions.stats.exit_flag = 1 - strcmp(results.status, 'OPTIMAL');
 
 solutions.x = zeros(nV+2*nComp,1);
 solutions.stats.compl = inf;
@@ -105,6 +105,4 @@ if solutions.stats.exit_flag == 0
     solutions.x = results.x;
     solutions.stats.compl = compl;
     solutions.stats.obj = full(Obj(solutions.x(1:nV)));
-end
-
 end
