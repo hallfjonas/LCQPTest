@@ -1,10 +1,10 @@
 
-function [problems] = ReadMacMPECProblems()
+function [problems] = ReadMacMPECProblems(problems_dir)
 
 problems = {};
 
 % Loop over all dat files
-files = dir('MacMPECMatlab/*.m');
+files = dir([problems_dir, '/*.m']);
 k = 1;
 for i = 1:length(files)
     
