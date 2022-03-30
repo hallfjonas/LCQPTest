@@ -4,7 +4,7 @@ close all; clear all;
 % Load Helpers
 addpath("helpers");
 
-% Load LCQPanther interface
+% Load LCQPow interface
 addpath('~/LCQPow/build/lib')
 
 % Load CasADi

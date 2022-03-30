@@ -1,7 +1,7 @@
 function [x, problem] = BuildAndSolveRalphmod(dataFile)
 
-% Load LCQPanther interface
-addpath('~/LCQPanther/interfaces/matlab')
+% Load LCQPow interface
+addpath('~/LCQPow/build/lib')
 
 % Load CasADi
 addpath("~/casadi/");
@@ -47,7 +47,7 @@ problem.obj = @(x) 1/2*x'*problem.Q*x + g'*x;
 
 % Solve
 params.printLevel = 3;
-x = LCQPanther(...
+x = LCQPow(...
     problem.Q, ...
     problem.g, ...
     problem.L, ...

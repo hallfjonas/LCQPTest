@@ -4,8 +4,8 @@ close all; clear all;
 % Load Helpers
 addpath("helpers");
 
-% Load LCQPanther interface
-addpath('~/LCQPanther/interfaces/matlab')
+% Load LCQPow interface
+addpath('~/LCQPow/build/lib')
 
 % Load CasADi
 addpath("~/casadi-matlab2014b-v3.5.5/");
@@ -46,7 +46,7 @@ problem = ObtainLCQP(...
 % Solve LCQP
 params.printLevel = 3;
 params.x0 = [1; 1];
-x = LCQPanther(...
+x = LCQPow(...
     problem.Q, ...
     problem.g, ...
     problem.L, ...

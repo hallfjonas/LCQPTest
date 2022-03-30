@@ -1,7 +1,7 @@
 function [problem] = BuildAndSolveQpec(modFile)
 
-% Load LCQPanther interface
-addpath('~/LCQPanther/interfaces/matlab')
+% Load LCQPow interface
+addpath('~/LCQPow/build/lib')
 
 % Load CasADi
 addpath("~/casadi/");

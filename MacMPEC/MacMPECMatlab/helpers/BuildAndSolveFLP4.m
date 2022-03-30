@@ -1,7 +1,7 @@
 function [problem] = BuildAndSolveFLP4(dataFile)
 
-% Load LCQPanther interface
-addpath('~/LCQPanther/interfaces/matlab')
+% Load LCQPow interface
+addpath('~/LCQPow/build/lib')
 
 % Load CasADi
 addpath("~/casadi/");
