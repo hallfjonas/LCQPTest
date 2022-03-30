@@ -19,6 +19,12 @@ if (exist('lb', 'var') && exist('ub', 'var'))
     problem.ubA = [problem.ubA; ub];
 end
 
+% Convert to sparse matrices
+problem.Q = sparse(problem.Q);
+problem.A = sparse(problem.A);
+problem.L = sparse(problem.L);
+problem.R = sparse(problem.R);
+
 % Solve LCQP
 params.printLevel = 0;
 params.qpSolver = 2;
