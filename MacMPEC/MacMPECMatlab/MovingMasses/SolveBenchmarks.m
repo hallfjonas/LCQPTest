@@ -3,7 +3,7 @@ clc; close all; clear all;
 
 %% Load libraries
 addpath("~/LCQPow/build/lib");
-addpath("~/casadi-matlab2014b-v3.5.5");
+addpath("~/casadi");
 addpath("helpers");
 
 %% Specify solvers
