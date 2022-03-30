@@ -104,7 +104,6 @@ if solutions.stats.exit_flag == 0
     solutions.x = results.x;
     solutions.stats.compl = compl;
     solutions.stats.obj = full(Obj(solutions.x(1:nV)));
-    results.x(1:nV)
 end
 
 end
