@@ -3,7 +3,7 @@ clc; clear all; close all;
 
 %% Build benchmark
 benchmark = {};
-benchmark.problems = ReadMacMPECProblems('MacMPECMatlab/WO_ampl');
+benchmark.problems = ReadMacMPECProblems('MacMPECMatlab');
 
 % Append solvers by specifying a solver strategy and solver name
 % Each solver is assumed to take the input of a benchmark.problem struct
