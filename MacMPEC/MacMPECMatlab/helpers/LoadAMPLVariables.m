@@ -1,7 +1,7 @@
 function [variables] = LoadAMPLVariables( ampl )
 
 % Load CasADi
-addpath("~/casadi-matlab2014b-v3.5.5/");
+addpath("~/casadi/");
 import casadi.*;
 
 varray = ampl.getVariables.toArray;

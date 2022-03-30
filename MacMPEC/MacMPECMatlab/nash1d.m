@@ -5,10 +5,10 @@ close all; clear all;
 addpath("helpers");
 
 % Load LCQPanther interface
-addpath('~/LCQPanther/interfaces/matlab')
+addpath('~/LCQPow/build/lib')
 
 % Load CasADi
-addpath("~/casadi-matlab2014b-v3.5.5/");
+addpath("~/casadi/");
 import casadi.*;
 
 %% Build Problem

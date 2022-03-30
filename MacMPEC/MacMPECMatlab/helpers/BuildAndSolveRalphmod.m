@@ -4,7 +4,7 @@ function [x, problem] = BuildAndSolveRalphmod(dataFile)
 addpath('~/LCQPanther/interfaces/matlab')
 
 % Load CasADi
-addpath("~/casadi-matlab2014b-v3.5.5/");
+addpath("~/casadi/");
 import casadi.*;
 
 % Load AMPL
