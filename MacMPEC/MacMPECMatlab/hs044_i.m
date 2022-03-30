@@ -1,5 +1,5 @@
 %% Clean and Load
-close all; clear all;
+close all; 
 
 % Load Helpers
 addpath("helpers");
