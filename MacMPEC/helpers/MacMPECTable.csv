@@ -1,4 +1,4 @@
-NAME,mod file,dat file,classification,solution
+NAME,modFile,datFile,classification,solution
 ,,,,
 bar-truss-3,bar-truss.mod,bar-truss-3.dat,LQR-MY-NCP-29-22-6,10166.6
 bard1,Bard1.mod,n/a,QLR-AY-NLP-5-1-3,17
