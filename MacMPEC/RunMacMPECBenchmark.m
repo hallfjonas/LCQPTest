@@ -3,7 +3,7 @@ clc; clear all; close all;
 
 %% Build benchmark
 benchmark = {};
-benchmark.problems = ReadMacMPECProblems();
+benchmark.problems = ReadMacMPECProblems('MacMPECMatlab/WO_ampl');
 
 % Append solvers by specifying a solver strategy and solver name
 % Each solver is assumed to take the input of a benchmark.problem struct
@@ -19,7 +19,7 @@ benchmark.solvers = { ...
 };
 
 %% Run Solvers
-addpath("solvers");
+addpath("./solvers");
 for i = 1:length(benchmark.problems)
     fprintf("Solving problem %s (%d/%d).\n", benchmark.problems{i}.name, i, length(benchmark.problems));
     for j = 1:length(benchmark.solvers)
@@ -35,5 +35,10 @@ save('solutions/sol.mat');
 close all; clear all; clc;
 load('solutions/sol.mat');
 addpath("helpers");
-PlotTimings(benchmark.problems, 'MacMPEC');
-% PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC');
+
+% Select a directory to save figures to
+outdir = 'solutions/miqp';
+% For final results:
+% outdir = '../../paper-lcqp-2/figures/benchmarks';
+PlotTimings(benchmark.problems, 'MacMPEC', outdir);
+PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir);

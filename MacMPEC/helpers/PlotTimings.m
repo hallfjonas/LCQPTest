@@ -1,4 +1,4 @@
-function [] = PlotTimings(problems, exp_name)
+function [] = PlotTimings(problems, exp_name, outdir)
 
 %% Prepare data arrays
 % Number of problems
@@ -102,7 +102,7 @@ legend('Location', 'southeast');
 % Save as pdf
 exportgraphics(...
     f, ...
-    ['../../paper-lcqp-2/figures/benchmarks/', exp_name, '_time.pdf'] ...
+    [outdir, '/', exp_name, '_time.pdf'] ...
 );
 
 end

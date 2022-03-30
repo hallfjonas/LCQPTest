@@ -1,4 +1,4 @@
-function [] = PlotAccuracyMacMPEC(problems, exp_name)
+function [] = PlotAccuracyMacMPEC(problems, exp_name, outdir)
 %% Prepare data arrays
 % Number of problems
 np = length(problems);
@@ -105,7 +105,7 @@ legend('Location', 'southeast');
 % Save as pdf
 exportgraphics(...
     fig, ...
-    ['../../paper-lcqp-2/figures/benchmarks/', exp_name, '_obj.pdf'] ...
+    [outdir, '/', exp_name, '_obj.pdf'] ...
 );
 
 end
