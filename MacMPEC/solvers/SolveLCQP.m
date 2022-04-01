@@ -43,14 +43,7 @@ tic;
 );
 solution.stats.elapsed_time_w_overhead = toc;
 
-
-if (exist('w'))
-    Obj = Function('Obj', {w}, {obj});
-else
-    Obj = @(x) 1/2*x'*problem.Q*x + problem.g'*x;
-end
-
-solution.stats.obj = full(Obj(solution.x));
+solution.stats.obj = full(problem.Obj(solution.x));
 solution.stats.n_x = size(problem.Q, 1);
 solution.stats.n_c = size(problem.A, 1);
 solution.stats.n_comp = size(problem.L, 1);

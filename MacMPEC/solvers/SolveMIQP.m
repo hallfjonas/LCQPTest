@@ -1,4 +1,4 @@
-function [solutions] = SolveMIQP(name)
+function [solution] = SolveMIQP(name)
 
 import casadi.*;
 
@@ -66,43 +66,27 @@ for i=1:nComp
     model.vtype(nV+nComp+i) = 'B';
 end
 
-stats = {};
-
-if strcmp(problemname, 'jr1')
+if startsWith(problemname, 'jr')
     disp("CHECK THIS");
 end
 
 %% Run the solver
-% TODO: Can I get the solver time from results struct?
 params.outputflag = 1; 
-tic
 results = gurobi(model, params);
-solutions.stats.elapsed_time = toc;
-% Evaluate objective
-
-import casadi.*
-if (exist('w'))
-    Obj = Function('Obj', {w}, {obj});
-else
-    Q = MIQP_formulation.Q(1:nV,1:nV);
-    g = MIQP_formulation.g(1:nV,1);
-    Obj = @(x) 0.5*x'*Q*x + g'*x;
-end
 
 % Save the solution and stats
-% solutions.stats.elapsed_time = results.runtime;
-solutions.stats.exit_flag = 1 - strcmp(results.status, 'OPTIMAL');
-
-solutions.x = zeros(nV+2*nComp,1);
-solutions.stats.compl = inf;
-solutions.stats.obj = inf;
+solution.stats.elapsed_time = results.runtime;
+solution.stats.exit_flag = 1 - strcmp(results.status, 'OPTIMAL');
+solution.x = zeros(nV+2*nComp,1);
+solution.stats.compl = inf;
+solution.stats.obj = inf;
 
 % Evaluate complementarity
-if solutions.stats.exit_flag == 0
+if solution.stats.exit_flag == 0
     compl_L = MIQP_formulation.L*results.x - MIQP_formulation.lb_L;
     compl_R = MIQP_formulation.R*results.x - MIQP_formulation.lb_R;
     compl = compl_L'*compl_R;
-    solutions.x = results.x;
-    solutions.stats.compl = compl;
-    solutions.stats.obj = full(Obj(solutions.x(1:nV)));
+    solution.x = results.x;
+    solution.stats.compl = compl;
+    solution.stats.obj = full(problem.Obj(solution.x(1:nV)));
 end

@@ -1,4 +1,4 @@
-function [solutions] = SolveIPOPT(name)
+function [solution] = SolveIPOPT(name)
 
 import casadi.*
 
@@ -58,11 +58,15 @@ while(true)
     rho = rho*IPOPT_formulation.beta;
 end
 
-solutions.x = full(sol.x);
+solution.x = full(sol.x);
 
-stats.compl = full(IPOPT_formulation.Phi(solutions.x));
+stats.compl = full(IPOPT_formulation.Phi(solution.x));
 stats.rho_opt = rho;
-stats.obj = full(IPOPT_formulation.Obj(solutions.x));
-solutions.stats = stats;
+stats.obj = full(IPOPT_formulation.Obj(solution.x));
+solution.stats = stats;
 
+% Change objective to negative if is max problem
+if problem.isMaximizationProblem
+    solution.stats.obj = -solution.stats.obj;
+end
 end
