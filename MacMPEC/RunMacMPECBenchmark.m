@@ -43,4 +43,5 @@ outdir = 'solutions/miqp';
 % outdir = '../../paper-lcqp-2/figures/benchmarks';
 %PlotTimings(benchmark.problems, 'MacMPEC', outdir);
 PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir);
-PlotObjectivesMacMPEC(benchmark.problems, 'MacMPEC', outdir);
+SaveOutput(benchmark.problems, outdir);
+

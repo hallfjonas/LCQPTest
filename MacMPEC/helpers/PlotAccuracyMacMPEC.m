@@ -60,7 +60,7 @@ for p = 1:np
 end
 
 %% Generate a obj-val comparison plot
-figure(3); hold on; grid on;
+fig = figure(3); hold on; grid on;
 for s = 1:ns
     solver = problems{1}.solutions{s}.solver;
     plot(eps + f(:,s), ...
@@ -78,6 +78,12 @@ legend('Location', 'northeast');
 set(gca, 'YScale', 'log')
 set(gca,'xtick',1:np,'xticklabel',xtags);
 xtickangle(45);
+
+% Save as pdf
+exportgraphics(...
+    fig, ...
+    [outdir, '/', exp_name, '_obj_full.pdf'] ...
+);
 
 %% Compute column averages after removing infs
 for j = 1:ns
@@ -129,5 +135,55 @@ exportgraphics(...
     [outdir, '/', exp_name, '_obj.pdf'] ...
 );
 
+%% Create bar plot 
+fig = figure(10); hold on; grid on;
+
+% Create bins
+edges = 10.^(-16:1:ceil(log(max(f(~isinf(f))))));
+nedges = length(edges);
+
+% Count occurances per solver and bin (shift by eps)
+counts = zeros(ns,nedges);
+for s = 1:ns
+    counts(s,:) = histc(eps+f(:,s), edges);
+end
+
+% Cummulate across each row
+counts_col = cumsum(counts,2);
+
+% Maybe extract representative columns?
+e_max_diffs = zeros(nedges,1);
+e_max_diffs(1) = max(counts_col(:,1));
+for e = 2:nedges
+    e_max_diffs(e) = max(counts_col(:,e) - counts_col(:,e-1));
+end
+rep_cols = find(e_max_diffs > 0);
+
+% Plot the grouped bar plot
+b = bar(counts_col(:, rep_cols)');
+
+% axes
+ylabel("Occurances")
+
+% Generate x tags
+xtags = [];
+for i=1:length(rep_cols)
+    xtags = [xtags, string(edges(rep_cols+1))];
+end
+set(gca,'xtick',1:length(rep_cols),'xticklabel',xtags);
+xtickangle(45);
+
+% Add legend
+legendnames = [];
+for s = 1:ns
+    legendnames = [legendnames, string(problems{1}.solutions{s}.solver.name)];
+end
+legend(b, legendnames, 'Location', 'northwest');
+
+% Save as pdf
+exportgraphics(...
+    fig, ...
+    [outdir, '/', exp_name, '_obj_bar.pdf'] ...
+);
 end
 
