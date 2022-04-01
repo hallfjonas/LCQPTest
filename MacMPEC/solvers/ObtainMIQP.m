@@ -2,7 +2,7 @@
 function [problem] = ObtainMIQP(lcqp_formulation)
 
 %% Extract variables, initial guess and box constraints
-Q = lcqp_formulation.Q;
+Q = 0.5*lcqp_formulation.Q;
 nV = size(Q,1);
 problem.nV = nV;
 
@@ -78,7 +78,7 @@ A = [A_new; -A_new; L_new; -L_new; R_new; -R_new; A_comp_L; A_comp_R; A_bin];
 rhs = [ubA; -lbA; ub_L; -lb_L; ub_R; -lb_R; zeros(nComp,1); zeros(nComp,1); ones(nComp,1)];
 
 % Have box constraints?
-if length(lb) > 0 
+if ~isempty(lb) 
     E = eye(nV);
     for i=1:length(lb)
         if (lb(i) >  -inf)
@@ -87,7 +87,7 @@ if length(lb) > 0
         end
     end
 end
-if length(ub) > 0
+if ~isempty(ub)
     E = eye(nV);
     for i=1:length(ub)
         if (ub(i) <inf)
