@@ -25,8 +25,12 @@ end
 problem.lb = lb;
 problem.ub = ub;
 
+if startsWith(name, 'ex9')
+    disp("CHECK THIS");
+end
+
 % Solve LCQP
-params.printLevel = 0;
+params.printLevel = 2;
 tic;
 [solution.x,solution.y,solution.stats] = LCQPow(...
     problem.Q, ...

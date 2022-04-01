@@ -55,8 +55,6 @@ model.A = MIQP_formulation.A;
 model.rhs = MIQP_formulation.rhs;
 model.sense = '<';
 
-gurobi_write(model, 'qp.lp');
-
 % Set variable types
 for i=1:nV
     model.vtype(i) = 'C';
@@ -66,7 +64,7 @@ for i=1:nComp
     model.vtype(nV+nComp+i) = 'B';
 end
 
-if startsWith(problemname, 'jr')
+if startsWith(problemname, 'ex9_2_4')
     disp("CHECK THIS");
 end
 
