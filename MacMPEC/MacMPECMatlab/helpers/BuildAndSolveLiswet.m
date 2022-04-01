@@ -90,4 +90,6 @@ problem = ObtainLCQP(...
 problem.Q(1:N, 1:N) = 10*eps*eye(N);
 problem.Q((2*N+K+1):(3*N+K), (2*N+K+1):(3*N+K)) = 10*eps*eye(N);
 
+% Remember the objective's offset term
+problem.Obj = Function('Obj', {w}, {obj});
 end

@@ -13,35 +13,36 @@ import casadi.*;
 
 %% Build Problem
 % Dimension
-nv = 10;
+nv = 8;
 nc = 5;
 
 % Variables and box constraints
 w = SX.sym('w', nv, 1);
 x = w(1);
-y = w(2);
-s = w(3:6);
-l = w(7:10);
+y = w(2:3);
+s = w(4:5);
+l = w(6:7);
+l1 = w(8);
 
 % Box Constraints
 lb = -inf(nv,1);
 ub = inf(nv,1);
-lb(1:2) = zeros(2,1);
+lb(1:7) = zeros(7,1);
 
 % Objective
-obj = (x-5)^2 + (2*y + 1)^2;
+obj = 0.5*(y(1)- 2)^2 + 0.5*(y(2)-2)^2;
 
 % Constraints
 constr = {...
-    -3*x + y + s(1), ...
-    x - 0.5*y + s(2), ...
-    x + y + s(3), ...
-    -y + s(4), ...
-    2*(y-1) - 1.5*x + l(1) - 0.5*l(2) + l(3) - l(4) ...
+    -x + y(1) + y(2), ...
+    -y(1) + s(1), ...
+    -y(2) + s(2), ...
+    y(1) + l1 - l(1), ...
+    1 + l1 - l(2) ...
 };
     
-lbA = [-3; 4; 7; 0; 0]; 
-ubA = lbA; 
+lbA = zeros(nc,1); 
+ubA = lbA;
 
 % Complementarities
 compl_L = s;
@@ -57,3 +58,7 @@ problem = ObtainLCQP(...
     lbA, ...
     ubA ...
 );
+
+% Remember the objective's offset term
+problem.Obj = Function('Obj', {w}, {obj});
+

@@ -64,3 +64,7 @@ problem = ObtainLCQP(...
 params.printLevel = 2;
 problem.x0 = zeros(nv,1);
 problem.x0(1:2) = [0; 10];
+
+% Remember the objective's offset term
+problem.Obj = Function('Obj', {w}, {obj});
+

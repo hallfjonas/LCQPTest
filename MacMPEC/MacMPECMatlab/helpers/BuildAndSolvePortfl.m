@@ -80,4 +80,6 @@ problem = ObtainLCQP(...
 problem.x0 = zeros(nv,1);
 problem.x0(1:NS) = 1/NS*ones(NS,1);
 
+% Remember the objective's offset term
+problem.Obj = Function('Obj', {w}, {obj});
 end

@@ -41,4 +41,8 @@ problem = ObtainLCQP(...
 problem.L = [0 1];
 problem.R = [-1 1];
 
+% Remember the objective's offset term
+problem.Obj = Function('Obj', {w}, {obj});
+
+
     

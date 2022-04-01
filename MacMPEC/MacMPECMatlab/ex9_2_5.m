@@ -44,8 +44,8 @@ lbA = [1; 2; 14; 0];
 ubA = lbA; 
 
 % Complementarities
-compl_L = s;
-compl_R = l;
+compl_L = l;
+compl_R = s;
     
 % Get LCQP
 problem = ObtainLCQP(...
@@ -57,3 +57,7 @@ problem = ObtainLCQP(...
     lbA, ...
     ubA ...
 );
+
+% Remember the objective's offset term
+problem.Obj = Function('Obj', {w}, {obj});
+

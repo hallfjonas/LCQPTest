@@ -63,5 +63,6 @@ problem.A = [A, zeros(p, m+1)];
 problem.lbA = -inf(nc, 1);
 problem.ubA = b;
 
-
+% Remember the objective's offset term
+problem.Obj = Function('Obj', {w}, {obj});
 end

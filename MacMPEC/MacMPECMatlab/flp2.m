@@ -53,5 +53,9 @@ problem = ObtainLCQP(...
 % Regularization
 problem.Q = problem.Q + 10*eps*eye(nv);
 
+% Remember the objective's offset term
+problem.Obj = Function('Obj', {w}, {obj});
+
+
 
     

@@ -85,3 +85,7 @@ problem.R = [A, zeros(nl, nl), zeros(nl, nm), -diag(v), b; ...
 problem.A = [H, -A', -eye(nc,nm), diag(u(1:4)), zeros(nc, 2), zeros(nc,1)];
 problem.lbA = -g;
 problem.ubA = -g;
+
+% Remember the objective's offset term
+problem.Obj = Function('Obj', {w}, {obj});
+

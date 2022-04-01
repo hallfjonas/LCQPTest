@@ -13,40 +13,49 @@ import casadi.*;
 
 %% Build Problem
 % Dimension
-nv = 8;
+nv = 10;
 nc = 5;
 
 % Variables and box constraints
 w = SX.sym('w', nv, 1);
 x = w(1);
-y = w(2:3);
-s = w(4:5);
-l = w(6:7);
-l1 = w(8);
+y = w(2);
+s = w(3:6);
+l = w(7:10);
 
 % Box Constraints
-lb = -inf(nv,1);
+lb = zeros(nv,1);
 ub = inf(nv,1);
-lb(1:7) = zeros(7,1);
+ub(1) = 15;
 
 % Objective
-obj = 0.5*(y(1)- 2)^2 + 0.5*(y(2)-2)^2;
+obj = x^2 + (y-10)^2;
 
 % Constraints
 constr = {...
-    -x + y(1) + y(2), ...
-    -y(1) + s(1), ...
-    -y(2) + s(2), ...
-    y(1) + l1 - l(1), ...
-    1 + l1 - l(2) ...
+    -x + y, ...
+    x + y + s(1), ...
+      - y + s(2), ...
+        y + s(3), ...
+    2*(x + 2*y - 30) + l(1) - l(2) + l(3), ...
 };
     
-lbA = zeros(nc,1); 
-ubA = lbA;
+lbA = zeros(nc,1);
+lbA(1) = -inf;
+lbA(2) = 20;
+lbA(3) = 0;
+lbA(4) = 20;
+lbA(5) = 0;
+ubA = zeros(nc,1);
+ubA(1) = 0;
+ubA(2) = 20;
+ubA(3) = 0;
+ubA(4) = 20;
+ubA(5) = 0;
 
 % Complementarities
-compl_L = s;
-compl_R = l;
+compl_L = l;
+compl_R = s;
     
 % Get LCQP
 problem = ObtainLCQP(...
@@ -58,3 +67,7 @@ problem = ObtainLCQP(...
     lbA, ...
     ubA ...
 );
+
+% Remember the objective's offset term
+problem.Obj = Function('Obj', {w}, {obj});
+

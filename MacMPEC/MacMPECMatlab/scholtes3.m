@@ -43,3 +43,6 @@ problem = ObtainLCQP(...
 );
 
 problem.x0 = [0.0001; 0.0001];
+
+% Remember the objective's offset term
+problem.Obj = Function('Obj', {w}, {obj});
