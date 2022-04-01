@@ -82,4 +82,9 @@ problem.x0(1:NS) = 1/NS*ones(NS,1);
 
 % Remember the objective's offset term
 problem.Obj = Function('Obj', {w}, {obj});
+
+% Add box constraints to problem struct
+problem.lb = lb;
+problem.ub = ub;
+
 end

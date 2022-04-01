@@ -71,3 +71,8 @@ problem = ObtainLCQP(...
 % Remember the objective's offset term
 problem.Obj = Function('Obj', {w}, {obj});
 
+% Add box constraints to problem struct
+problem.lb = lb;
+problem.ub = ub;
+
+
