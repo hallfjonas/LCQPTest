@@ -1,11 +1,22 @@
 function [] = PlotAccuracyMacMPEC(problems, exp_name, outdir)
-%% Prepare data arrays
+
 % Number of problems
 np = length(problems);
 
 % Number of solvers (assume each problem has same set of solvers)
 ns = length(problems{1}.solutions);
 
+% Set to latex
+set(groot,'defaultAxesTickLabelInterpreter','latex');
+set(groot,'defaulttextinterpreter','latex');
+set(groot,'defaultLegendInterpreter','latex');
+
+% Colors
+cmap = colormap(parula);
+cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
+col_indices = floor(linspace(1, size(cmap,1), ns));
+
+%% Prepare data arrays
 % Store solver timings per problem
 f = zeros(np, ns);
 exit_flag = zeros(np, ns);
@@ -48,6 +59,7 @@ for p = 1:np
     end
 end
 
+%% Generate a obj-val comparison plot
 figure(3); hold on; grid on;
 for s = 1:ns
     solver = problems{1}.solutions{s}.solver;
@@ -94,16 +106,6 @@ for t = 1:length(tauf)
 end        
 
 %% Create the plot
-% Set to latex
-set(groot,'defaultAxesTickLabelInterpreter','latex');
-set(groot,'defaulttextinterpreter','latex');
-set(groot,'defaultLegendInterpreter','latex');
-
-% Colors
-cmap = colormap(parula);
-cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
-col_indices = floor(linspace(1, size(cmap,1), ns));
-
 fig = figure(2); 
 for s=1:ns
     solver = problems{1}.solutions{s}.solver;
@@ -118,7 +120,7 @@ end
 xlabel('$\tau$');
 ylabel('$\bf{P}(p \in \mathcal{P} : f_{p,s} \leq \tau)$');
 set(gca,'xscale','log');
-set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
+set(findall(gca, 'Type', 'Line'), 'LineWidth', 2);
 legend('Location', 'southeast');
 
 % Save as pdf
