@@ -1,5 +1,5 @@
 
-function [problem] = ObtainLCQP(x, J, constr, compl_L, compl_R, lbA, ubA)
+function [problem] = ObtainLCQP(x, J, constr, compl_L, compl_R, lbA, ubA, lb, ub)
 
 import casadi.*
 
@@ -23,11 +23,18 @@ if (~isempty(constr))
     problem.ubA = ubA - full(constr_constant);
 end
 
+% Add box constraints to problem struct
+problem.lb = lb;
+problem.ub = ub;
+
 % Complementarities
 L_Fun = Function('L_Fun', {x}, {jacobian(compl_L, x)});
 problem.L = full(L_Fun(zeros(size(x))));
 R_Fun = Function('R_Fun', {x}, {jacobian(compl_R, x)});
 problem.R = full(R_Fun(zeros(size(x))));
-problem.obj = Function('Obj', {x}, {J});
+
+% Remember the objective and phi functions
+problem.Obj = Function('Obj', {x}, {J});
+problem.Phi = Function('Phi', {x}, {min(compl_L.*compl_R)});
 
 end
