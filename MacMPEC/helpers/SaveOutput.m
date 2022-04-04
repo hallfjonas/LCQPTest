@@ -12,29 +12,49 @@ ns = length(problems{1}.solutions);
 %   - solver 1 solution time
 %   - solver 1 objective evaluation at solution
 %   - solver 2 ...
-resultstable = cell(np,2*ns);
+objtable = cell(np,ns);
+timetable = cell(np,ns);
+comptable = cell(np,ns);
 
 % Table headers
-resultstable{1,1} = "problem";
+objtable{1,1} = "problem";
+timetable{1,1} = "problem";
+comptable{1,1} = "problem";
 for s = 1:ns
+    % Add best known solution header to obj table
+    objtable{1,2} = "best known";
+
+    % Need this to extract solver names
     solution = problems{1}.solutions{s};
-    resultstable{1,2} = "best_o";
-    resultstable{1,2*s+1} = solution.solver.name + "_t";
-    resultstable{1,2*s+2} = solution.solver.name + "_o";
+
+    % Add solver name header 
+    timetable{1,s+1} = solution.solver.name;
+    comptable{1,s+1} = solution.solver.name;
+    objtable{1,s+2} = solution.solver.name;
 end
 
 % Table content
 for p = 1:np
     problem = problems{p};
-    resultstable{p+1,1} = problem.name;
-    resultstable{p+1,2} = GetMacMPECOptimalObjective(problem.name);
+    % Problem names to both tables
+    objtable{p+1,1} = problem.name;
+    timetable{p+1,1} = problem.name;
+    comptable{p+1,1} = problem.name;
+
+    % Best known solution to objective table
+    objtable{p+1,2} = GetMacMPECOptimalObjective(problem.name);
+
+    % Solver stats
     for s = 1:ns
         solution = problem.solutions{s};
-        resultstable{p+1,2*s+1} = string(solution.stats.elapsed_time);
-        resultstable{p+1,2*s+2} = string(solution.stats.obj);
+        objtable{p+1,s+2} = string(solution.stats.obj);
+        timetable{p+1,s+1} = string(solution.stats.elapsed_time);
+        comptable{p+1,s+1} = string(solution.stats.compl);
     end
 end
 
-cell2csv(outdir + "/solutions_stats.csv", resultstable)
+cell2csv(outdir + "/solutions_obj.csv", objtable)
+cell2csv(outdir + "/solutions_time.csv", timetable)
+cell2csv(outdir + "/solutions_compl.csv", comptable)
 
 end
