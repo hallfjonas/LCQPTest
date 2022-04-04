@@ -95,7 +95,7 @@ end
 xlabel('$\tau$');
 ylabel('$\bf{P}(p \in \mathcal{P} : r_{p,s} \leq \tau)$');
 set(gca,'xscale','log');
-xlim([1 taut(end)]);
+xlim([1 max(taut)]);
 set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
