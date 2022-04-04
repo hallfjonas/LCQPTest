@@ -54,7 +54,7 @@ while(true)
     
     stats.elapsed_time = stats.elapsed_time + toc;
     stats.iters_outer = stats.iters_outer + 1;
-
+    
     rho = rho*IPOPT_formulation.beta;
 end
 
@@ -62,11 +62,7 @@ solution.x = full(sol.x);
 
 stats.compl = full(IPOPT_formulation.Phi(solution.x));
 stats.rho_opt = rho;
-stats.obj = full(IPOPT_formulation.Obj(solution.x));
+stats.obj = full(problem.Obj(solution.x));
 solution.stats = stats;
 
-% Change objective to negative if is max problem
-if problem.isMaximizationProblem
-    solution.stats.obj = -solution.stats.obj;
-end
 end
