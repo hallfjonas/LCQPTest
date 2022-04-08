@@ -1,0 +1,7 @@
+1) Why does LCQP fail at ex 9.2.2?
+
+2) Why does Gurobi fail at HS044?
+
+3) Why does Gurobi have low complementarity satisfaction with portfolio problems
+
+4) Why do MINOS and SNOPT fail for most problems (complementarities not satisfied)?

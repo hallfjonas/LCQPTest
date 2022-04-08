@@ -39,7 +39,7 @@ addpath("helpers");
 
 % Complementarity violation larger than this will count as non-successful
 % convergence
-compl_tolerance = 10e-7;
+compl_tolerance = 10e-9;
 
 % Select a directory to save figures to
 outdir = 'solutions/miqp';

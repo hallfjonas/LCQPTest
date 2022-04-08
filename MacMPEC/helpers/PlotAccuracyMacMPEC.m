@@ -17,17 +17,13 @@ cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
 col_indices = floor(linspace(1, size(cmap,1), ns));
 
 %% Prepare data arrays
-% Store solver timings per problem
+% Store solver objective per problem
 f = zeros(np, ns);
 phi = zeros(np, ns);
 exit_flag = zeros(np, ns);
 
-% Performance ratios (assume all problems solved with same solvers)
-rf = zeros(np, ns);
-
 % Optimal solution vector according to homepage
 x_ast = zeros(np,1);
-mean_obj_dist = inf(1,ns);
 
 % Store minimum time per problem
 min_f_per_problem = inf(np,1);
@@ -44,10 +40,14 @@ for p = 1:np
         phi(p,s) = inf;
         exit_flag(p,s) = solution.stats.exit_flag;
         
-        % Update mins and max if solved
+        % Store the complementarity whenever solver succeeded
         if (exit_flag(p,s) == 0)
-            f(p,s) = abs(solution.stats.obj - x_ast(p));
             phi(p,s) = solution.stats.compl;
+        end
+
+        % Update mins and max if solved
+        if (exit_flag(p,s) == 0 && solution.stats.compl < compl_tolerance)
+            f(p,s) = abs(solution.stats.obj - x_ast(p));
         
             % Update minimum objective
             if (f(p,s) < min_f_per_problem(p))
@@ -69,20 +69,24 @@ for s = 1:ns
     plot(eps + f(:,s), ...
         'DisplayName', solver.name, ...
         'LineStyle', solver.lineStyle, ...
-        'Color', cmap(col_indices(s),:) ...
+        'Color', cmap(col_indices(s),:), ...
+        'LineWidth', 2 ...
     )    
 end
 
 % Write names of problems on x axis
-xtags = [];
+xtags = strings(np,1);
 for p = 1:np
     pname = string(strrep(problems{p}.name,'_',' '));
-    xtags = [xtags, pname];
+    xtags(p) = pname;
 end
 legend('Location', 'northeast');
-set(gca, 'YScale', 'log')
 set(gca,'xtick',1:np,'xticklabel',xtags);
 xtickangle(45);
+
+% yaxes
+ylabel("$\varepsilon + |J(x)-J(x^\ast)|$")
+set(gca, 'YScale', 'log')
 
 % Save as pdf
 exportgraphics(...
@@ -171,17 +175,14 @@ b = bar(counts_col(:, rep_cols)');
 ylabel("Occurances")
 
 % Generate x tags
-xtags = [];
-for i=1:length(rep_cols)
-    xtags = [xtags, string(edges(rep_cols+1))];
-end
+xtags = string(edges(rep_cols+1));
 set(gca,'xtick',1:length(rep_cols),'xticklabel',xtags);
 xtickangle(45);
 
 % Add legend
-legendnames = [];
+legendnames = strings(ns,1);
 for s = 1:ns
-    legendnames = [legendnames, string(problems{1}.solutions{s}.solver.name)];
+    legendnames(s) = string(problems{1}.solutions{s}.solver.name);
 end
 legend(b, legendnames, 'Location', 'northwest');
 
@@ -205,7 +206,7 @@ xlim([1, np]);
 ylim([y0, y2]);
 
 % Plot the complementarity violations
-lines = []; names = [];
+lines = gobjects(ns,1); names = strings(ns,1);
 for s = 1:ns
     solver = problems{1}.solutions{s}.solver;
     l = plot( ...
@@ -215,8 +216,8 @@ for s = 1:ns
         'Color', cmap(col_indices(s),:), ...
         'LineWidth', 2 ...
     );
-    lines = [lines, l];
-    names = [names, string(solver.name)];
+    lines(s) = l;
+    names(s) = string(solver.name);
 end
 legend(lines, names, 'Location', 'northwest');
 
