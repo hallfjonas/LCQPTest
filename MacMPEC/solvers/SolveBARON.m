@@ -1,6 +1,6 @@
 function [solution] = SolveBARON(name)
 
-solution = SolveAMPLProblem(name, 'baron');
+solution = SolveAMPL(name, 'baron');
 
 end
 

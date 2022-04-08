@@ -1,6 +1,6 @@
 function [solution] = SolveKNITRO(name)
 
-solution = SolveAMPLProblem(name, 'knitro');
+solution = SolveAMPL(name, 'knitro');
 
 end
 

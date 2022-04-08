@@ -1,6 +1,6 @@
 function [solution] = SolveSNOPT(name)
 
-solution = SolveAMPLProblem(name, 'snopt');
+solution = SolveAMPL(name, 'snopt');
 
 end
 
