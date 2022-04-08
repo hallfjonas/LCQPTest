@@ -23,7 +23,6 @@ if (isfile(datpath))
 end
 
 % Solve
-tic;
 ampl.solve
 
 % Output stats
