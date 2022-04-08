@@ -44,7 +44,7 @@ problem.L = [0 1];
 problem.R = [-1 1];
 
 % Remember phi
-problem.Phi = @(x) min((problem.L*x).*(problem.R*x));
+problem.Phi = @(x) max((problem.L*x).*(problem.R*x));
 
 
     

@@ -35,6 +35,6 @@ problem.R = full(R_Fun(zeros(size(x))));
 
 % Remember the objective and phi functions
 problem.Obj = Function('Obj', {x}, {J});
-problem.Phi = Function('Phi', {x}, {min(compl_L.*compl_R)});
+problem.Phi = Function('Phi', {x}, {max(compl_L.*compl_R)});
 
 end

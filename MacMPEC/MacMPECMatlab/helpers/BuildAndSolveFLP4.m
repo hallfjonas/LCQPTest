@@ -67,6 +67,6 @@ problem.ubA = b;
 
 % Remember the objective's offset term
 problem.Obj = Function('Obj', {w}, {obj});
-problem.Phi = @(x) min((problem.L*x).*(problem.R*x));
+problem.Phi = @(x) max((problem.L*x).*(problem.R*x));
 
 end

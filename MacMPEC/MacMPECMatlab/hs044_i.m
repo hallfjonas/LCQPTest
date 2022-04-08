@@ -89,5 +89,5 @@ problem.lbA = -g;
 problem.ubA = -g;
 
 % Remember phi
-problem.Phi = @(x) min((problem.L*x).*(problem.R*x));
+problem.Phi = @(x) max((problem.L*x).*(problem.R*x));
 
