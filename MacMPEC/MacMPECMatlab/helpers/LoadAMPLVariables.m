@@ -18,7 +18,7 @@ for i = 1:length(varray)
     varstruct.indices = curIdxStart:curIdxEnd;
     varstruct.n = varlen;
     
-    fprintf("Loading variable %s of length %d to caller workspace.\n", name, varlen);
+    % fprintf("Loading variable %s of length %d to caller workspace.\n", name, varlen);
     variables(name) = varstruct;    
     
     assignin('caller', name, varstruct.var);  
