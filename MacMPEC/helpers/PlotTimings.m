@@ -1,4 +1,4 @@
-function [] = PlotTimings(problems, exp_name, outdir)
+function [] = PlotTimings(problems, exp_name, outdir, compl_tol)
 
 %% Prepare data arrays
 % Number of problems
@@ -23,17 +23,21 @@ n_x = zeros(np, 1);
 n_c = zeros(np, 1);
 n_comp = zeros(np, 1);
 
+% Colors
+cmap = colormap(parula);
+cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
+col_indices = floor(linspace(1, size(cmap,1), ns));
+
 %% Get the min&max solution time&obj for each problem
 for p = 1:np
     problem = problems{p};
     for s = 1:ns
         solution = problem.solutions{s};
-        
         t(p,s) = solution.stats.elapsed_time;
         exit_flag(p,s) = solution.stats.exit_flag;
         
         % Update mins and max if solved
-        if (exit_flag(p,s) == 0)
+        if (exit_flag(p,s) == 0 && solution.stats.compl < compl_tol)
             % Update minimum time
             if (t(p,s) < min_t_per_problem(p))
                 min_t_per_problem(p) = t(p,s);
@@ -49,9 +53,12 @@ end
 
 %% Get the performance ratio
 for p = 1:np
+    problem = problems{p};
     for s = 1:ns        
+        solution = problem.solutions{s};
+        
         % Failed solutions are set to max val
-        if (exit_flag(p,s) ~= 0)
+        if (exit_flag(p,s) ~= 0 || solution.stats.compl >= compl_tol)
             t(p,s) = inf;
         end
                 
@@ -76,11 +83,6 @@ set(groot,'defaultAxesTickLabelInterpreter','latex');
 set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 
-% Colors
-cmap = colormap(parula);
-cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
-col_indices = floor(linspace(1, size(cmap,1), ns));
-
 f = figure(1); 
 for s=1:ns
     solver = problems{1}.solutions{s}.solver;
@@ -89,7 +91,8 @@ for s=1:ns
         taut, rhot(:,s),  ...
         'DisplayName', solver.name, ...
         'LineStyle', solver.lineStyle, ...
-        'Color', cmap(col_indices(s),:) ...
+        'Color', cmap(col_indices(s),:), ...
+        'LineWidth', 2.0 ...
     ); hold on; box on; grid on;
 end
 xlabel('$\tau$');

@@ -1,4 +1,4 @@
-function [] = PlotAccuracyMacMPEC(problems, exp_name, outdir)
+function [] = PlotAccuracyMacMPEC(problems, exp_name, outdir, compl_tolerance)
 
 % Number of problems
 np = length(problems);
@@ -19,6 +19,7 @@ col_indices = floor(linspace(1, size(cmap,1), ns));
 %% Prepare data arrays
 % Store solver timings per problem
 f = zeros(np, ns);
+phi = zeros(np, ns);
 exit_flag = zeros(np, ns);
 
 % Performance ratios (assume all problems solved with same solvers)
@@ -40,11 +41,13 @@ for p = 1:np
         solution = problem.solutions{s};
         
         f(p,s) = inf;
+        phi(p,s) = inf;
         exit_flag(p,s) = solution.stats.exit_flag;
         
         % Update mins and max if solved
         if (exit_flag(p,s) == 0)
             f(p,s) = abs(solution.stats.obj - x_ast(p));
+            phi(p,s) = solution.stats.compl;
         
             % Update minimum objective
             if (f(p,s) < min_f_per_problem(p))
@@ -65,7 +68,9 @@ for s = 1:ns
     solver = problems{1}.solutions{s}.solver;
     plot(eps + f(:,s), ...
         'DisplayName', solver.name, ...
-        'LineStyle', solver.lineStyle)    
+        'LineStyle', solver.lineStyle, ...
+        'Color', cmap(col_indices(s),:) ...
+    )    
 end
 
 % Write names of problems on x axis
@@ -184,6 +189,58 @@ legend(b, legendnames, 'Location', 'northwest');
 exportgraphics(...
     fig, ...
     [outdir, '/', exp_name, '_obj_bar.pdf'] ...
+);
+
+%% Complementarity Plot
+fig = figure(11); hold on; grid on;
+
+% Show the unsuccessful area
+y0 = 10e-17;
+y1 = compl_tolerance;
+y2 = 10e7;
+fill([1, 1, np, np],[y1 y0 y0 y1],'g', 'FaceAlpha', 0.1, 'EdgeAlpha', 0.0);
+fill([1, 1, np, np],[y2 y1 y1 y2],'r', 'FaceAlpha', 0.1, 'EdgeAlpha', 0.0);
+
+xlim([1, np]);
+ylim([y0, y2]);
+
+% Plot the complementarity violations
+lines = []; names = [];
+for s = 1:ns
+    solver = problems{1}.solutions{s}.solver;
+    l = plot( ...
+        1:np, ...
+        eps + abs(phi(:,s)), ...
+        'LineStyle', solver.lineStyle, ...
+        'Color', cmap(col_indices(s),:), ...
+        'LineWidth', 2 ...
+    );
+    lines = [lines, l];
+    names = [names, string(solver.name)];
+end
+legend(lines, names, 'Location', 'northwest');
+
+% axes
+ylabel("Complementarity")
+
+% Write names of problems on x axis
+xtags = [];
+for p = 1:np
+    pname = string(strrep(problems{p}.name,'_',' '));
+    xtags = [xtags, pname];
+end
+legend('Location', 'northeast');
+set(gca, 'YScale', 'log')
+set(gca,'xtick',1:np,'xticklabel',xtags);
+xtickangle(45);
+
+% Y-Log
+set(gca, 'YScale', 'log')
+
+% Save as pdf
+exportgraphics(...
+    fig, ...
+    [outdir, '/', exp_name, '_compl.pdf'] ...
 );
 end
 
