@@ -70,4 +70,8 @@ problem = ObtainLCQP(...
     ub ...
 );
 
+sol1 = [10,10,0,10,10,0,0,0]';
+B = [problem.A', problem.L', problem.R'];
+rhs = problem.Q*sol1 + problem.g;
 
+ysol = B\rhs;
