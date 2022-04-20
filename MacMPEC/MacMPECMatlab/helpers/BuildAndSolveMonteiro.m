@@ -86,5 +86,7 @@ problem.R = [N, M, q];
 problem.A = [A, zeros(p, m+1)];
 problem.lbA = -inf(nc, 1);
 problem.ubA = b;
+problem.lb = lb;
+problem.ub = ub;
 
 end
