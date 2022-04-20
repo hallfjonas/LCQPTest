@@ -14,16 +14,10 @@ if (~isfield(problem, 'A'))
     problem.ubA = [];
 end
 
-if (~exist('lb'))
-    lb = [];
+if ~isfield(problem, 'lb') || ~isfield(problem, 'ub')
+    error("What");
 end
 
-if (~exist('ub'))
-    ub = [];
-end
-
-problem.lb = lb;
-problem.ub = ub;
 if startsWith(name, 'ex9')
     disp("CHECK THIS");
 end
