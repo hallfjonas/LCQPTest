@@ -28,10 +28,14 @@ problem.lb = lb;
 problem.ub = ub;
 
 % Complementarities
+L_Fun_Full = Function('L_Fun_Full', {x}, {compl_L});
 L_Fun = Function('L_Fun', {x}, {jacobian(compl_L, x)});
 problem.L = full(L_Fun(zeros(size(x))));
+problem.lbL = -full(L_Fun_Full(zeros(size(x))));
+R_Fun_Full = Function('R_Fun_Full', {x}, {compl_R});
 R_Fun = Function('R_Fun', {x}, {jacobian(compl_R, x)});
 problem.R = full(R_Fun(zeros(size(x))));
+problem.lbR = -full(R_Fun_Full(zeros(size(x))));
 
 % Remember the objective and phi functions
 problem.Obj = Function('Obj', {x}, {J});
