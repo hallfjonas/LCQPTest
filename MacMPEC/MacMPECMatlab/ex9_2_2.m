@@ -13,15 +13,15 @@ import casadi.*;
 
 %% Build Problem
 % Dimension
-nv = 10;
+nv = 8;
 nc = 5;
 
 % Variables and box constraints
 w = SX.sym('w', nv, 1);
 x = w(1);
 y = w(2);
-s = w(3:6);
-l = w(7:10);
+s = w(3:5);
+l = w(6:8);
 
 % Box Constraints
 lb = zeros(nv,1);
