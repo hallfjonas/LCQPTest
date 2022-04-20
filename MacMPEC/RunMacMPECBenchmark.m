@@ -30,22 +30,35 @@ for i = 1:length(benchmark.problems)
     end
 end
 
-save('solutions/miqp/sol.mat');
+save('solutions/reformulation/sol.mat');
 
 %% Create Performance Plots
 close all; clear all; clc;
-load('solutions/miqp/sol.mat');
+outdir = 'solutions/reformulation';
+load(fullfile(outdir, 'sol.mat'));
 addpath("helpers");
 
 % Complementarity violation larger than this will count as non-successful
 % convergence
-compl_tolerance = 10e-9;
+compl_tolerance = 10e-2;
 
 % Select a directory to save figures to
-outdir = 'solutions/miqp';
 % For final results:
 % outdir = '../../paper-lcqp-2/figures/benchmarks';
 PlotTimings(benchmark.problems, 'MacMPEC', outdir,compl_tolerance);
 PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir, compl_tolerance);
-SaveOutput(benchmark.problems, outdir);
+SaveOutput(benchmark.problems, outdir, compl_tolerance);
+
+% Count unsuccessful complementarity convergence too
+close all;
+compl_tolerance = 1000;
+
+% Select a directory to save figures to
+outdir = fullfile(outdir, 'low_compl');
+
+% For final results:
+% outdir = '../../paper-lcqp-2/figures/benchmarks';
+PlotTimings(benchmark.problems, 'MacMPEC', outdir,compl_tolerance);
+PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir, compl_tolerance);
+SaveOutput(benchmark.problems, outdir, compl_tolerance);
 
