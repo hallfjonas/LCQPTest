@@ -1,4 +1,4 @@
-function [] = SaveOutput(problems, outdir)
+function [] = SaveOutput(problems, outdir, compl_tol)
 
 % Number of problems
 np = length(problems);
@@ -47,9 +47,23 @@ for p = 1:np
     % Solver stats
     for s = 1:ns
         solution = problem.solutions{s};
-        objtable{p+1,s+2} = string(solution.stats.obj);
-        timetable{p+1,s+1} = string(solution.stats.elapsed_time);
-        comptable{p+1,s+1} = string(solution.stats.compl);
+
+        if (solution.stats.exit_flag == 0)
+            
+            comptable{p+1,s+1} = string(solution.stats.compl);
+            
+            if (solution.stats.compl < compl_tol)
+                objtable{p+1,s+2} = string(solution.stats.obj);
+                timetable{p+1,s+1} = string(solution.stats.elapsed_time);
+            else
+                objtable{p+1,s+2} = "-";
+                timetable{p+1,s+1} = "-";
+            end
+        else
+            objtable{p+1,s+2} = "-";
+            timetable{p+1,s+1} = "-";
+            comptable{p+1,s+1} = "-";
+        end
     end
 end
 
