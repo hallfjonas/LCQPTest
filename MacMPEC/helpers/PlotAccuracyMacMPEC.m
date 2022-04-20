@@ -42,12 +42,13 @@ for p = 1:np
         
         % Store the complementarity whenever solver succeeded
         if (exit_flag(p,s) == 0)
-            phi(p,s) = solution.stats.compl;
+            phi(p,s) = max(0, solution.stats.compl);
         end
 
         % Update mins and max if solved
         if (exit_flag(p,s) == 0 && solution.stats.compl < compl_tolerance)
-            f(p,s) = abs(solution.stats.obj - x_ast(p));
+            % f(p,s) = abs(solution.stats.obj - x_ast(p));
+            f(p,s) = max(0, solution.stats.obj - x_ast(p));
         
             % Update minimum objective
             if (f(p,s) < min_f_per_problem(p))
@@ -85,7 +86,7 @@ set(gca,'xtick',1:np,'xticklabel',xtags);
 xtickangle(90);
 
 % yaxes
-ylabel("$\varepsilon + |J(x)-J(x^\ast)|$")
+ylabel("$\varepsilon + (J(x)-J(x^\ast))^+$")
 set(gca, 'YScale', 'log')
 
 % Save as pdf
