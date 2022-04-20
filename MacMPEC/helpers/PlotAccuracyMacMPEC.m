@@ -95,55 +95,37 @@ exportgraphics(...
     fullfile(outdir, [exp_name, '_obj_full.pdf']) ...
 );
 
-% %% Compute column averages after removing infs
-% for j = 1:ns
-%     mean_obj_dist(1,j) = mean(f(~isinf(f(:,j)),j));
-% end
+%% Generate a obj-val comparison plot
+fig = figure(30); hold on; grid on;
+for s = 1:ns
+    solver = problems{1}.solutions{s}.solver;
+    plot(eps + f(:,s) + phi(:,s), ...
+        'DisplayName', solver.name, ...
+        'LineStyle', solver.lineStyle, ...
+        'Color', cmap(col_indices(s),:), ...
+        'LineWidth', 2 ...
+    )    
+end
 
-% %% Get the performance ratio
-% for p = 1:np
-%     % Failed solutions are set to max val
-%     if (exit_flag(p,s) ~= 0)
-%         rf(p,s) = inf;
-%     end
-% 
-%     % Compute ratio
-%     rf(p,s) = f(p,s)/min_f_per_problem(p);
-% end
+% Write names of problems on x axis
+xtags = strings(np,1);
+for p = 1:np
+    pname = string(strrep(problems{p}.name,'_',' '));
+    xtags(p) = pname;
+end
+legend('Location', 'northeast');
+set(gca,'xtick',1:np,'xticklabel',xtags);
+xtickangle(90);
 
-% %% Get the performance profile (of time)
-% % Then get the performance profile (of objective)
-% tauf = unique(sort(reshape(rf, np*ns, 1)));
-% rhof = zeros(length(tauf), ns);
-% for t = 1:length(tauf)
-%     for s = 1:ns
-%         rhof(t,s) = 1/np*length(find(rf(:,s) <= tauf(t)));
-%     end
-% end        
-% 
-% %% Create the plot
-% fig = figure(2); 
-% for s=1:ns
-%     solver = problems{1}.solutions{s}.solver;
-%     
-%     plot( ...
-%         tauf, rhof(:,s),  ...
-%         'DisplayName', solver.name, ...
-%         'LineStyle', solver.lineStyle, ...
-%         'Color', cmap(col_indices(s),:) ...
-%     ); hold on; box on; grid on;
-% end
-% xlabel('$\tau$');
-% ylabel('$\bf{P}(p \in \mathcal{P} : f_{p,s} \leq \tau)$');
-% set(gca,'xscale','log');
-% set(findall(gca, 'Type', 'Line'), 'LineWidth', 2);
-% legend('Location', 'southeast');
-% 
-% % Save as pdf
-% exportgraphics(...
-%     fig, ...
-%     [outdir, '/', exp_name, '_obj.pdf'] ...
-% );
+% yaxes
+ylabel("$J(x) + \varphi(x)$")
+set(gca, 'YScale', 'log')
+
+% Save as pdf
+exportgraphics(...
+    fig, ...
+    fullfile(outdir, [exp_name, '_obj_plus_phi.pdf']) ...
+);
 
 %% Create bar plot 
 fig = figure(10); hold on; grid on;
