@@ -82,7 +82,7 @@ for p = 1:np
 end
 legend('Location', 'northeast');
 set(gca,'xtick',1:np,'xticklabel',xtags);
-xtickangle(45);
+xtickangle(90);
 
 % yaxes
 ylabel("$\varepsilon + |J(x)-J(x^\ast)|$")
@@ -91,7 +91,7 @@ set(gca, 'YScale', 'log')
 % Save as pdf
 exportgraphics(...
     fig, ...
-    [outdir, '/', exp_name, '_obj_full.pdf'] ...
+    fullfile(outdir, [exp_name, '_obj_full.pdf']) ...
 );
 
 % %% Compute column averages after removing infs
@@ -148,7 +148,7 @@ exportgraphics(...
 fig = figure(10); hold on; grid on;
 
 % Create bins
-edges = 10.^(-16:1:ceil(log(max(f(~isinf(f))))));
+edges = 10.^(-16:2:ceil(log(max(f(~isinf(f))))));
 nedges = length(edges);
 
 % Count occurances per solver and bin (shift by eps)
@@ -177,7 +177,7 @@ ylabel("Occurances")
 % Generate x tags
 xtags = string(edges(rep_cols+1));
 set(gca,'xtick',1:length(rep_cols),'xticklabel',xtags);
-xtickangle(45);
+xtickangle(90);
 
 % Add legend
 legendnames = strings(ns,1);
@@ -189,7 +189,7 @@ legend(b, legendnames, 'Location', 'northwest');
 % Save as pdf
 exportgraphics(...
     fig, ...
-    [outdir, '/', exp_name, '_obj_bar.pdf'] ...
+    fullfile(outdir, [exp_name, '_obj_bar.pdf']) ...
 );
 
 %% Complementarity Plot
@@ -233,7 +233,7 @@ end
 legend('Location', 'northeast');
 set(gca, 'YScale', 'log')
 set(gca,'xtick',1:np,'xticklabel',xtags);
-xtickangle(45);
+xtickangle(90);
 
 % Y-Log
 set(gca, 'YScale', 'log')
@@ -241,7 +241,7 @@ set(gca, 'YScale', 'log')
 % Save as pdf
 exportgraphics(...
     fig, ...
-    [outdir, '/', exp_name, '_compl.pdf'] ...
+    fullfile(outdir, [exp_name, '_compl.pdf']) ...
 );
 end
 
