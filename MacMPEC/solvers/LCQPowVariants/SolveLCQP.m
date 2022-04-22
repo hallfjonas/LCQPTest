@@ -14,20 +14,10 @@ if (~isfield(problem, 'A'))
     problem.ubA = [];
 end
 
-if (~exist('lb', 'var'))
-    lb = [];
-end
-
-if (~exist('ub', 'var'))
-    ub = [];
-end
-
-problem.lb = lb;
-problem.ub = ub;
-
 % Solve LCQP
-params.printLevel = 2;
+params.printLevel = 0;
 
+% params.stationarityTolerance = 10e-6;
 tic;
 [solution.x,solution.y,solution.stats] = LCQPow(...
     problem.Q, ...

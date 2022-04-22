@@ -1,4 +1,4 @@
-function [solution] = SolveLCQP(name)
+function [solution] = SolveLCQPNoZeroPen(name)
 
 import casadi.*;
 
@@ -14,24 +14,11 @@ if (~isfield(problem, 'A'))
     problem.ubA = [];
 end
 
-if (~exist('lb', 'var'))
-    lb = [];
-end
-
-if (~exist('ub', 'var'))
-    ub = [];
-end
-
-problem.lb = lb;
-problem.ub = ub;
-
-if startsWith(name, 'ex9')
-    disp("CHECK THIS");
-end
-
 % Solve LCQP
 params.printLevel = 0;
-params.solveZeroPenaltyFirst = false;
+params.zeroPenaltyFirst = 0;
+
+% params.stationarityTolerance = 10e-6;
 tic;
 [solution.x,solution.y,solution.stats] = LCQPow(...
     problem.Q, ...

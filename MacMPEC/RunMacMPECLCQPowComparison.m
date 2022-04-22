@@ -22,8 +22,7 @@ benchmark.solvers = { ...
 
 outdir = "solutions/lcqp_comp";
 %% Run Solvers
-addpath("./solvers");
-addpath("./solvers/LCQPowVariants/");
+addpath("./solvers/LCQPowVariants_2/");
 for i = 1:length(benchmark.problems)
     fprintf("Solving problem %s (%d/%d).\n", benchmark.problems{i}.name, i, length(benchmark.problems));
     for j = 1:length(benchmark.solvers)

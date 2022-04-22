@@ -4,7 +4,7 @@ import casadi.*;
 
 addpath("~/LCQPow/build/lib");
 currdir = pwd;
-cd MacMPECMatlab;
+cd MacMPECMatlab/;
 run([name, '.m']);
 cd(currdir);
 
@@ -14,36 +14,30 @@ if (~isfield(problem, 'A'))
     problem.ubA = [];
 end
 
-if (exist('lb', 'var') && exist('ub', 'var'))
-    problem.A = [problem.A; eye(length(lb))];
-    problem.lbA = [problem.lbA; lb];
-    problem.ubA = [problem.ubA; ub];
-end
-
-% Convert to sparse matrices
-problem.Q = sparse(problem.Q);
-problem.A = sparse(problem.A);
-problem.L = sparse(problem.L);
-problem.R = sparse(problem.R);
-
 % Solve LCQP
 params.printLevel = 0;
 params.qpSolver = 2;
+
+% params.stationarityTolerance = 10e-6;
 tic;
 [solution.x,solution.y,solution.stats] = LCQPow(...
-    problem.Q, ...
+    sparse(problem.Q), ...
     problem.g, ...
-    problem.L, ...
-    problem.R, ...
+    sparse(problem.L), ...
+    sparse(problem.R), ...
     [], [], [], [], ...
-    problem.A, ...
+    sparse(problem.A), ...
     problem.lbA, ...
     problem.ubA, ...
     params ...
 );
 solution.stats.elapsed_time_w_overhead = toc;
+
 solution.stats.obj = full(problem.Obj(solution.x));
 solution.stats.compl = full(problem.Phi(solution.x));
+solution.stats.n_x = size(problem.Q, 1);
+solution.stats.n_c = size(problem.A, 1);
+solution.stats.n_comp = size(problem.L, 1);
 
 end
 
