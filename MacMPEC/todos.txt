@@ -1,7 +1,31 @@
 1) Why does LCQP fail at ex 9.2.2?
+      - maximum penalty parameter reached (almost converged)
 
 2) Why does Gurobi fail at HS044?
 
-3) Why does Gurobi have low complementarity satisfaction with portfolio problems
+3) Why does Gurobi have low complementarity satisfaction with portfolio problems?
 
 4) Why do MINOS and SNOPT fail for most problems (complementarities not satisfied)?
+
+5) Read and cite 1999 Bemporad and Morari MLD
+
+6) Restructure Paper:
+      I) Intro 
+            => Do recent advances, brief motivation and problem descr.
+            => Related methods, solvers, formulations (including MIQP part) and limits of other methods (ref Background section)
+            => Contributions of this method and this paper (also in comparison to prev LCQP paper)
+            => Structure of the paper
+      II) Problem formulation
+            => Write the mathematical problem (mention that this matches the API of the solver)
+            => Discuss desirable points (maybe address Background section)
+            => Discuss global vs local solutions (maybe example here?)
+      III) Background
+            => Stationarity (... or example here?)
+            => Existing Methods
+      IV) Convergence Analysis
+            => Some theorems and Lemmas
+      V) Numerical Results
+            => MacMPEC
+            => IVOCP
+            => MM
+      VI) Conclusion and Future Work
