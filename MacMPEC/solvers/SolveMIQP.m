@@ -17,17 +17,6 @@ if (~isfield(problem, 'A'))
     problem.ubA = [];
 end
 
-if (~exist('lb'))
-    lb = [];
-end
-
-if (~exist('ub'))
-    ub = [];
-end
-
-problem.lb = lb;
-problem.ub = ub;
-
 %% Change to MIQP setting
 MIQP_formulation = ObtainMIQP(problem);
 
