@@ -21,7 +21,7 @@ benchmark.solvers = { ...
     %struct('fun', 'SolveLCQP_Leyffer10', 'name', 'LCQP Leyffer 10', 'lineStyle', ':') ...
 };
 
-% Add problems with 2 masses
+% Generate problems
 i = 1;
 for N = 50:5:100
     for x00 = linspace(-1.9, -0.9, 20)
