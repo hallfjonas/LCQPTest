@@ -28,9 +28,9 @@ for s = 1:ns
     solution = problems{1}.solutions{s};
 
     % Add solver name header 
-    timetable{1,s+1} = solution.solver.name;
-    comptable{1,s+1} = solution.solver.name;
-    objtable{1,s+2} = solution.solver.name;
+    timetable{1,s+1} = solution.solver.style.label;
+    comptable{1,s+1} = solution.solver.style.label;
+    objtable{1,s+2} = solution.solver.style.label;
 end
 
 % Table content

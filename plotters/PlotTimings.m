@@ -1,4 +1,4 @@
-function [] = PlotTimings(problems, exp_name)
+function [] = PlotTimings(problems, exp_name, outdir, compl_tol)
 
 %% Prepare data arrays
 % Number of problems
@@ -23,17 +23,21 @@ n_x = zeros(np, 1);
 n_c = zeros(np, 1);
 n_comp = zeros(np, 1);
 
+% Colors
+cmap = colormap(parula);
+cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
+col_indices = floor(linspace(1, size(cmap,1), ns));
+
 %% Get the min&max solution time&obj for each problem
 for p = 1:np
     problem = problems{p};
     for s = 1:ns
         solution = problem.solutions{s};
-        
         t(p,s) = solution.stats.elapsed_time;
         exit_flag(p,s) = solution.stats.exit_flag;
         
         % Update mins and max if solved
-        if (exit_flag(p,s) == 0)
+        if (exit_flag(p,s) == 0 && solution.stats.compl < compl_tol)
             % Update minimum time
             if (t(p,s) < min_t_per_problem(p))
                 min_t_per_problem(p) = t(p,s);
@@ -45,34 +49,16 @@ for p = 1:np
             end
         end
     end
-    
-    % Store problem dimensions
-    n_x(p) = problem.casadi_formulation.n_x;
-    n_c(p) = problem.casadi_formulation.n_c;
-    n_comp(p) = problem.casadi_formulation.n_comp;
 end
-
-fID = fopen(['../../paper-lcqp-2/figures/benchmarks/', exp_name, '_dimensions.txt'], 'w');
-
-fprintf(fID, " range(n_x) = [%d %d]\n", min(n_x), max(n_x));
-fprintf(fID, "  mean(n_x) = %f\n", mean(n_x));
-fprintf(fID, "median(n_x) = %f\n\n", median(n_x));
-
-fprintf(fID, " range(n_c) = [%d %d]\n", min(n_c), max(n_c));
-fprintf(fID, "  mean(n_c) = %f\n", mean(n_c));
-fprintf(fID, "median(n_c) = %f\n\n", median(n_c));
-
-fprintf(fID, " range(n_comp) = [%d %d]\n", min(n_comp), max(n_comp));
-fprintf(fID, "  mean(n_comp) = %f\n", mean(n_comp));
-fprintf(fID, "median(n_comp) = %f\n\n", median(n_comp));
-
-fclose(fID);
 
 %% Get the performance ratio
 for p = 1:np
+    problem = problems{p};
     for s = 1:ns        
+        solution = problem.solutions{s};
+        
         % Failed solutions are set to max val
-        if (exit_flag(p,s) ~= 0)
+        if (exit_flag(p,s) ~= 0 || solution.stats.compl >= compl_tol)
             t(p,s) = inf;
         end
                 
@@ -83,7 +69,7 @@ end
 
 %% Get the performance profile (of time)
 taut = unique(sort(reshape(rt, np*ns, 1)));
-taut = taut( ~isinf(taut) & ~isnan(taut) );
+taut = taut( ~isinf(taut) );
 rhot = zeros(length(taut), ns);
 for t = 1:length(taut)
     for s = 1:ns
@@ -97,11 +83,6 @@ set(groot,'defaultAxesTickLabelInterpreter','latex');
 set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 
-% Colors
-cmap = colormap(parula);
-cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
-col_indices = floor(linspace(1, size(cmap,1), ns));
-
 f = figure(1); 
 for s=1:ns
     solver = problems{1}.solutions{s}.solver;
@@ -110,20 +91,21 @@ for s=1:ns
         taut, rhot(:,s),  ...
         'DisplayName', solver.name, ...
         'LineStyle', solver.lineStyle, ...
-        'Color', cmap(col_indices(s),:) ...
+        'Color', cmap(col_indices(s),:), ...
+        'LineWidth', 2.0 ...
     ); hold on; box on; grid on;
 end
 xlabel('$\tau$');
 ylabel('$\bf{P}(p \in \mathcal{P} : r_{p,s} \leq \tau)$');
 set(gca,'xscale','log');
-xlim([1 taut(end)]);
+xlim([1 max(taut)]);
 set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 legend('Location', 'southeast');
 
 % Save as pdf
 exportgraphics(...
     f, ...
-    ['../../paper-lcqp-2/figures/benchmarks/', exp_name, '_time.pdf'] ...
+    fullfile(outdir, [exp_name, '_time.pdf']) ...
 );
 
 end

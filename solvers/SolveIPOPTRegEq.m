@@ -59,8 +59,8 @@ end
 
 stats.rho_opt = sigma;
 solutions.x = full(sol.x);
-solutions.obj = full(problem.casadi_formulation.Obj(solutions.x));
-solutions.compl = full(problem.casadi_formulation.Phi(solutions.x));
 solutions.stats = stats;
+solutions.stats.obj = full(problem.casadi_formulation.Obj(solutions.x));
+solutions.stats.compl = full(problem.casadi_formulation.Phi(solutions.x));
 
 end

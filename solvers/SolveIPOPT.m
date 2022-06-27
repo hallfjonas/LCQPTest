@@ -1,27 +1,24 @@
-function [solutions] = SolveIPOPT(problem)
+function [solution] = SolveIPOPT(problem)
 
 import casadi.*
-addpath("~/LCQPow/build/lib");
-
-%% Get formulation
-IPOPT_formulation = ObtainIPOPTPen(problem.casadi_formulation);
 
 %% Create NLP solver
 opts_ipopt = struct;
 opts_ipopt.ipopt.nlp_scaling_method = 'none';
 opts_ipopt.ipopt.print_level = 0;
 opts_ipopt.ipopt.bound_relax_factor = eps;
-opts_ipopt.print_time = 0;
+opts_ipopt.print_time = 1;
 opts_ipopt.print_out = 0;
 opts_ipopt.ipopt.mu_strategy = 'adaptive';
 opts_ipopt.ipopt.mu_oracle = 'quality-function';
 opts_ipopt.ipopt.tol = 1e-16;
 
+casadi_formulation = problem.casadi_formulation;
 nlp = struct(...
-    'f', IPOPT_formulation.obj, ...
-    'x', IPOPT_formulation.x, ...
-    'g', IPOPT_formulation.constr, ...
-    'p', IPOPT_formulation.sigma ...
+    'f', casadi_formulation.obj, ...
+    'x', casadi_formulation.x, ...
+    'g', casadi_formulation.constr, ...
+    'p', casadi_formulation.rho ...
 );
 
 solver = nlpsol('solver', 'ipopt', nlp, opts_ipopt);
@@ -30,35 +27,37 @@ solver = nlpsol('solver', 'ipopt', nlp, opts_ipopt);
 stats.exit_flag = 1;
 stats.elapsed_time = 0;
 
-tic;
-sol = CallIPOPTSolver(solver, IPOPT_formulation, 0);
-stats.elapsed_time = stats.elapsed_time + toc;
-
+sol = CallIPOPTSolver( solver, casadi_formulation, 0 );
 w_opt = sol.x;
+stats.elapsed_time = solver.stats.t_proc_total;
 
-rho = IPOPT_formulation.rho0;
+rho = casadi_formulation.rho0;
 stats.iters_outer = 0;
-while(rho < IPOPT_formulation.rhoMax)  
-        
-    tic;
-    sol = CallIPOPTSolver(solver, IPOPT_formulation, rho);
-    stats.elapsed_time = stats.elapsed_time + toc;
+while(true)  
     
-    w_opt = sol.x;
-    stats.iters_outer = stats.iters_outer + 1;
-    
-    if (abs(full(problem.casadi_formulation.Phi(w_opt))) < problem.casadi_formulation.complementarityTolerance)
+    if (abs(full(casadi_formulation.Phi(w_opt))) < 1e-10)
         stats.exit_flag = 0;
         break
     end
-
-    rho = rho*IPOPT_formulation.beta;
+    
+    if (rho > casadi_formulation.rhoMax)
+        break;
+    end
+        
+    sol = CallIPOPTSolver( solver, casadi_formulation, rho );
+    w_opt = sol.x;
+    
+    stats.elapsed_time = stats.elapsed_time + solver.stats.t_proc_total;
+    stats.iters_outer = stats.iters_outer + 1;
+    
+    rho = rho*casadi_formulation.beta;
 end
 
+solution.x = full(sol.x);
+
+stats.compl = full(casadi_formulation.Phi(solution.x));
 stats.rho_opt = rho;
-solutions.x = full(sol.x);
-solutions.obj = full(problem.casadi_formulation.Obj(solutions.x));
-solutions.compl = full(problem.casadi_formulation.Phi(solutions.x));
-solutions.stats = stats;
+stats.obj = full(casadi_formulation.Obj(solution.x));
+solution.stats = stats;
 
 end

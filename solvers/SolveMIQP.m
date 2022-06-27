@@ -30,7 +30,7 @@ stats.elapsed_time = toc;
 % Save the solution and stats
 solutions.x = results.x;
 solutions.obj = full(problem.casadi_formulation.Obj(solutions.x));
-solutions.compl = full(problem.casadi_formulation.Phi(solutions.x));
-solutions.stats = stats;
+solutions.stats.compl = full(problem.casadi_formulation.Phi(solutions.x));
+solutions.stats.stats = stats;
 
 end

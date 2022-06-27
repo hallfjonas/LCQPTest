@@ -11,11 +11,6 @@ set(groot,'defaultAxesTickLabelInterpreter','latex');
 set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 
-% Colors
-cmap = colormap(parula);
-cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
-col_indices = floor(linspace(1, size(cmap,1), ns));
-
 %% Prepare data arrays
 % Store solver objective per problem
 f = zeros(np, ns);
@@ -48,7 +43,7 @@ for p = 1:np
         % Update mins and max if solved
         if (exit_flag(p,s) == 0 && solution.stats.compl < compl_tolerance)
             % f(p,s) = abs(solution.stats.obj - x_ast(p));
-            f(p,s) = max(0, solution.stats.obj - x_ast(p));
+            f(p,s) = max(0, solution.stats.obj - x_ast(p)) + abs(solution.stats.compl);
         
             % Update minimum objective
             if (f(p,s) < min_f_per_problem(p))
@@ -68,9 +63,9 @@ fig = figure(3); hold on; grid on;
 for s = 1:ns
     solver = problems{1}.solutions{s}.solver;
     plot(eps + f(:,s), ...
-        'DisplayName', solver.name, ...
-        'LineStyle', solver.lineStyle, ...
-        'Color', cmap(col_indices(s),:), ...
+        'DisplayName', solver.style.label, ...
+        'LineStyle', solver.style.linestyle, ...
+        'Color', solver.style.color, ...
         'LineWidth', 2 ...
     )    
 end
@@ -86,7 +81,7 @@ set(gca,'xtick',1:np,'xticklabel',xtags);
 xtickangle(90);
 
 % yaxes
-ylabel("$\varepsilon + (J(x)-J(x^\ast))^+$")
+ylabel("$\varepsilon_\mathrm{mach} + (J(x)-J(x^\ast))^+ + \varphi(x)$")
 set(gca, 'YScale', 'log')
 
 % Save as pdf
@@ -96,36 +91,36 @@ exportgraphics(...
 );
 
 %% Generate a obj-val comparison plot
-fig = figure(30); hold on; grid on;
-for s = 1:ns
-    solver = problems{1}.solutions{s}.solver;
-    plot(eps + f(:,s) + phi(:,s), ...
-        'DisplayName', solver.name, ...
-        'LineStyle', solver.lineStyle, ...
-        'Color', cmap(col_indices(s),:), ...
-        'LineWidth', 2 ...
-    )    
-end
+%fig = figure(30); hold on; grid on;
+%for s = 1:ns
+%    solver = problems{1}.solutions{s}.solver;
+%    plot(eps + f(:,s) + phi(:,s), ...
+%        'DisplayName', solver.style.label, ...
+%        'LineStyle', solver.style.linestyle, ...
+%        'Color', solver.style.color, ...
+%        'LineWidth', 2 ...
+%    )    
+%end
 
-% Write names of problems on x axis
-xtags = strings(np,1);
-for p = 1:np
-    pname = string(strrep(problems{p}.name,'_',' '));
-    xtags(p) = pname;
-end
-legend('Location', 'northeast');
-set(gca,'xtick',1:np,'xticklabel',xtags);
-xtickangle(90);
+%% Write names of problems on x axis
+%xtags = strings(np,1);
+%for p = 1:np
+%    pname = string(strrep(problems{p}.name,'_',' '));
+%    xtags(p) = pname;
+%end
+%legend('Location', 'northeast');
+%set(gca,'xtick',1:np,'xticklabel',xtags);
+%xtickangle(90);
 
-% yaxes
-ylabel("$J(x) + \varphi(x)$")
-set(gca, 'YScale', 'log')
+%% yaxes
+%ylabel("$J(x) + \varphi(x)$")
+%set(gca, 'YScale', 'log')
 
-% Save as pdf
-exportgraphics(...
-    fig, ...
-    fullfile(outdir, [exp_name, '_obj_plus_phi.pdf']) ...
-);
+%% Save as pdf
+%exportgraphics(...
+%    fig, ...
+%    fullfile(outdir, [exp_name, '_obj_plus_phi.pdf']) ...
+%);
 
 %% Create bar plot 
 fig = figure(10); hold on; grid on;
@@ -155,7 +150,8 @@ rep_cols = find(e_max_diffs > 0);
 b = bar(counts_col(:, rep_cols)');
 
 % axes
-ylabel("Occurances")
+xlabel("$\varepsilon$");
+ylabel("$\# \{ (J(x) - J(x^\ast))^+ + \varphi(x) \leq \varepsilon \} $");
 
 % Generate x tags
 xtags = string(edges(rep_cols+1));
@@ -165,9 +161,11 @@ xtickangle(90);
 % Add legend
 legendnames = strings(ns,1);
 for s = 1:ns
-    legendnames(s) = string(problems{1}.solutions{s}.solver.name);
+    legendnames(s) = string(problems{1}.solutions{s}.solver.style.label);
+    b(s).FaceColor = problems{1}.solutions{s}.solver.style.color;
 end
 legend(b, legendnames, 'Location', 'northwest');
+
 
 % Save as pdf
 exportgraphics(...
@@ -195,12 +193,12 @@ for s = 1:ns
     l = plot( ...
         1:np, ...
         eps + abs(phi(:,s)), ...
-        'LineStyle', solver.lineStyle, ...
-        'Color', cmap(col_indices(s),:), ...
+        'LineStyle', solver.style.linestyle, ...
+        'Color', solver.style.color, ...
         'LineWidth', 2 ...
     );
     lines(s) = l;
-    names(s) = string(solver.name);
+    names(s) = string(solver.style.label);
 end
 legend(lines, names, 'Location', 'northwest');
 

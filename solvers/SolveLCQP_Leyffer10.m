@@ -30,7 +30,7 @@ params.x0 = LCQP_formulation.x0;
 
 solutions.x = x; %full(problem.casadi_formulation_condensed.AllNodes(x));
 solutions.stats = stats;
-solutions.obj = full(problem.casadi_formulation.Obj(solutions.x));
-solutions.compl = full(problem.casadi_formulation.Phi(solutions.x));
+solutions.stats.obj = full(problem.casadi_formulation.Obj(solutions.x));
+solutions.stats.compl = full(problem.casadi_formulation.Phi(solutions.x));
 
 end

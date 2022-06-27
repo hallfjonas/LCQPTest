@@ -10,7 +10,7 @@ params.initialPenaltyParameter = problem.casadi_formulation.rho0;
 params.penaltyUpdateFactor = problem.casadi_formulation.beta;
 params.complementarityTolerance = problem.casadi_formulation.complementarityTolerance;
 params.maxRho = problem.casadi_formulation.rhoMax;
-params.printLevel = 0;
+params.printLevel = 2;
 params.maxIterations = 10000;
 params.qpSolver = 2;
 params.x0 = LCQP_formulation.x0;
@@ -38,7 +38,7 @@ end
 
 solutions.x = x;
 solutions.stats = stats;
-solutions.obj = full(problem.casadi_formulation.Obj(solutions.x));
-solutions.compl = full(problem.casadi_formulation.Phi(solutions.x));
+solutions.stats.obj = full(problem.casadi_formulation.Obj(solutions.x));
+solutions.stats.compl = full(problem.casadi_formulation.Phi(solutions.x));
 
 end

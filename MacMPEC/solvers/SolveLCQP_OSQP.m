@@ -29,6 +29,9 @@ problem.R = sparse(problem.R);
 % Solve LCQP
 params.printLevel = 0;
 params.qpSolver = 2;
+%params.OSQP_options = osqp.default_settings();
+%params.OSQP_options.polish = 1;
+
 tic;
 [solution.x,solution.y,solution.stats] = LCQPow(...
     problem.Q, ...
@@ -43,6 +46,7 @@ tic;
 );
 solution.stats.elapsed_time_w_overhead = toc;
 solution.stats.obj = full(problem.Obj(solution.x));
+solution.stats.compl = full(problem.Phi(solution.x));
 
 end
 
