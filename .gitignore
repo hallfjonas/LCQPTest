@@ -1,4 +1,2 @@
-*.asv
-AdsorptionCooling/data*
-*.ipynb_checkpoints
-**qpecgen_data.mat
+
+*/solutions/**
