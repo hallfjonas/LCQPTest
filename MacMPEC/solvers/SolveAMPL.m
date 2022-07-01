@@ -1,4 +1,4 @@
-function [solution] = SolveMPCC(name, solver)
+function [solution] = SolveAMPL(name, solver)
 
 import casadi.*;
 
