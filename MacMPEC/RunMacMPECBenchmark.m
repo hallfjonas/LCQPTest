@@ -38,7 +38,7 @@ for i = 1:length(benchmark.problems)
     end
 end
 
-outdir = 'solutions/062522';
+outdir = 'solutions/paper';
 if ~exist(outdir, 'dir')
    mkdir(outdir)
 end
@@ -47,7 +47,7 @@ save(outdir + "/sol.mat");
 
 %% Create Performance Plots
 close all; clear all; clc;
-outdir = 'solutions/062522';
+outdir = 'solutions/paper';
 load(fullfile(outdir, 'sol.mat'));
 addpath("helpers");
 
