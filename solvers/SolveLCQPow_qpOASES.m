@@ -30,10 +30,7 @@ params.printLevel = 0;
 params.initialPenaltyParameter = penaltySettings.rho0;
 params.penaltyUpdateFactor = penaltySettings.beta;
 params.rhoMax = penaltySettings.rhoMax;
-params.storeSteps = true;
 params.qpSolver = 0;
-params.qpOASES_options = qpOASES_options();
-params.qpOASES_options.enableRegularisation = true;
 % params.stationarityTolerance = 10e-6;
 
 tic;
