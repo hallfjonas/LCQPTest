@@ -13,7 +13,7 @@ import casadi.*;
 
 %% Build Problem
 % Dimension
-nv = 8;
+nv = 6+1;
 nx = 1;
 
 % Variables and box constraints
@@ -23,34 +23,27 @@ y = w(2);
 l1 = w(3);
 l2 = w(4);
 l3 = w(5);
-three = w(6);
-four = w(7);
-seven = w(8);
+sy = w(6);
+one = w(7);
 
 % Box Constraints
-lb = -inf(nv,1);
+lb = zeros(nv,1);
 ub = inf(nv,1);
-lb(1) = 0;
-lb(2) = 0;
-lb(6) = 3;
-ub(6) = 3;
-lb(7) = 4;          
-ub(7) = 4;
-lb(8) = 7;          
-ub(8) = 7;
+lb(nv) = 1;
+ub(nv) = 1;
 
 % Objective
 obj = (x - 5)^2 + (2*y + 1)^2;
 
 % Constraints
 constr = {...
-    (((2*(y-1)-1.5*x)-l1*(-1)*1)-l2*0.5)-l3*(-1)*1, ...
+    (((2*(y-1)-1.5*x)-l1*(-1)*1)-l2*0.5)-l3*(-1)*1-sy, ...
 };
 lbA = 0;
-ubA = inf;
+ubA = 0;
 
 % Complementarities
-compl_L = {3*x - y - three, -x + 0.5*y + four, -x - y + seven};
+compl_L = {3*x - y - one*3, -x + 0.5*y + one*4, -x - y + one*7};
 compl_R = {l1, l2, l3};
     
 problem = ObtainLCQP(...
