@@ -6,17 +6,17 @@ function [ res ] = GetPlotStyle(solname)
 
     res = {};
 
-    if solname == "SolveLCQP"
+    if solname == "SolveLCQPow_qpOASES"
         res.colidx = 1;
         res.markidx = 1;
         res.lsidx = 1;
         res.label = "LCQPow qpOASES";
-    elseif solname == "SolveLCQP_OSQP"
+    elseif solname == "SolveLCQPow_OSQP"
         res.colidx = 8;
         res.markidx = 2;
         res.lsidx = 1;
         res.label = "LCQPow OSQP";
-    elseif solname == "SolveLCQP_Sparse"
+    elseif solname == "SolveLCQPow_qpOASES_sparse"
         res.colidx = 1;
         res.markidx = 3;
         res.lsidx = 1;
@@ -26,7 +26,7 @@ function [ res ] = GetPlotStyle(solname)
         res.markidx = 4;
         res.lsidx = 2;
         res.label = "Gurobi";
-    elseif solname == "SolveIPOPT"
+    elseif solname == "SolveIPOPTPen"
         res.colidx = 3;
         res.markidx = 5;
         res.lsidx = 3;

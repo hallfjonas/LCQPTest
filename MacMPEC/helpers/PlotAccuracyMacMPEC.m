@@ -1,4 +1,4 @@
-function [] = PlotAccuracyMacMPEC(problems, exp_name, outdir, compl_tolerance)
+function [] = PlotAccuracyMacMPEC(problems, exp_name, outdir, compl_tolerance, performance_metric)
 
 % Number of problems
 np = length(problems);
@@ -42,8 +42,23 @@ for p = 1:np
 
         % Update mins and max if solved
         if (exit_flag(p,s) == 0 && solution.stats.compl < compl_tolerance)
-            % f(p,s) = abs(solution.stats.obj - x_ast(p));
-            f(p,s) = max(0, solution.stats.obj - x_ast(p)) + abs(solution.stats.compl);
+
+            if (performance_metric == "abs_obj_dist_to_sol")
+                % Issues:
+                % 1) Finding better solutions is penalized
+                % 2) Complementarity satisfaction is discregarded
+                f(p,s) = abs(solution.stats.obj - x_ast(p));
+            elseif (performance_metric == "cutoff")
+                % Assuming that the complementarity tolerance is low enough
+                % this should give a good metric for comparing objectives
+                f(p,s) = max(0, solution.stats.obj - x_ast(p));
+            elseif (performance_metric == "cutoff_penalized")
+                % This metric compares both objective and complementarity
+                % Remark that any feasible solution should satisfy 0-compl
+                f(p,s) = max(0, solution.stats.obj - x_ast(p)) + abs(solution.stats.compl);
+            else
+                error("Not matching performance metric passed");
+            end
         
             % Update minimum objective
             if (f(p,s) < min_f_per_problem(p))

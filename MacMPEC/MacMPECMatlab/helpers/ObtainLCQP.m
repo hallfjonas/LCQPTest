@@ -1,44 +1,33 @@
 
-function [problem] = ObtainLCQP(x, J, constr, compl_L, compl_R, lbA, ubA, lb, ub)
+function [casadi_formulation] = ObtainLCQP(x, J, constr, compl_L, compl_R, lbA, ubA, lb, ub, x0)
 
 import casadi.*
 
-% Quadratic objective term
+% Regularization
 Q_Fun = Function('Q_fun', {x}, {hessian(J, x)});
-problem.Q = full(Q_Fun(zeros(size(x))));
-
-% Linear objective term
-J_Jac_Fun = Function('J_Jac_fun', {x}, {jacobian(J, x)});
-problem.g = full(J_Jac_Fun(zeros(size(x))))';
-
-% Linearize constraints (no check is done if they are nonlinear...
-if (~isempty(constr))
-    Constr = Function('Constr', {x}, {constr});
-    A_Fun = Function('A_Fun', {x}, {jacobian(constr, x)});
-    problem.A = full(A_Fun(zeros(size(x))));
-
-    % Linearization correction term
-    constr_constant = Constr(zeros(size(x)));
-    problem.lbA = lbA - full(constr_constant);
-    problem.ubA = ubA - full(constr_constant);
+Q = full(Q_Fun(zeros(size(x))));
+ev = eig(Q);
+for i=1:length(ev)
+    if (ev(i) < eps)
+        J = J + 100*eps*x(i)*x(i);
+    end
 end
 
-% Add box constraints to problem struct
-problem.lb = lb;
-problem.ub = ub;
+casadi_formulation.x = x;
+casadi_formulation.J = J;
+casadi_formulation.constr = constr;
+casadi_formulation.compl_L = compl_L;
+casadi_formulation.compl_R = compl_R;
+casadi_formulation.lbA = lbA;
+casadi_formulation.ubA = ubA;
+casadi_formulation.lb = lb;
+casadi_formulation.ub = ub;
+casadi_formulation.Obj = Function('Obj', {x}, {J});
+casadi_formulation.Phi = Function('Phi', {x}, {max(compl_L.*compl_R)});
 
-% Complementarities
-L_Fun_Full = Function('L_Fun_Full', {x}, {compl_L});
-L_Fun = Function('L_Fun', {x}, {jacobian(compl_L, x)});
-problem.L = full(L_Fun(zeros(size(x))));
-problem.lbL = -full(L_Fun_Full(zeros(size(x))));
-R_Fun_Full = Function('R_Fun_Full', {x}, {compl_R});
-R_Fun = Function('R_Fun', {x}, {jacobian(compl_R, x)});
-problem.R = full(R_Fun(zeros(size(x))));
-problem.lbR = -full(R_Fun_Full(zeros(size(x))));
-
-% Remember the objective and phi functions
-problem.Obj = Function('Obj', {x}, {J});
-problem.Phi = Function('Phi', {x}, {max(compl_L.*compl_R)});
+% Only assign initial guess if it was passed
+if nargin > 9
+    casadi_formulation.x0 = x0;
+end
 
 end

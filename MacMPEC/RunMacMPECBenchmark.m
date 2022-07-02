@@ -9,12 +9,12 @@ benchmark.problems = ReadMacMPECProblems('MacMPECMatlab');
 % Each solver is assumed to take the input of a benchmark.problem struct
 % and return [x, y, stats]
 benchmark.solvers = { ...
-    struct('fun', 'SolveLCQP'), ... 
-    struct('fun', 'SolveLCQP_OSQP'), ... 
+    struct('fun', 'SolveLCQPow_qpOASES'), ... 
+    struct('fun', 'SolveLCQPow_OSQP'), ... 
     struct('fun', 'SolveMIQP'), ... 
-    struct('fun', 'SolveIPOPT'), ...
-    struct('fun', 'SolveSNOPT'), ...
-    struct('fun', 'SolveMINOS'), ...    
+    struct('fun', 'SolveIPOPTPen'), ...
+    %struct('fun', 'SolveSNOPT'), ...
+    %struct('fun', 'SolveMINOS'), ...    
     % KNITRO and BARON are limited to 10 vars and constraints
     % struct('fun', 'SolveKNITRO', 'name', 'KNITRO', 'lineStyle', ':'), ...
     % struct('fun', 'SolveBARON', 'name', 'BARON', 'lineStyle', '-.') ...
@@ -28,17 +28,17 @@ for s=1:length(benchmark.solvers)
 end
 
 %% Run Solvers
-addpath("./solvers");
+addpath("../solvers");
 for i = 1:length(benchmark.problems)
     fprintf("Solving problem %s (%d/%d).\n", benchmark.problems{i}.name, i, length(benchmark.problems));
     for j = 1:length(benchmark.solvers)
         solver = benchmark.solvers{j};
-        benchmark.problems{i}.solutions{j} = feval(solver.fun, benchmark.problems{i}.name);
+        benchmark.problems{i}.solutions{j} = feval(solver.fun, benchmark.problems{i}.casadi_formulation);
         benchmark.problems{i}.solutions{j}.solver = benchmark.solvers{j};
     end
 end
 
-outdir = 'solutions/paper';
+outdir = 'solutions/unified';
 if ~exist(outdir, 'dir')
    mkdir(outdir)
 end
@@ -47,7 +47,7 @@ save(outdir + "/sol.mat");
 
 %% Create Performance Plots
 close all; clear all; clc;
-outdir = 'solutions/paper';
+outdir = 'solutions/unified';
 load(fullfile(outdir, 'sol.mat'));
 addpath("helpers");
 
@@ -59,7 +59,7 @@ compl_tolerance = 10e-2;
 % For final results:
 % outdir = '../../paper-lcqp-2/figures/benchmarks';
 PlotTimings(benchmark.problems, 'MacMPEC', outdir,compl_tolerance);
-PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir, compl_tolerance);
+PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir, compl_tolerance, "cutoff_penalized");
 SaveOutput(benchmark.problems, outdir, compl_tolerance);
 
 % Count unsuccessful complementarity convergence too
