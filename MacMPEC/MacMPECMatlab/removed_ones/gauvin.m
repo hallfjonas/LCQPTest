@@ -1,0 +1,54 @@
+%% Clean and Load
+close all; 
+
+% Load Helpers
+addpath("helpers");
+
+% Load LCQPow interface
+addpath('~/LCQPow/build/lib')
+
+% Load CasADi
+addpath("~/casadi/");
+import casadi.*;
+
+%% Build Problem
+% Dimension
+nv = 3;
+nc = 0;
+
+% Variables and box constraints
+w = SX.sym('w', nv, 1);
+x = w(1);
+y = w(2);
+u = w(3);
+
+% Box Constraints
+lb = zeros(nv,1);
+ub = inf(nv,1);
+ub(1) = 15;
+
+% Objective
+obj = x^2 + (y - 10)^2;
+
+% Complementarities
+compl_L = { ...
+    4*(x + 2*y - 30) + u, ...
+    20 - x - y ...
+};   
+compl_R = { ...
+    y, ...
+    u ...
+};
+    
+% Get LCQP
+problem = ObtainLCQP(...
+    w, ...
+    obj, ...
+    [], ...
+    vertcat(compl_L{:}), ...
+    vertcat(compl_R{:}), ...
+    [], ...
+    [], ...
+    lb, ...
+    ub ...
+);
