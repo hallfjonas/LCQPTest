@@ -3,21 +3,19 @@ function [problem] = ObtainIPOPTPen(casadi_formulation)
 %% Import casadi
 import casadi.*
 
-% Copy penalty settings
-problem.rho0 = casadi_formulation.rho0;
-problem.beta = casadi_formulation.beta;
-problem.rhoMax = casadi_formulation.rhoMax;
-
 % Copy variables, box constraints and initial guess
 problem.x = casadi_formulation.x;
 problem.lb = casadi_formulation.lb;
 problem.ub = casadi_formulation.ub;
-problem.x0 = casadi_formulation.x0;
+
+if (isfield(casadi_formulation, 'x0'))
+    problem.x0 = casadi_formulation.x0;
+end
 
 % Copy constraints
 problem.constr = casadi_formulation.constr;
-problem.lb_constr = casadi_formulation.lb_constr;
-problem.ub_constr = casadi_formulation.ub_constr;
+problem.lb_constr = casadi_formulation.lbA;
+problem.ub_constr = casadi_formulation.ubA;
 
 % Penalty Parameter
 problem.sigma = SX.sym('sigma', 1);
@@ -36,7 +34,7 @@ for i=1:length(casadi_formulation.compl_L)
 end    
 
 % Objective function (including penalty term)
-problem.obj = casadi_formulation.obj + problem.sigma*compl_sum;
+problem.obj = casadi_formulation.J + problem.sigma*compl_sum;
 
 % Save the complementarity function
 problem.Comp_fun = Function('Comp_fun', {problem.x}, {compl_sum});

@@ -1,78 +1,103 @@
 
-function [problem] = ObtainMIQP(casadi_formulation)
-%% Import casadi
-import casadi.*
+function [problem] = ObtainMIQP(lcqp_formulation)
 
 %% Extract variables, initial guess and box constraints
-x = casadi_formulation.x;
-nV = len(x);
-lb = casadi_formulation.lb;
-ub = casadi_formulation.ub;
+Q = 0.5*lcqp_formulation.Q;
+nV = size(Q,1);
+problem.nV = nV;
 
-%% Compute quadratic representation of objective
-J = casadi_formulation.obj;
+lb = [];
+ub = [];
+if (isfield(lcqp_formulation, "lb"))
+    lb = lcqp_formulation.lb;
+end
 
-% Quadratic objective term
-Q_Fun = Function('Q_fun', {x}, {hessian(J, x)});
-Q = full(Q_Fun(zeros(size(x))));
+if (isfield(lcqp_formulation, "ub"))
+    ub = lcqp_formulation.ub;
+end
 
-% Linear objective term
-J_Jac_Fun = Function('J_Jac_fun', {x}, {jacobian(J, x)});
-g = full(J_Jac_Fun(zeros(size(x))))';
+g = lcqp_formulation.g;
 
-%% Linearize constraints (assumed to be linear)
-hasConstraints = isfield(casadi_formulation, 'constr');
 nC = 0;
-if (hasConstraints)
-    constr = casadi_formulation.constr;
-    lbA = casadi_formulation.lb_constr;
-    ubA = casadi_formulation.ub_constr;
-    
-    hasConstraints = hasConstraints && ~isempty(constr);
-    nC = len(lbA);
+if (isfield(lcqp_formulation, "A"))
+    A = lcqp_formulation.A;
+    lbA = lcqp_formulation.lbA;
+    ubA = lcqp_formulation.ubA;
+    nC = size(A,1);
 end
-if (hasConstraints)
-    Constr = Function('Constr', {x}, {constr});
-    A_Fun = Function('A_Fun', {x}, {jacobian(constr, x)});
-    A = full(A_Fun(zeros(size(x))));
-
-    % Linearization correction term
-    constr_constant = Constr(zeros(size(x)));
-    lbA = lbA - full(constr_constant);
-    ubA = ubA - full(constr_constant);
-end
+problem.nC = nC;
 
 %% Complementarities
-compl_L = casadi_formulation.compl_L;
-compl_R = casadi_formulation.compl_R;
-nComp = len(coml_L);
+L = lcqp_formulation.L;
+R = lcqp_formulation.R;
+nComp = size(L,1);
+problem.nComp = nComp;
 
-Jac_L = Function('L_Fun', {x}, {jacobian(compl_L, x)});
-L = full(Jac_L(zeros(size(x))));
-Jac_R = Function('R_Fun', {x}, {jacobian(compl_R, x)});
-R = full(Jac_R(zeros(size(x))));
+M = 10e3;
+lb_L = zeros(nComp,1);
+ub_L = M*ones(nComp,1);
+lb_R = zeros(nComp,1);
+ub_R = M*ones(nComp,1);
 
-%% Complementarity linear terms + affine term
-L_Fun = Function('compl_L', {x}, {compl_L});
-R_Fun = Function('compl_R', {x}, {compl_R});
-lb_L = -full(L_Fun(zeros(size(x))));
-lb_R = -full(R_Fun(zeros(size(x))));
-ub_L = inf(size(problem.lb_L));
-ub_R = inf(size(problem.lb_R));
+if (isfield(lcqp_formulation, "lb_L"))
+    lb_L = lcqp_formulation.lb_L;
+end
+if (isfield(lcqp_formulation, "ub_L"))
+    ub_L = lcqp_formulation.ub_L;
+end
+
+if (isfield(lcqp_formulation, "lb_R"))
+    lb_R = lcqp_formulation.lb_R;
+end
+if (isfield(lcqp_formulation, "ub_R"))
+    ub_R = lcqp_formulation.ub_R;
+end
 
 %% Now introduce binary variables and extend to that diemnsion
 % obj
-Q_new = sparse([Q, zeros(nV,2*nComp); zeros(2*nComp,nV); zeros(2*nComp,2*nComp)]);
+Q_new = sparse([Q, zeros(nV,2*nComp); zeros(2*nComp,nV), zeros(2*nComp,2*nComp)]);
 g_new = [g; zeros(2*nComp,1)];
 problem.Q = Q_new;
 problem.g = g_new;
 
 % constraints
-A_new = sparse([A, zeros(nC,2*nComp)]);
-L_new = sparse([L, zeros(nComp,2*nComp)]);
-R_new = sparse([R, zeros(nComp,2*nComp)]);
-A_bin = sparse([zeros(nComp, nV), eye(nComp), eye(nComp)]);
-problem.A = sparse([A_new; -A_new; L_new; -L_new; R_new; -R_new; A_bin; A_bin]);
-problem.rhs = [ubA; -lbA; ub_L; -lb_L; ub_R; -lb_R; ones(1,nComp);ones(1,nComp); zeros(1,nComp)];
+A_new = [A, zeros(nC,2*nComp)];
+L_new = [L, zeros(nComp,2*nComp)];
+R_new = [R, zeros(nComp,2*nComp)];
 
+% Lx - ub_L*z <= 0
+A_comp_L = [L, - ub_L.*eye(nComp), zeros(nComp,nComp)];
+A_comp_R = [R, zeros(nComp,nComp), - ub_R.*eye(nComp)];
+A_bin = [zeros(nComp, nV), eye(nComp), eye(nComp)];
 
+problem.L = L_new;
+problem.R = R_new;
+problem.lb_L = lb_L;
+problem.lb_R = lb_R;
+A = [A_new; -A_new; L_new; -L_new; R_new; -R_new; A_comp_L; A_comp_R; A_bin];
+rhs = [ubA; -lbA; ub_L; -lb_L; ub_R; -lb_R; zeros(nComp,1); zeros(nComp,1); ones(nComp,1)];
+
+% Have box constraints?
+if ~isempty(lb) 
+    E = eye(nV);
+    for i=1:length(lb)
+        if (lb(i) >  -inf)
+            A = [A; -E(i,:), zeros(1, 2*nComp)];
+            rhs = [rhs; -lb(i)];
+        end
+    end
+end
+if ~isempty(ub)
+    E = eye(nV);
+    for i=1:length(ub)
+        if (ub(i) <inf)
+            A = [A; E(i,:), zeros(1, 2*nComp)];
+            rhs = [rhs; ub(i)];
+        end
+    end
+end
+
+problem.A = sparse(A);
+problem.rhs = rhs;
+
+return

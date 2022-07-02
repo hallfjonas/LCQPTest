@@ -1,11 +1,7 @@
-function [solution] = SolveAMPL(name, solver)
+function [solution] = SolveAMPL(casadi_formulation, solver)
 
-import casadi.*;
-
-currdir = pwd;
-cd MacMPECMatlab/;
-run([name, '.m']);
-cd(currdir);
+% Build AMPL from matrix-based setting
+problem = ObtainLCQPFromCasadi(casadi_formulation);
 
 addpath("~/amplide.linux64/ampl.linux-intel64/amplapi/matlab");
 setUp;

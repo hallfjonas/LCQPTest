@@ -1,13 +1,34 @@
-function [solutions] = SolveMIQP(problem)
+function [solution] = SolveMIQP(casadi_formulation)
 
-addpath("~/LICQPow/build/lib");
+import casadi.*;
 
-%% Get formulation
-MIQP_formulation = ObtainMIQP(problem.casadi_formulation);
+%% Create the LCQP
+problem = ObtainLCQPFromCasadi(casadi_formulation);
+
+if (~isfield(problem, 'A'))
+    problem.A = [];
+    problem.lbA = [];
+    problem.ubA = [];
+end
+
+%% Change to MIQP setting
+MIQP_formulation = ObtainMIQP(problem);
 
 %% Build solver
-% names = {'x', 'y', 'z'};
-model.varnames = MIQP_formulation.varnames;
+varnames = {};
+nV = MIQP_formulation.nV;
+nC = MIQP_formulation.nC;
+nComp = MIQP_formulation.nComp;
+for i=1:nV
+    varnames{i} = ['x', num2str(i)];
+end
+for i=1:nComp
+    varnames{nV+i} = ['zL', num2str(i)];
+end
+for i=1:nComp
+    varnames{nV+nComp+i} = ['zR', num2str(i)];
+end
+model.varnames = varnames;
 
 % TODO: Where should I handle sparsity? sparse( )
 model.Q = MIQP_formulation.Q;
@@ -15,22 +36,34 @@ model.obj = MIQP_formulation.g;
 
 model.A = MIQP_formulation.A;
 model.rhs = MIQP_formulation.rhs;
-model.sense = '>';
+model.sense = '<';
 
-gurobi_write(model, 'qp.lp');
-
-stats = {};
+% Set variable types
+for i=1:nV
+    model.vtype(i) = 'C';
+end
+for i=1:nComp
+    model.vtype(nV+i) = 'B';
+    model.vtype(nV+nComp+i) = 'B';
+end
 
 %% Run the solver
-% TODO: Can I get the solver time from results struct?
-tic;
-results = gurobi(model);
-stats.elapsed_time = toc;
+params.outputflag = 1; 
+results = gurobi(model, params);
 
 % Save the solution and stats
-solutions.x = results.x;
-solutions.obj = full(problem.casadi_formulation.Obj(solutions.x));
-solutions.stats.compl = full(problem.casadi_formulation.Phi(solutions.x));
-solutions.stats.stats = stats;
+solution.stats.elapsed_time = results.runtime;
+solution.stats.exit_flag = 1 - strcmp(results.status, 'OPTIMAL');
+solution.x = zeros(nV+2*nComp,1);
+solution.stats.compl = inf;
+solution.stats.obj = inf;
 
+% Evaluate complementarity
+if solution.stats.exit_flag == 0
+    compl_L = MIQP_formulation.L*results.x - MIQP_formulation.lb_L;
+    compl_R = MIQP_formulation.R*results.x - MIQP_formulation.lb_R;
+    compl = compl_L'*compl_R;
+    solution.x = results.x;
+    solution.stats.compl = compl;
+    solution.stats.obj = full(problem.Obj(solution.x(1:nV)));
 end

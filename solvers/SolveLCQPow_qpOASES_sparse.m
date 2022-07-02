@@ -1,12 +1,7 @@
-function [solution] = SolveLCQP_Sparse(name)
+function [solution] = SolveLCQPow_qpOASES_sparse(casadi_formulation)
 
-import casadi.*;
-
-addpath("~/LCQPow/build/lib");
-currdir = pwd;
-cd MacMPECMatlab/;
-run([name, '.m']);
-cd(currdir);
+% Retreive the matrix-based LCQP formulation
+problem = ObtainLCQPFromCasadi(casadi_formulation);
 
 if (~isfield(problem, 'A'))
     problem.A = [];
@@ -14,18 +9,40 @@ if (~isfield(problem, 'A'))
     problem.ubA = [];
 end
 
-% Solve LCQP
-params.printLevel = 0;
-params.qpSolver = 1;
+if (~isfield(problem, 'lbL'))
+    problem.lbL = [];
+end
+if (~isfield(problem, 'ubL'))
+    problem.ubL = [];
+end
+if (~isfield(problem, 'lbR'))
+    problem.lbR = [];
+end
+if (~isfield(problem, 'ubR'))
+    problem.ubR = [];
+end
 
+% Penalty settings
+penaltySettings = GetPenaltySettings();
+
+% Solver Settings
+params.printLevel = 0;
+params.rho0 = penaltySettings.rho0;
+params.penaltyUpdateFactor = penaltySettings.beta;
+params.rhoMax = penaltySettings.rhoMax;
+params.qpSolver = 1;
 % params.stationarityTolerance = 10e-6;
+
 tic;
 [solution.x,solution.y,solution.stats] = LCQPow(...
     sparse(problem.Q), ...
     problem.g, ...
     sparse(problem.L), ...
     sparse(problem.R), ...
-    [], [], [], [], ...
+    problem.lbL, ...
+    problem.ubL, ...
+    problem.lbR, ...
+    problem.ubR, ...
     sparse(problem.A), ...
     problem.lbA, ...
     problem.ubA, ...
