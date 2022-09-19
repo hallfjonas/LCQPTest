@@ -161,12 +161,15 @@ for e = 2:nedges
 end
 rep_cols = find(e_max_diffs > 0);
 
+% Turn y-vals into percentages
+counts_col = counts_col*100/np;
+
 % Plot the grouped bar plot
 b = bar(counts_col(:, rep_cols)');
 
 % axes
 xlabel("$\varepsilon$");
-ylabel("$\# \{ (J(x) - J(x^\ast))^+ + \varphi(x) \leq \varepsilon \} $");
+ylabel("$\% \mathrm{~solved~with~} (J(x) - J(x^\ast))^+ + \varphi(x) \leq \varepsilon$");
 
 % Generate x tags
 xtags = string(edges(rep_cols+1));

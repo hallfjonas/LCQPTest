@@ -1,9 +1,9 @@
-function [solution] = SolveIPOPTPen(casadi_formulation)
+function [solution] = SolveIPOPTNLP(casadi_formulation)
 
 import casadi.*
 
 %% Get formulation
-IPOPT_formulation = ObtainIPOPTPen(casadi_formulation);
+IPOPT_formulation = ObtainIPOPTNLP(casadi_formulation);
 
 %% Create NLP solver
 opts_ipopt = struct;
@@ -16,9 +16,6 @@ opts_ipopt.ipopt.mu_strategy = 'adaptive';
 opts_ipopt.ipopt.mu_oracle = 'quality-function';
 opts_ipopt.ipopt.tol = 1e-16;
 
-% Penalty settings
-penaltySettings = GetPenaltySettings();
-
 nlp = struct(...
     'f', IPOPT_formulation.obj, ...
     'x', IPOPT_formulation.x, ...
@@ -29,45 +26,22 @@ nlp = struct(...
 solver = nlpsol('solver', 'ipopt', nlp, opts_ipopt);
 
 %% Run solver
-stats.exit_flag = 1;
+stats.exit_flag = 0;
 stats.elapsed_time = 0;
 
-sol = CallIPOPTSolver( solver, IPOPT_formulation, 0 );
-w_opt = sol.x;
+tic;
+sol = CallIPOPTSolver( solver, IPOPT_formulation, casadi_formulation.complementarityTolerance*0.95 );
 stats.elapsed_time = solver.stats.t_proc_total;
-
-rho = penaltySettings.rho0;
-stats.iters_outer = 0;
-while(true)  
-    
-    if (abs(full(casadi_formulation.Phi(w_opt))) < casadi_formulation.complementarityTolerance)
-        stats.exit_flag = 0;
-        break
-    end
-    
-    if (rho > penaltySettings.rhoMax)
-        break;
-    end
-        
-    sol = CallIPOPTSolver( solver, IPOPT_formulation, rho );
-    w_opt = sol.x;
-    
-    stats.elapsed_time = stats.elapsed_time + solver.stats.t_proc_total;
-    stats.iters_outer = stats.iters_outer + 1;
-    
-    rho = rho*penaltySettings.beta;
-end
 
 solution.x = full(sol.x);
 
 stats.compl = full(casadi_formulation.Phi(solution.x));
-stats.rho_opt = rho;
 stats.obj = full(casadi_formulation.Obj(solution.x));
+stats.exit_flag = stats.compl > casadi_formulation.complementarityTolerance;
 solution.stats = stats;
 
 %% Sanity check plot
 % x_vals = solution.x(casadi_formulation.indices_x);
 % t_vals = linspace(0, 2, length(x_vals));
 % plot(t_vals, x_vals);
-
 end

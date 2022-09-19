@@ -1,17 +1,17 @@
-function [solutions] = SolveIPOPTRegEq(problem)
+function [solution] = SolveIPOPTRegEq(casadi_formulation)
 
 import casadi.*
 addpath("~/LCQPow/build/lib");
 
 %% Get formulation
-IPOPT_formulation = ObtainIPOPTRegEq(problem.casadi_formulation);
+IPOPT_formulation = ObtainIPOPTRegEq(casadi_formulation);
 
 %% Create NLP solver
 opts_ipopt = struct;
 opts_ipopt.ipopt.nlp_scaling_method = 'none';
 opts_ipopt.ipopt.print_level = 0;
 opts_ipopt.ipopt.bound_relax_factor = eps;
-opts_ipopt.print_time = 0;
+opts_ipopt.print_time = 1;
 opts_ipopt.print_out = 0;
 opts_ipopt.ipopt.mu_strategy = 'adaptive';
 opts_ipopt.ipopt.mu_oracle = 'quality-function';
@@ -30,37 +30,35 @@ solver = nlpsol('solver', 'ipopt', nlp, opts_ipopt);
 stats.exit_flag = 1;
 stats.elapsed_time = 0;
 
-tic;
-sol = CallIPOPTSolver(solver, IPOPT_formulation, 0);
-w_opt = sol.x;
-stats.elapsed_time = stats.elapsed_time + toc;
-
-sigma = problem.casadi_formulation.sigma0;
+sigma = casadi_formulation.sigma0;
 stats.iters_outer = 0;
 
-ncomp = problem.casadi_formulation.n_comp;
-
-while(sigma > problem.casadi_formulation.complementarityTolerance/ncomp)
+while(sigma > 1e-17)
         
     tic;
     sol = CallIPOPTSolver(solver, IPOPT_formulation, sigma);
     w_opt = sol.x;
     
-    stats.elapsed_time = stats.elapsed_time + toc;
+    stats.elapsed_time = solver.stats.t_proc_total;
     stats.iters_outer = stats.iters_outer + 1;
     
-    if (abs(full(problem.casadi_formulation.Phi(w_opt))) < problem.casadi_formulation.complementarityTolerance)
+    if (abs(full(casadi_formulation.Phi(w_opt))) < casadi_formulation.complementarityTolerance)
         stats.exit_flag = 0;
         break
     end
     
-    sigma = sigma*problem.casadi_formulation.betaSigma;
+    sigma = sigma*casadi_formulation.betaSigma;
 end
 
 stats.rho_opt = sigma;
-solutions.x = full(sol.x);
-solutions.stats = stats;
-solutions.stats.obj = full(problem.casadi_formulation.Obj(solutions.x));
-solutions.stats.compl = full(problem.casadi_formulation.Phi(solutions.x));
+solution.x = full(sol.x);
+solution.stats = stats;
+solution.stats.obj = full(casadi_formulation.Obj(solution.x));
+solution.stats.compl = full(casadi_formulation.Phi(solution.x));
+
+%% Sanity check plot
+% x_vals = solution.x(casadi_formulation.indices_x);
+% t_vals = linspace(0, 2, length(x_vals));
+% plot(t_vals, x_vals);
 
 end

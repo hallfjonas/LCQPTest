@@ -1,3 +1,4 @@
+close all; clear all; clc;
 
 ncols = 20;
 cmap = distinguishable_colors(ncols);

@@ -9,10 +9,10 @@ benchmark.problems = ReadMacMPECProblems('MacMPECMatlab');
 % Each solver is assumed to take the input of a benchmark.problem struct
 % and return [x, y, stats]
 benchmark.solvers = { ...
-    struct('fun', 'SolveLCQPow_qpOASES'), ... 
-    struct('fun', 'SolveLCQPow_OSQP'), ... 
+    struct('fun', 'SolveLCQPow0'), ... 
     struct('fun', 'SolveMIQP'), ... 
-    struct('fun', 'SolveIPOPTPen'), ...
+    % struct('fun', 'SolveLCQPow2'), ... 
+    % struct('fun', 'SolveIPOPTPen'), ...
     %struct('fun', 'SolveSNOPT'), ...
     %struct('fun', 'SolveMINOS'), ...    
     % KNITRO and BARON are limited to 10 vars and constraints
@@ -23,6 +23,7 @@ benchmark.solvers = { ...
 };
 
 % Get the solver visualization settings
+addpath("../helpers")
 for s=1:length(benchmark.solvers)
     benchmark.solvers{s}.style = GetPlotStyle(benchmark.solvers{s}.fun);
 end
@@ -38,7 +39,7 @@ for i = 1:length(benchmark.problems)
     end
 end
 
-outdir = 'solutions/unified';
+outdir = 'solutions/070422';
 if ~exist(outdir, 'dir')
    mkdir(outdir)
 end
@@ -47,7 +48,7 @@ save(outdir + "/sol.mat");
 
 %% Create Performance Plots
 close all; clear all; clc;
-outdir = 'solutions/unified';
+outdir = 'solutions/070422';
 load(fullfile(outdir, 'sol.mat'));
 addpath("helpers");
 
@@ -76,6 +77,6 @@ end
 % For final results:
 % outdir = '../../paper-lcqp-2/figures/benchmarks';
 PlotTimings(benchmark.problems, 'MacMPEC', outdir,compl_tolerance);
-PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir, compl_tolerance);
+PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir, compl_tolerance, "cutoff_penalized");
 SaveOutput(benchmark.problems, outdir, compl_tolerance);
 

@@ -148,12 +148,12 @@ problem.lb = lbw;
 problem.ub = ubw;
 
 % Objective
-problem.obj = J;
+problem.J = J;
 
 % Linear constraints and bounds
 problem.constr = vertcat(g{:});
-problem.lb_constr = lbg;
-problem.ub_constr = ubg;
+problem.lbA = lbg;
+problem.ubA = ubg;
 
 % Complementarity pairs
 problem.compl_L = vertcat(compl_L{:});
@@ -190,7 +190,8 @@ end
 x0_opt = x(ind_min);
 
 % Problem functions (for comparing solutions)
-problem.Obj = Function('Obj', {problem.x}, {abs(x(1) - x0_opt)});
+problem.Obj = Function('Obj', {problem.x}, {J});
+problem.DistToSol = Function('DistToSol', {problem.x}, {abs(x(1) - x0_opt)});
 Compl_L = Function('Compl_L', {problem.x}, {problem.compl_L});
 Compl_R = Function('Compl_R', {problem.x}, {problem.compl_R});
 problem.Phi = Function('Phi', {problem.x}, {Compl_L(problem.x)'*Compl_R(problem.x)});

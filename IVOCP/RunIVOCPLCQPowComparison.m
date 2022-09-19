@@ -3,7 +3,7 @@ clc; clear all; close all;
 
 %% Build benchmark
 benchmark = {};
-benchmark.problems = ReadMacMPECProblems('MacMPECMatlab');
+benchmark.problems = {};
 
 benchmark.solvers = { ...
     struct('fun', 'SolveLCQPow0'), ... 
@@ -25,6 +25,9 @@ benchmark.solvers = { ...
 %     struct('fun', 'SolveLCQPow0'), ... 
 %     struct('fun', 'SolveLCQPow1'), ... 
 %     struct('fun', 'SolveLCQPow2'), ... 
+%     struct('fun', 'SolveLCQPow0_SmallRho0'), ... 
+%     struct('fun', 'SolveLCQPow1_SmallRho0'), ... 
+%     struct('fun', 'SolveLCQPow2_SmallRho0'), ... 
 %     struct('fun', 'SolveLCQPow0_SmallFast'), ... 
 %     struct('fun', 'SolveLCQPow1_SmallFast'), ... 
 %     struct('fun', 'SolveLCQPow2_SmallFast'), ... 
@@ -43,16 +46,28 @@ benchmark.solvers = { ...
 %     struct('fun', 'SolveLCQPow0_LowComplementarity'), ... 
 %     struct('fun', 'SolveLCQPow1_LowComplementarity'), ... 
 %     struct('fun', 'SolveLCQPow2_LowComplementarity'), ... 
-%     struct('fun', 'SolveLCQPow0_LowPrecision'), ... 
-%     struct('fun', 'SolveLCQPow1_LowPrecision'), ... 
 %     struct('fun', 'SolveLCQPow2_LowPrecision'), ... 
+%     struct('fun', 'SolveLCQPow1_LowPrecision'), ... 
+%     struct('fun', 'SolveLCQPow0_LowPrecision'), ... 
 % };
+
+% Generate problems
+i = 1;
+for N = 50:5:60
+    for x00 = linspace(-1.9, -0.9, 10)
+        benchmark.problems{i}.T = 2;
+        benchmark.problems{i}.N = N;    
+        benchmark.problems{i}.x00 = x00;    
+        benchmark.problems{i}.casadi_formulation = GetIVOCP(2, N, x00);        
+        i = i+1;
+    end
+end
 
 %% Run Solvers
 addpath("../solvers");
-addpath("../solvers/LCQPVariants/");
-for i = 1:length(benchmark.problems)
-    fprintf("Solving problem %s (%d/%d).\n", benchmark.problems{i}.name, i, length(benchmark.problems));
+addpath("../solvers/LCQPowVariants/");
+for i = 1:length(benchmark.problems)    
+    fprintf("Solving problem %s (%d/%d).\n", string(benchmark.problems{i}.N), i, length(benchmark.problems));
     for j = 1:length(benchmark.solvers)
         solver = benchmark.solvers{j};
         benchmark.problems{i}.solutions{j} = feval(solver.fun, benchmark.problems{i}.casadi_formulation);
@@ -60,7 +75,7 @@ for i = 1:length(benchmark.problems)
     end
 end
 
-outdir = 'solutions/LCQPVariants_selective';
+outdir = 'solutions/LCQPow_comparison';
 if ~exist(outdir, 'dir')
    mkdir(outdir)
 end
@@ -69,7 +84,7 @@ save(outdir + "/sol.mat");
 
 %% Create Performance Plots
 close all; clear all; clc;
-outdir = 'solutions/LCQPVariants_selective';
+outdir = 'solutions/LCQPow_comparison';
 load(fullfile(outdir, 'sol.mat'));
 addpath("helpers");
 addpath("../helpers");

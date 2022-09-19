@@ -8,23 +8,19 @@ benchmark.problems = {};
 % Append solvers by specifying a solver strategy and solver name
 % Each solver is assumed to take the input of a benchmark.problem struct
 % and return [x, y, stats]
-addpath("../solvers/");
 benchmark.solvers = { ...
-    struct('fun', 'SolveLCQP', 'name', 'LCQP', 'lineStyle', '-'), ...     
-    struct('fun', 'SolveLCQP_OSQP', 'name', 'LCQP OSQP', 'lineStyle', '--'), ... 
-    struct('fun', 'SolveIPOPT', 'name', 'IPOPT Penalty', 'lineStyle', '--'), ...
-    %struct('fun', 'SolveIPOPTRegComp', 'name', 'IPOPT Relax', 'lineStyle', ':'), ...    
-    %struct('fun', 'SolveIPOPTRegEq', 'name', 'IPOPT Smooth', 'lineStyle', ':'), ...
-    %struct('fun', 'SolveLCQP_L0_OSQP', 'name', 'LCQP L0 OSQP', 'lineStyle', '-.'), ... 
-    %struct('fun', 'SolveLCQP_L0_qpOASES', 'name', 'LCQP L0 qpOASES', 'lineStyle', '-.'), ... 
-    %struct('fun', 'SolveLCQP_Leyffer3', 'name', 'LCQP Leyffer 3', 'lineStyle', '--'), ...
-    %struct('fun', 'SolveLCQP_Leyffer5', 'name', 'LCQP Leyffer 5', 'lineStyle', ':'), ...
-    %struct('fun', 'SolveLCQP_Leyffer10', 'name', 'LCQP Leyffer 10', 'lineStyle', ':') ...
+    struct('fun', 'SolveLCQPow1'), ... 
+    struct('fun', 'SolveLCQPow2'), ... 
+    struct('fun', 'SolveMIQP'), ... 
+    struct('fun', 'SolveIPOPTNLP'), ...
+    struct('fun', 'SolveIPOPTPen'), ...
+    struct('fun', 'SolveIPOPTReg'), ...
+    struct('fun', 'SolveIPOPTRegEq'), ...
 };
 
 % Generate problems
 i = 1;
-for N = 50:5:60
+for N = 50:5:100
     for x00 = linspace(-1.9, -0.9, 10)
         benchmark.problems{i}.T = 2;
         benchmark.problems{i}.N = N;    
@@ -35,27 +31,46 @@ for N = 50:5:60
 end
 
 %% Run solvers
-for i = 1:length(benchmark.problems)
+addpath("../solvers");
+addpath("../solvers/LCQPowVariants/");
+addpath("../helpers")
+for i = 1:length(benchmark.problems)    
     fprintf("Solving problem %s (%d/%d).\n", string(benchmark.problems{i}.N), i, length(benchmark.problems));
     for j = 1:length(benchmark.solvers)
         solver = benchmark.solvers{j};
-        benchmark.problems{i}.solutions{j} = feval(solver.fun, benchmark.problems{i});
+        benchmark.problems{i}.solutions{j} = feval(solver.fun, benchmark.problems{i}.casadi_formulation);
         benchmark.problems{i}.solutions{j}.solver = benchmark.solvers{j};
     end
 end
 
-outdir = 'solutions';
-save(fullfile(outdir, 'sol.mat'));
+outdir = 'solutions/paper';
+if ~exist(outdir, 'dir')
+   mkdir(outdir)
+end
 
-%% Plot solutions
-close all;
-outdir = 'solutions';
-compl_tol = 10e-7;
+save(outdir + "/sol.mat");
 
+%% Create Performance Plots
+close all; clear all; clc;
+outdir = 'solutions/paper';
 load(fullfile(outdir, 'sol.mat'));
-%PlotSolutions(benchmark.problems{1});
-
 addpath("helpers");
-addpath("../plotters");
-PlotTimings(benchmark.problems, 'IVOCP', outdir, compl_tol);
-PlotAccuracyIVOCP(benchmark.problems, 'IVOCP', outdir, compl_tol);
+addpath("../helpers");
+
+% Get the solver visualization settings
+for s=1:length(benchmark.solvers)
+    for p=1:length(benchmark.problems)
+        benchmark.problems{p}.solutions{s}.solver.style = GetPlotStyle(benchmark.problems{p}.solutions{s}.solver.fun);
+    end
+end
+% Complementarity violation larger than this will count as non-successful
+% convergence
+compl_tolerance = 10e-0;
+
+% Select a directory to save figures to
+% For final results:
+% outdir = '../../paper-lcqp-2/figures/benchmarks';
+PlotTimings(benchmark.problems, 'IVCOP', outdir, compl_tolerance);
+PlotAccuracyIVOCP(benchmark.problems, 'IVCOP', outdir, compl_tolerance);
+%SaveOutput(benchmark.problems, outdir, compl_tolerance);
+
