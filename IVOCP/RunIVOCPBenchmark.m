@@ -70,7 +70,7 @@ compl_tolerance = 10e-0;
 % Select a directory to save figures to
 % For final results:
 % outdir = '../../paper-lcqp-2/figures/benchmarks';
-PlotTimings(benchmark.problems, 'IVCOP', outdir, compl_tolerance);
-PlotAccuracyIVOCP(benchmark.problems, 'IVCOP', outdir, compl_tolerance);
+PlotTimings(benchmark.problems, 'IVOCP', outdir, compl_tolerance);
+PlotAccuracyIVOCP(benchmark.problems, 'IVOCP', outdir, compl_tolerance);
 %SaveOutput(benchmark.problems, outdir, compl_tolerance);
 
