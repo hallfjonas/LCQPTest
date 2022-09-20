@@ -6,16 +6,8 @@ benchmark = {};
 benchmark.problems = {};
 
 benchmark.solvers = { ...
-    struct('fun', 'SolveLCQPow0'), ... 
     struct('fun', 'SolveLCQPow1'), ... 
-    struct('fun', 'SolveLCQPow2'), ... 
-    struct('fun', 'SolveLCQPow0_SmallFast'), ... 
-    struct('fun', 'SolveLCQPow1_SmallSlow'), ... 
-    struct('fun', 'SolveLCQPow2_LargeRho0'), ... 
-    struct('fun', 'SolveLCQPow0_NoLeyffer'), ... 
-    struct('fun', 'SolveLCQPow1_LowStationarity'), ... 
-    struct('fun', 'SolveLCQPow2_LowComplementarity'), ... 
-    struct('fun', 'SolveLCQPow0_LowPrecision'), ... 
+    struct('fun', 'SolveLCQPow1_NoLeyffer'), ... 
 };
 
 % Append solvers by specifying a solver strategy and solver name
@@ -95,13 +87,15 @@ for s=1:length(benchmark.solvers)
         benchmark.problems{p}.solutions{s}.solver.style = GetPlotStyleLCQPowComparison(benchmark.problems{p}.solutions{s}.solver.fun);
     end
 end
-% Complementarity violation larger than this will count as non-successful
-% convergence
-compl_tolerance = 10e-2;
 
-% Select a directory to save figures to
-% For final results:
-% outdir = '../../paper-lcqp-2/figures/benchmarks';
-PlotComparisonTimings(benchmark.problems, 'MacMPEC', outdir,compl_tolerance);
-PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir, compl_tolerance, "cutoff_penalized");
-SaveOutput(benchmark.problems, outdir, compl_tolerance);
+%% Complementarity tolerance
+close all; comp_tol = 10e-9;
+
+% Set to latex
+set(groot,'defaultAxesTickLabelInterpreter','latex');
+set(groot,'defaulttextinterpreter','latex');
+set(groot,'defaultLegendInterpreter','latex');
+
+% Create the plots
+PlotTimings(benchmark.problems, 'IVOCP', outdir, comp_tol);
+PlotAccuracyIVOCP(benchmark.problems, 'IVOCP', outdir, comp_tol);

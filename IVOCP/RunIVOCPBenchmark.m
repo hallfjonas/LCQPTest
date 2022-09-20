@@ -12,10 +12,10 @@ benchmark.solvers = { ...
     struct('fun', 'SolveLCQPow1'), ... 
     struct('fun', 'SolveLCQPow2'), ... 
     struct('fun', 'SolveMIQP'), ... 
-    struct('fun', 'SolveIPOPTNLP'), ...
     struct('fun', 'SolveIPOPTPen'), ...
-    struct('fun', 'SolveIPOPTReg'), ...
     struct('fun', 'SolveIPOPTRegEq'), ...
+    struct('fun', 'SolveIPOPTReg'), ...
+    struct('fun', 'SolveIPOPTNLP'), ...
 };
 
 % Generate problems
@@ -63,14 +63,16 @@ for s=1:length(benchmark.solvers)
         benchmark.problems{p}.solutions{s}.solver.style = GetPlotStyle(benchmark.problems{p}.solutions{s}.solver.fun);
     end
 end
-% Complementarity violation larger than this will count as non-successful
-% convergence
-compl_tolerance = 10e-0;
 
-% Select a directory to save figures to
-% For final results:
-% outdir = '../../paper-lcqp-2/figures/benchmarks';
-PlotTimings(benchmark.problems, 'IVOCP', outdir, compl_tolerance);
-PlotAccuracyIVOCP(benchmark.problems, 'IVOCP', outdir, compl_tolerance);
-%SaveOutput(benchmark.problems, outdir, compl_tolerance);
+%% Complementarity tolerance
+close all; comp_tol = 10e-9;
+
+% Set to latex
+set(groot,'defaultAxesTickLabelInterpreter','latex');
+set(groot,'defaulttextinterpreter','latex');
+set(groot,'defaultLegendInterpreter','latex');
+
+% Create the plots
+PlotTimings(benchmark.problems, 'IVOCP', outdir, comp_tol);
+PlotAccuracyIVOCP(benchmark.problems, 'IVOCP', outdir, comp_tol);
 

@@ -30,15 +30,20 @@ solver = nlpsol('solver', 'ipopt', nlp, opts_ipopt);
 stats.exit_flag = 1;
 stats.elapsed_time = 0;
 
+% As far as I know there doesn't exist a similar trick as 0 pen init
+
 sigma = casadi_formulation.sigma0;
 stats.iters_outer = 0;
 
 while(sigma > 1e-17)
         
-    tic;
+    % Call solver again    
     sol = CallIPOPTSolver(solver, IPOPT_formulation, sigma);
     w_opt = sol.x;
     
+    % Update initial guess to previous solution
+    IPOPT_formulation.x0 = w_opt;
+
     stats.elapsed_time = solver.stats.t_proc_total;
     stats.iters_outer = stats.iters_outer + 1;
     

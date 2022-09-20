@@ -1,4 +1,4 @@
-function [] = PlotAccuracyIVOCP(problems, exp_name, outdir, compl_tolerance)
+function [] = PlotAccuracyIVOCP(problems, exp_name, outdir, comp_tol)
 
 % Number of problems
 np = length(problems);
@@ -6,24 +6,11 @@ np = length(problems);
 % Number of solvers (assume each problem has same set of solvers)
 ns = length(problems{1}.solutions);
 
-% Set to latex
-set(groot,'defaultAxesTickLabelInterpreter','latex');
-set(groot,'defaulttextinterpreter','latex');
-set(groot,'defaultLegendInterpreter','latex');
-
-% Colors
-cmap = colormap(parula);
-cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
-col_indices = floor(linspace(1, size(cmap,1), ns));
-
 %% Prepare data arrays
 % Store solver objective per problem
 f = zeros(np, ns);
 phi = zeros(np, ns);
 exit_flag = zeros(np, ns);
-
-% Optimal solution vector according to homepage
-x_ast = zeros(np,1);
 
 % Store minimum time per problem
 min_f_per_problem = inf(np,1);
@@ -45,7 +32,7 @@ for p = 1:np
         end
 
         % Update mins and max if solved
-        if (exit_flag(p,s) == 0 && solution.stats.compl < compl_tolerance)
+        if (exit_flag(p,s) == 0 && solution.stats.compl < comp_tol)
             % The objective already compares to analytical solution
             f(p,s) = solution.stats.obj;
         
@@ -63,32 +50,59 @@ for p = 1:np
 end
 
 %% Generate a obj-val comparison plot
-fig = figure(30); hold on; grid on;
+figure(30); hold on; box on;
+
+min_y = inf;
+lines = gobjects(ns,1); names = strings(ns,1);
+
 for s = 1:ns
     solver = problems{1}.solutions{s}.solver;
-    plot(eps + f(:,s) + phi(:,s), ...
+    l = plot(f(:,s), ...
         'DisplayName', solver.style.label, ...
         'LineStyle', solver.style.linestyle, ...
         'Color', solver.style.color, ...
         'LineWidth', 2 ...
-    )
+    );
+
+    lines(s) = l;
+    names(s) = string(solver.style.label);
+    
+    min_y = min(min_y, min(f(:,s) + phi(:,s)));
+end
+
+% Grid
+set(gca, 'YGrid', 'on', 'XGrid', 'off');
+
+% limits
+ylim([min_y, 2.0]);
+xlim([1, np]);
+
+% Do annotation
+xN_start = 1; xN_end = 2;
+for p = 2:np
+    if problems{p-1}.N ~= problems{p}.N
+        xN_end = p-1;
+        xline(p-1, 'Color', 'black', 'Alpha', 0.2, 'LineWidth', 2);
+        xN_start = p;
+    end
 end
 
 % legend
-legend('Location', 'northeast');
+legend(lines, names, 'Location', 'northeast');
 
-% yaxes
-ylabel("$J(x) + \varphi(x)$")
-set(gca, 'YScale', 'log')
+% axes
+ylabel("$J$");
+xlabel("experiment number");
+set(gca, 'YScale', 'log');
 
-% Save as pdf
-exportgraphics(...
-    fig, ...
-    fullfile(outdir, [exp_name, '_obj_plus_phi.pdf']) ...
-);
+% Final polish
+PreparePlot(gca);
+
+% Export
+print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_obj_plus_phi.pdf']));
 
 %% Complementarity Plot
-fig = figure(11); hold on; grid on;
+figure(11); hold on; grid on; box on;
 
 % Show the unsuccessful area
 yMin = 10e-17;
@@ -116,15 +130,16 @@ end
 legend(lines, names, 'Location', 'northwest');
 
 % axes
-ylabel("$\varphi(x)$")
+ylabel("$\varphi$")
 
 % Y-Log
 set(gca, 'YScale', 'log')
 
-% Save as pdf
-exportgraphics(...
-    fig, ...
-    fullfile(outdir, [exp_name, '_compl.pdf']) ...
-);
+% Final polish
+PreparePlot(gca);
+
+% Export
+print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_compl.pdf']));
+
 end
 

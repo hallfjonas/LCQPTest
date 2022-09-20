@@ -48,7 +48,11 @@ while(true)
     if (rho > penaltySettings.rhoMax)
         break;
     end
-        
+
+    % Update initial guess to previous solution
+    IPOPT_formulation.x0 = w_opt;
+
+    % Call solver again
     sol = CallIPOPTSolver( solver, IPOPT_formulation, rho );
     w_opt = sol.x;
     

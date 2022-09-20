@@ -21,7 +21,7 @@ function [ res ] = GetPlotStyle(solname)
         res.colidx = 1;
         res.markidx = 3;
         res.lsidx = 1;
-        res.label = "LCQPow qoOASES MA57";
+        res.label = "LCQPow qoOASES";
     elseif solname == "SolveLCQPow2"
         res.colidx = 8;
         res.markidx = 2;
@@ -36,7 +36,7 @@ function [ res ] = GetPlotStyle(solname)
         res.colidx = 3;
         res.markidx = 5;
         res.lsidx = 3;
-        res.label = "IPOPT Pen";
+        res.label = "IPOPT penalty";
     elseif solname == "SolveIPOPTNLP"
         res.colidx = 20;
         res.markidx = 6;
@@ -46,12 +46,12 @@ function [ res ] = GetPlotStyle(solname)
         res.colidx = 10;
         res.markidx = 7;
         res.lsidx = 3;
-        res.label = "IPOPT Reg";
+        res.label = "IPOPT relaxed";
     elseif solname == "SolveIPOPTRegEq"
         res.colidx = 11;
         res.markidx = 8;
         res.lsidx = 3;
-        res.label = "IPOPT Smoothed";
+        res.label = "IPOPT smoothed";
     else
         error("SOLVER STYLE FOR " + solname + " NOT YET SETUP!");
     end

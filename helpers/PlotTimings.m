@@ -18,16 +18,6 @@ rt = zeros(np, ns);
 min_t_per_problem = inf(np,1);
 max_t_per_problem = -inf(np,1);
 
-% Number of variables, constraints and complementarities
-n_x = zeros(np, 1);
-n_c = zeros(np, 1);
-n_comp = zeros(np, 1);
-
-% Colors
-cmap = colormap(parula);
-cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
-col_indices = floor(linspace(1, size(cmap,1), ns));
-
 %% Get the min&max solution time&obj for each problem
 for p = 1:np
     problem = problems{p};
@@ -78,12 +68,7 @@ for t = 1:length(taut)
 end
 
 %% Create the plot
-% Set to latex
-set(groot,'defaultAxesTickLabelInterpreter','latex');
-set(groot,'defaulttextinterpreter','latex');
-set(groot,'defaultLegendInterpreter','latex');
-
-f = figure(1); 
+figure(1); 
 for s=1:ns
     solver = problems{1}.solutions{s}.solver;
     
@@ -98,16 +83,18 @@ for s=1:ns
 end
 xlabel('$\tau$');
 ylabel('$\bf{P}(p \in \mathcal{P} : r_{p,s} \leq \tau)$');
+xticks([1, 10, 100, 1000, 10000]);
 set(gca,'xscale','log');
-xlim([1 max(taut)]);
-set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
+xlim([1, 10000]);
+
+% Legend
 legend('Location', 'southeast');
 
-% Save as pdf
-exportgraphics(...
-    f, ...
-    fullfile(outdir, [exp_name, '_time.pdf']) ...
-);
+% Final polish
+PreparePlot(gca);
+
+% Export
+print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_time.pdf']));
 
 end
 

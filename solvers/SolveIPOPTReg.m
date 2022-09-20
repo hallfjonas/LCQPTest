@@ -30,12 +30,19 @@ solver = nlpsol('solver', 'ipopt', nlp, opts_ipopt);
 stats.exit_flag = 1;
 stats.elapsed_time = 0;
 
+% Initialize with inf penalty parameter (similar to 0 penalty)
+sol = CallIPOPTSolver(solver, IPOPT_formulation, 10^3);
+w_opt = sol.x;
+
 sigma = casadi_formulation.sigma0;
 stats.iters_outer = 0;
 
 while(sigma > 1e-17)
-        
-    tic;
+
+    % Update initial guess to previous solution
+    IPOPT_formulation.x0 = w_opt;
+
+    % Call solver again
     sol = CallIPOPTSolver(solver, IPOPT_formulation, sigma);
     w_opt = sol.x;
     
