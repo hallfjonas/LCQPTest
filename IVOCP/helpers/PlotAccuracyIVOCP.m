@@ -1,10 +1,13 @@
-function [] = PlotAccuracyIVOCP(problems, exp_name, outdir, comp_tol)
+function [] = PlotAccuracyIVOCP(problems, exp_name, outdir)
 
 % Number of problems
 np = length(problems);
 
 % Number of solvers (assume each problem has same set of solvers)
 ns = length(problems{1}.solutions);
+
+% Get complementarity tolerance
+compl_tol = GetComplementaritySettings().complementarityTolerance;
 
 %% Prepare data arrays
 % Store solver objective per problem
@@ -32,7 +35,7 @@ for p = 1:np
         end
 
         % Update mins and max if solved
-        if (exit_flag(p,s) == 0 && solution.stats.compl < comp_tol)
+        if (exit_flag(p,s) == 0 && solution.stats.compl < compl_tol)
             % The objective already compares to analytical solution
             f(p,s) = solution.stats.obj;
         
@@ -74,7 +77,7 @@ end
 set(gca, 'YGrid', 'on', 'XGrid', 'off');
 
 % limits
-ylim([min_y, 2.0]);
+% ylim([min_y, 2.0]);
 xlim([1, np]);
 
 % Do annotation
@@ -88,7 +91,7 @@ for p = 2:np
 end
 
 % legend
-legend(lines, names, 'Location', 'northeast');
+% legend(lines, names, 'Location', 'northeast');
 
 % axes
 ylabel("$J$");

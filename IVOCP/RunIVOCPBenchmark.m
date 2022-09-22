@@ -65,7 +65,7 @@ for s=1:length(benchmark.solvers)
 end
 
 %% Complementarity tolerance
-close all; comp_tol = 10e-9;
+close all; 
 
 % Set to latex
 set(groot,'defaultAxesTickLabelInterpreter','latex');
@@ -73,6 +73,6 @@ set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 
 % Create the plots
-PlotTimings(benchmark.problems, 'IVOCP', outdir, comp_tol);
-PlotAccuracyIVOCP(benchmark.problems, 'IVOCP', outdir, comp_tol);
-
+PlotTimings(benchmark.problems, 'IVOCP', outdir);
+PlotTimingswOverhead(benchmark.problems, 'IVOCP', outdir);
+PlotAccuracyIVOCP(benchmark.problems, 'IVOCP', outdir);

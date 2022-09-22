@@ -163,14 +163,6 @@ problem.compl_R = vertcat(compl_R{:});
 problem.indices_x = ind_x;
 problem.indices_z = ind_z;
 
-% Update strategy
-problem.rho0 = 0.01;
-problem.beta = 2;
-problem.complementarityTolerance = 1e-12;
-problem.rhoMax = 10000;
-problem.sigma0 = 1;
-problem.betaSigma = 1/10;
-
 % Problem dimension
 problem.n_x = length(problem.lb);
 problem.n_c = length(problem.constr);
