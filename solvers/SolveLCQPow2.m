@@ -23,14 +23,12 @@ tic;
     problem.ub, ...
     params ...
 );
+
+% Use timiings with overhead
 solution.stats.elapsed_time_w_overhead = toc;
+
 solution.stats.obj = full(problem.Obj(solution.x));
 solution.stats.compl = full(problem.Phi(solution.x));
-
-%% Sanity check plot
-% x_vals = solution.x(casadi_formulation.indices_x);
-% t_vals = linspace(0, 2, length(x_vals));
-% plot(t_vals, x_vals);
 
 end
 

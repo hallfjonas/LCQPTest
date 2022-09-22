@@ -1,14 +1,15 @@
 function [params] = GetLCQPowSettings(name, casadi_formulation)
 
 % Penalty settings
-penaltySettings = GetPenaltySettings();
+complementaritySettings = GetComplementaritySettings();
 
 % Solver Settings
 params.printLevel = 0;
-params.rho0 = penaltySettings.rho0;
-params.penaltyUpdateFactor = penaltySettings.beta;
-params.rhoMax = penaltySettings.rhoMax;
-params.complementarityTolerance = penaltySettings.complementarityTolerance;
+params.initialPenaltyParameter = complementaritySettings.rho0;
+params.penaltyUpdateFactor = complementaritySettings.beta;
+params.maxPenaltyParameter = complementaritySettings.rhoMax;
+params.complementarityTolerance = complementaritySettings.complementarityTolerance;
+params.stationarityTolerance = 1e-6;
 
 % Initial guess
 if isfield(casadi_formulation, "x0")

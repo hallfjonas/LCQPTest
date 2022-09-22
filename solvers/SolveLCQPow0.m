@@ -4,10 +4,10 @@ function [solution] = SolveLCQPow0(casadi_formulation)
 params = GetLCQPowSettings("default", casadi_formulation);
 params.qpSolver = 0;
 
+% Get the LCQP formulation
 problem = ObtainLCQPFromCasadi(casadi_formulation, params.qpSolver);
 
 tic;
-
 [solution.x,solution.y,solution.stats] = LCQPow(...
     problem.Q, ...
     problem.g, ...
@@ -24,15 +24,11 @@ tic;
     problem.ub, ...
     params ...
 );
+
 solution.stats.elapsed_time_w_overhead = toc;
+
 solution.stats.obj = full(problem.Obj(solution.x));
 solution.stats.compl = full(problem.Phi(solution.x));
-
-% TODO(jonas): Figure out why some of these are no longer working
-if solution.stats.exit_flag ~= 0
-    disp(solution.stats.qp_exit_flag)
-    disp("Help");
-end
 
 end
 

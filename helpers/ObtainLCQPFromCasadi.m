@@ -56,14 +56,8 @@ if (~isfield(problem, 'A'))
     problem.ubA = [];
 end
 
-if (~isfield(problem, 'lbL'))
-    problem.lbL = [];
-end
 if (~isfield(problem, 'ubL'))
     problem.ubL = [];
-end
-if (~isfield(problem, 'lbR'))
-    problem.lbR = [];
 end
 if (~isfield(problem, 'ubR'))
     problem.ubR = [];
@@ -71,11 +65,7 @@ end
 
 % Perform a regularization for semi positive definite Hessians
 if min(eig(problem.Q)) < eps
-    problem.Q = problem.Q + 10*eps*eye(size(problem.Q));
-
-    if min(eig(problem.Q)) < eps
-        disp("HeLL");
-    end
+    problem.Q = problem.Q + 1e-10*eye(size(problem.Q));
 end
 
 % Sparse matrices for sparse solvers
