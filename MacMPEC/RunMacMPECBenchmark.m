@@ -10,26 +10,17 @@ benchmark.problems = ReadMacMPECProblems('MacMPECMatlab');
 % and return [x, y, stats]
 benchmark.solvers = { ...
     struct('fun', 'SolveLCQPow0'), ... 
+    struct('fun', 'SolveLCQPow2'), ... 
     struct('fun', 'SolveMIQP'), ... 
-    % struct('fun', 'SolveLCQPow2'), ... 
-    % struct('fun', 'SolveIPOPTPen'), ...
-    %struct('fun', 'SolveSNOPT'), ...
-    %struct('fun', 'SolveMINOS'), ...    
-    % KNITRO and BARON are limited to 10 vars and constraints
-    % struct('fun', 'SolveKNITRO', 'name', 'KNITRO', 'lineStyle', ':'), ...
-    % struct('fun', 'SolveBARON', 'name', 'BARON', 'lineStyle', '-.') ...
-    % NLP method unable to solve anything...
-    % struct('fun', 'SolveNLP'), ...
+    struct('fun', 'SolveIPOPTPen'), ...
+    struct('fun', 'SolveIPOPTRegEq'), ...
+    struct('fun', 'SolveIPOPTReg'), ...
+    struct('fun', 'SolveIPOPTNLP'), ...
 };
-
-% Get the solver visualization settings
-addpath("../helpers")
-for s=1:length(benchmark.solvers)
-    benchmark.solvers{s}.style = GetPlotStyle(benchmark.solvers{s}.fun);
-end
 
 %% Run Solvers
 addpath("../solvers");
+addpath("../helpers/");
 for i = 1:length(benchmark.problems)
     fprintf("Solving problem %s (%d/%d).\n", benchmark.problems{i}.name, i, length(benchmark.problems));
     for j = 1:length(benchmark.solvers)
@@ -39,7 +30,7 @@ for i = 1:length(benchmark.problems)
     end
 end
 
-outdir = 'solutions/070422';
+outdir = 'solutions/paper';
 if ~exist(outdir, 'dir')
    mkdir(outdir)
 end
@@ -48,35 +39,27 @@ save(outdir + "/sol.mat");
 
 %% Create Performance Plots
 close all; clear all; clc;
-outdir = 'solutions/070422';
+outdir = 'solutions/paper';
 load(fullfile(outdir, 'sol.mat'));
 addpath("helpers");
+addpath("../helpers");
 
-% Complementarity violation larger than this will count as non-successful
-% convergence
-compl_tolerance = 10e-2;
-
-% Select a directory to save figures to
-% For final results:
-% outdir = '../../paper-lcqp-2/figures/benchmarks';
-PlotTimings(benchmark.problems, 'MacMPEC', outdir,compl_tolerance);
-PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir, compl_tolerance, "cutoff_penalized");
-SaveOutput(benchmark.problems, outdir, compl_tolerance);
-
-% Count unsuccessful complementarity convergence too
-close all;
-compl_tolerance = 1000;
-
-% Select a directory to save figures to
-outdir = fullfile(outdir, 'low_compl');
-
-if ~exist(outdir, 'dir')
-   mkdir(outdir)
+% Get the solver visualization settings
+for s=1:length(benchmark.solvers)
+    for p=1:length(benchmark.problems)
+        benchmark.problems{p}.solutions{s}.solver.style = GetPlotStyle(benchmark.problems{p}.solutions{s}.solver.fun);
+    end
 end
 
-% For final results:
-% outdir = '../../paper-lcqp-2/figures/benchmarks';
-PlotTimings(benchmark.problems, 'MacMPEC', outdir,compl_tolerance);
-PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir, compl_tolerance, "cutoff_penalized");
-SaveOutput(benchmark.problems, outdir, compl_tolerance);
+%% Complementarity tolerance
+close all;
 
+% Set to latex
+set(groot,'defaultAxesTickLabelInterpreter','latex');
+set(groot,'defaulttextinterpreter','latex');
+set(groot,'defaultLegendInterpreter','latex');
+
+% Create the plots
+PlotTimings(benchmark.problems, 'MacMPEC', outdir);
+PlotTimingswOverhead(benchmark.problems, 'MacMPEC', outdir);
+PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir, "cutoff_penalized");
