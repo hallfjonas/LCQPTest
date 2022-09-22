@@ -33,7 +33,7 @@ R = lcqp_formulation.R;
 nComp = size(L,1);
 problem.nComp = nComp;
 
-M = 20;
+M = 90;
 lb_L = zeros(nComp,1);
 ub_L = M*ones(nComp,1);
 lb_R = zeros(nComp,1);
