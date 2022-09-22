@@ -3,16 +3,14 @@ function [problem] = ObtainIPOPTRegEq(casadi_formulation)
 %% Import casadi
 import casadi.*
 
-% Copy penalty settings
-problem.rho0 = casadi_formulation.rho0;
-problem.beta = casadi_formulation.beta;
-problem.rhoMax = casadi_formulation.rhoMax;
-
 % Copy variables, box constraints and initial guess
 problem.x = casadi_formulation.x;
 problem.lb = casadi_formulation.lb;
 problem.ub = casadi_formulation.ub;
-problem.x0 = casadi_formulation.x0;
+
+if isfield(casadi_formulation, 'x0')
+    problem.x0 = casadi_formulation.x0;
+end
 
 % Copy constraints
 problem.constr = casadi_formulation.constr;
