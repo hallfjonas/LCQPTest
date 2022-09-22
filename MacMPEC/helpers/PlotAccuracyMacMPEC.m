@@ -1,4 +1,4 @@
-function [] = PlotAccuracyMacMPEC(problems, exp_name, outdir, compl_tolerance, performance_metric)
+function [] = PlotAccuracyMacMPEC(problems, exp_name, outdir, performance_metric)
 
 % Number of problems
 np = length(problems);
@@ -11,6 +11,7 @@ set(groot,'defaultAxesTickLabelInterpreter','latex');
 set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 
+compl_tolerance = GetComplementaritySettings().complementarityTolerance;
 %% Prepare data arrays
 % Store solver objective per problem
 f = zeros(np, ns);
@@ -74,7 +75,7 @@ for p = 1:np
 end
 
 %% Generate a obj-val comparison plot
-fig = figure(3); hold on; grid on;
+fig = figure(3); hold on; grid on; box on;
 for s = 1:ns
     solver = problems{1}.solutions{s}.solver;
     plot(eps + f(:,s), ...
@@ -90,21 +91,33 @@ xtags = strings(np,1);
 for p = 1:np
     pname = string(strrep(problems{p}.name,'_',' '));
     xtags(p) = pname;
-end
-legend('Location', 'northeast');
-set(gca,'xtick',1:np,'xticklabel',xtags);
+end 
+set(gca,'xtick',1:np,'xticklabel',xtags, 'FontSize', 10);
 xtickangle(90);
 
+% Create the legend
+% leg = legend('Location', 'northeast');
+
+% Adapt y limits so that everything is visible
+% ylim([eps/2, 10e9]);
+
 % yaxes
-ylabel("$\varepsilon_\mathrm{mach} + (J(x)-J(x^\ast))^+ + \varphi(x)$")
+ylab = ylabel("$\varepsilon_\mathrm{mach} + (J(x)-J(x^\ast))^+ + \varphi(x)$")
 set(gca, 'YScale', 'log')
 
-% Save as pdf
-exportgraphics(...
-    fig, ...
-    fullfile(outdir, [exp_name, '_obj_full.pdf']) ...
-);
+% Final polish
+PreparePlot(gca);
 
+% Adapt xtick label font size
+a = get(gca,'XTickLabel');  
+set(gca,'XTickLabel',a,'fontsize',10);
+% set(leg,'fontsize',18);
+set(ylab,'fontsize',18);
+
+% Export
+print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_obj_full.pdf']));
+
+return
 %% Generate a obj-val comparison plot
 %fig = figure(30); hold on; grid on;
 %for s = 1:ns
@@ -138,7 +151,7 @@ exportgraphics(...
 %);
 
 %% Create bar plot 
-fig = figure(10); hold on; grid on;
+fig = figure(10); hold on; grid on; box on;
 
 % Create bins
 edges = 10.^(-16:2:ceil(log(max(f(~isinf(f))))));
@@ -184,15 +197,14 @@ for s = 1:ns
 end
 legend(b, legendnames, 'Location', 'northwest');
 
+% Final polish
+PreparePlot(gca);
 
-% Save as pdf
-exportgraphics(...
-    fig, ...
-    fullfile(outdir, [exp_name, '_obj_bar.pdf']) ...
-);
+% Export
+print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_obj_bar.pdf']));
 
 %% Complementarity Plot
-fig = figure(11); hold on; grid on;
+fig = figure(11); hold on; grid on; box on;
 
 % Show the unsuccessful area
 y0 = 10e-17;
@@ -237,10 +249,11 @@ xtickangle(90);
 % Y-Log
 set(gca, 'YScale', 'log')
 
-% Save as pdf
-exportgraphics(...
-    fig, ...
-    fullfile(outdir, [exp_name, '_compl.pdf']) ...
-);
+% Final polish
+PreparePlot(gca);
+
+% Export
+print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_compl.pdf']));
+
 end
 

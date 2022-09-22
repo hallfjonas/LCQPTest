@@ -1,4 +1,4 @@
-function [] = PlotTimings(problems, exp_name, outdir, compl_tol)
+function [] = PlotTimings(problems, exp_name, outdir)
 
 %% Prepare data arrays
 % Number of problems
@@ -17,6 +17,9 @@ rt = zeros(np, ns);
 % Store minimum time per problem
 min_t_per_problem = inf(np,1);
 max_t_per_problem = -inf(np,1);
+
+% Get complementarity tolerance
+compl_tol = GetComplementaritySettings().complementarityTolerance;
 
 %% Get the min&max solution time&obj for each problem
 for p = 1:np
@@ -85,7 +88,14 @@ xlabel('$\tau$');
 ylabel('$\bf{P}(p \in \mathcal{P} : r_{p,s} \leq \tau)$');
 xticks([1, 10, 100, 1000, 10000]);
 set(gca,'xscale','log');
-xlim([1, 10000]);
+
+if exp_name == "MacMPEC"
+    xlim([1, 10000]);
+elseif exp_name == "IVOCP"
+    xlim([1, 5000]);
+else
+    xlim([1, 1000]);
+end
 
 % Legend
 legend('Location', 'southeast');

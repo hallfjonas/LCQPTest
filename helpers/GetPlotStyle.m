@@ -4,11 +4,11 @@ function [ res ] = GetPlotStyle(solname)
     markers = {'o', '+', '*', 'x', 's', 'd', '^', 'v', '>', '<', 'p', 'h'};
     linestyles = {'-','--',':','-.'};
 
-    % Plot colors for choosing
-    %figure; hold on;
-    %for i = 1:20
-    %    xline(i, 'Color', colors(i,:), 'LineWidth', 5);
-    %end
+%     % Plot colors for choosing
+%     figure; hold on;
+%     for i = 1:20
+%        xline(i, 'Color', colors(i,:), 'LineWidth', 5);
+%     end
 
     res = {};
 
@@ -17,11 +17,16 @@ function [ res ] = GetPlotStyle(solname)
         res.markidx = 1;
         res.lsidx = 1;
         res.label = "LCQPow qpOASES";
+    elseif solname == "SolveLCQPow0wOverhead"
+        res.colidx = 4;
+        res.markidx = 3;
+        res.lsidx = 1;
+        res.label = "LCQPow qoOASES overhead";
     elseif solname == "SolveLCQPow1"
         res.colidx = 1;
         res.markidx = 3;
         res.lsidx = 1;
-        res.label = "LCQPow qoOASES";
+        res.label = "LCQPow qoOASES MA57";
     elseif solname == "SolveLCQPow2"
         res.colidx = 8;
         res.markidx = 2;
