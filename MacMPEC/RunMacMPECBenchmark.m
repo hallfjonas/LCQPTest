@@ -1,13 +1,13 @@
 %% Clear and Close
-clc; clear all; close all;
+clc; clear; close all;
 
 %% Build benchmark
 benchmark = {};
 benchmark.problems = ReadMacMPECProblems('MacMPECMatlab');
 
-% Append solvers by specifying a solver strategy and solver name
-% Each solver is assumed to take the input of a benchmark.problem struct
-% and return [x, y, stats]
+% Append solvers by specifying their function names.
+% Each solver is assumed to take the input of a CasADi formulated 
+% LCQP, and returns the primal and dual solution as well as some stats.
 benchmark.solvers = { ...
     struct('fun', 'SolveLCQPow0'), ... 
     struct('fun', 'SolveLCQPow2'), ... 
@@ -37,27 +37,27 @@ end
 
 save(outdir + "/sol.mat");
 
-%% Create Performance Plots
-close all; clear all; clc;
+%% Prepare Performance Plots
+close all; clear; clc;
 outdir = 'solutions/paper';
 load(fullfile(outdir, 'sol.mat'));
 addpath("helpers");
 addpath("../helpers");
 
-% Get the solver visualization settings
+% Get the solver visualization settings and add them to the struct
 for s=1:length(benchmark.solvers)
     for p=1:length(benchmark.problems)
         benchmark.problems{p}.solutions{s}.solver.style = GetPlotStyle(benchmark.problems{p}.solutions{s}.solver.fun);
     end
 end
 
-%% Complementarity tolerance
-close all;
-
 % Set to latex
 set(groot,'defaultAxesTickLabelInterpreter','latex');
 set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
+
+%% Create plots
+close all;
 
 % Create the plots
 PlotTimings(benchmark.problems, 'MacMPEC', outdir);
