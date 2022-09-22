@@ -44,8 +44,12 @@ end
 
 %% Run the solver
 params.outputflag = 0; 
-params.IntFeasTol = 1e-9;
+params.IntFeasTol = 5e-7;
+params.FeasibilityTol = 5e-7;
+
+tic;
 results = gurobi(model, params);
+solution.stats.elapsed_time_w_overhead = toc;
 
 % Save the solution and stats
 solution.stats.elapsed_time = results.runtime;
@@ -63,35 +67,5 @@ if solution.stats.exit_flag == 0
     solution.stats.compl = compl;
     solution.stats.obj = full(problem.Obj(solution.x(1:nV)));
 end
-
-
-%% Sanity check plot
-% x_vals = solution.x(casadi_formulation.indices_x);
-% y_vals = [nan; solution.x(casadi_formulation.indices_z(1:2:end))];
-% lam_vals = [nan; solution.x(casadi_formulation.indices_z(2:2:end))];
-% z_L_vals = solution.x(end-2*nComp+1:end-nComp);
-% z_R_vals = solution.x(end-nComp+1:end);
-% t_vals = linspace(0, 2, length(x_vals));
-% figure(1); grid on; hold on;
-% plot(t_vals, x_vals, "Color", "black");
-% plot(t_vals, y_vals, "Color", "blue");
-% plot(t_vals, lam_vals, "Color", "yellow");
-% plot(t_vals, x_vals + lam_vals, "Color", "green");
-
-%figure(2); grid on; hold on;
-% [Green z_L = 0 => y = 0]
-% [Red   z_R = 0 => lambda = 0]
-%plot(t_vals, [nan; z_L_vals(1:2:end)], "Color", "green", "LineStyle","-", "LineWidth", 2);
-%plot(t_vals, [nan; z_R_vals(1:2:end)], "Color", "red", "LineStyle","--", "LineWidth", 2);
-%plot(t_vals, lam_vals, "Color", "yellow");
-
-% figure(3); grid on; hold on;
-% [Green z_L = 0 => y = 1]
-% [Red   z_R = 0 => x + lambda = 0]
-% plot(t_vals, [nan; z_L_vals(2:2:end)], "Color", "green", "LineStyle","-", "LineWidth", 2);
-% plot(t_vals, [nan; z_R_vals(2:2:end)], "Color", "red", "LineStyle","--", "LineWidth", 2);
-
-% plot(t_vals, [nan; z_L_vals(2:2:end) + z_R_vals(2:2:end)], "Color", "magenta", "LineStyle","-.", "LineWidth", 2);
-%x_vals
 
 end
