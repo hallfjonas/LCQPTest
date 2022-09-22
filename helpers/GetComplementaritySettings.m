@@ -12,6 +12,5 @@ settings.sigmaMin = 1e-17;
 
 % Complementarity tolerance
 settings.complementarityTolerance = 1e-8;
-settings.stationarityTolerance = 1e-7;
 
 end
