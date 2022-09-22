@@ -1,17 +1,10 @@
-function [ problem ] = GetMovingMassesLCQP(nMasses, T, N, u_bounded)
+function [ problem ] = GetMovingMassesLCQP(nMasses, T, N)
 
 addpath("~/casadi-matlab2014b-v3.5.5");
 import casadi.*
 
 % Step size and number of nodes
 h = T/N;
-
-% Control bound
-if (u_bounded)
-    boundControl = 0.5*10^(nMasses-1);
-else
-    boundControl = inf;
-end
 
 % Terminal constraint tolerance
 tol = 0;
@@ -127,10 +120,10 @@ z0 = [y0; lam0; lam1];
 % Box constraints on x, z, and u
 lb_x = -inf(nx, 1);
 ub_x = inf(nx, 1);
-lb_z  = -inf(nz, 1);    % non-neg. is imposed by solver
-ub_z = inf(nz, 1);      % non-neg. is imposed by solver
-lb_u = repmat(-boundControl, nu, 1);
-ub_u = repmat(boundControl, nu, 1);
+lb_z  = -inf(nz, 1);            % non-neg. is imposed by solver
+ub_z = inf(nz, 1);              % non-neg. is imposed by solver
+lb_u = -inf(nu,1);
+ub_u = inf(nu,1);
 
 %% Formulate the NLP
 for k=0:N-1
@@ -238,14 +231,6 @@ problem.indices_x = ind_x;
 problem.indices_u = ind_u;
 problem.indices_z = ind_z;
 
-% Update strategy
-problem.rho0 = 0.01;
-problem.beta = 2;
-problem.complementarityTolerance = 1e-12;
-problem.rhoMax = 10000;
-problem.sigma0 = 1;
-problem.betaSigma = 1/10;
-
 % Problem functions (for comparing solutions)
 problem.Obj = Function('Obj', {problem.x}, {problem.obj});
 Compl_L = Function('Compl_L', {problem.x}, {problem.compl_L});
@@ -256,4 +241,5 @@ problem.Phi = Function('Phi', {problem.x}, {Compl_L(problem.x)'*Compl_R(problem.
 problem.n_x = length(problem.x);
 problem.n_c = length(problem.constr);
 problem.n_comp = length(problem.compl_L);
+
 end
