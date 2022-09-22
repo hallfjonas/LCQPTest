@@ -2,3 +2,5 @@
 */solutions/**
 !*/solutions/paper
 */solvers_old
+
+*.asv
