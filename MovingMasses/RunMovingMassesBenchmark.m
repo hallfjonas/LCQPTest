@@ -9,17 +9,16 @@ benchmark.problems = {};
 % Each solver is assumed to take the input of a benchmark.problem struct
 % and return [x, y, stats]
 benchmark.solvers = { ...
-    struct('fun', 'SolveLCQP', 'name', 'LCQP', 'lineStyle', '-'), ...     
-    struct('fun', 'SolveLCQP_OSQP', 'name', 'LCQP OSQP', 'lineStyle', '-'), ... 
-    struct('fun', 'SolveIPOPT', 'name', 'IPOPT Penalty', 'lineStyle', '--'), ...
-    struct('fun', 'SolveIPOPTRegComp', 'name', 'IPOPT Relax', 'lineStyle', ':'), ...    
-    struct('fun', 'SolveIPOPTRegEq', 'name', 'IPOPT Smooth', 'lineStyle', ':'), ...
-    %struct('fun', 'SolveIPOPTReg', 'name', 'IPOPT Reg', 'lineStyle', ':'), ...    
-    %struct('fun', 'SolveLCQP_L0_OSQP', 'name', 'LCQP L0 OSQP', 'lineStyle', '-.'), ... 
-    %struct('fun', 'SolveLCQP_L0_qpOASES', 'name', 'LCQP L0 qpOASES', 'lineStyle', '-.'), ... 
+    struct('fun', 'SolveLCQPow1'), ... 
+    struct('fun', 'SolveLCQPow2'), ... 
+    struct('fun', 'SolveMIQP'), ... 
+    struct('fun', 'SolveIPOPTPen'), ...
+    struct('fun', 'SolveIPOPTRegEq'), ...
+    struct('fun', 'SolveIPOPTReg'), ...
+    struct('fun', 'SolveIPOPTNLP'), ...
 };
 
-u_bounded = false;
+addpath("helpers");
 
 % Add problems with 2 masses
 i = 1;
@@ -28,7 +27,7 @@ for N = 50:5:100
         benchmark.problems{i}.nMasses = 2;
         benchmark.problems{i}.T = T;
         benchmark.problems{i}.N = N;    
-        benchmark.problems{i}.casadi_formulation = GetMovingMassesLCQP(2, T, N, u_bounded);
+        benchmark.problems{i}.casadi_formulation = GetMovingMassesLCQP(2, T, N);
         
         i = i+1;
     end
@@ -44,11 +43,20 @@ for i = 1:length(benchmark.problems)
     end
 end
 
-save('solutions/sol2.mat');
+outdir = 'solutions/paper';
+if ~exist(outdir, 'dir')
+   mkdir(outdir)
+end
+
+% Some warnings are thrown here because CasADi objects can't be stored
+% That's OK, because we don't need the CasADi objects for post-processing
+save(outdir + "/sol.mat");
 
 %% Plot solutions
 close all;
 addpath("../plotters");
+
+% Warnings for similar reasons as above
 load('solutions/sol2.mat');
 
 % PlotSolutionsMM(benchmark.problems{end});
