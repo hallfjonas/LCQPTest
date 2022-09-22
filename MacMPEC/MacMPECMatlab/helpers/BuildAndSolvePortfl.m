@@ -41,14 +41,10 @@ for k = 1:NS
     % KKT
     sumTerm = 0;
     for i = 1:NR
-        innerSum = 0;
-        for j = 1:NS
-            innerSum = s(j)*F(j,i);
-        end
-        sumTerm = sumTerm + 2*(innerSum - (R(i)+r(i)))*F(k,i);
+        sumTerm = sumTerm + s'*F(:,i) - (R(i)+r(i))*F(k,i);
     end
     
-    sumTerm = sumTerm  - l - m(k);
+    sumTerm = 2*sumTerm  - l - m(k);
     
     constr = {...
         constr{:}, ...
