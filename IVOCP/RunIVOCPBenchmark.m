@@ -64,9 +64,13 @@ for s=1:length(benchmark.solvers)
     end
 end
 
+save(outdir + "/sol.mat");
+
 %% Complementarity tolerance
 close all; 
 
+outdir = 'solutions/paper';
+load(fullfile(outdir, 'sol.mat'));
 % Set to latex
 set(groot,'defaultAxesTickLabelInterpreter','latex');
 set(groot,'defaulttextinterpreter','latex');
