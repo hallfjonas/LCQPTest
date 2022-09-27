@@ -94,7 +94,7 @@ if exp_name == "MacMPEC"
 elseif exp_name == "IVOCP"
     xlim([1, 5000]);
 else
-    xlim([1, 1000]);
+    % Don't adjust in default case
 end
 
 % Legend

@@ -9,7 +9,7 @@ params.initialPenaltyParameter = complementaritySettings.rho0;
 params.penaltyUpdateFactor = complementaritySettings.beta;
 params.maxPenaltyParameter = complementaritySettings.rhoMax;
 params.complementarityTolerance = complementaritySettings.complementarityTolerance;
-params.stationarityTolerance = 1e-6;
+params.stationarityTolerance = 1e-7;
 
 % Initial guess
 if isfield(casadi_formulation, "x0")
