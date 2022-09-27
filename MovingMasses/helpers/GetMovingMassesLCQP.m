@@ -1,6 +1,6 @@
 function [ problem ] = GetMovingMassesLCQP(nMasses, T, N)
 
-addpath("~/casadi-matlab2014b-v3.5.5");
+addpath("~/casadi");
 import casadi.*
 
 % Step size and number of nodes
@@ -215,12 +215,12 @@ problem.lb = lbw;
 problem.ub = ubw;
 
 % Objective
-problem.obj = J;
+problem.J = J;
 
 % Linear constraints and bounds
 problem.constr = vertcat(g{:});
-problem.lb_constr = lbg;
-problem.ub_constr = ubg;
+problem.lbA = lbg;
+problem.ubA = ubg;
 
 % Complementarity pairs
 problem.compl_L = vertcat(compl_L{:});
@@ -232,7 +232,7 @@ problem.indices_u = ind_u;
 problem.indices_z = ind_z;
 
 % Problem functions (for comparing solutions)
-problem.Obj = Function('Obj', {problem.x}, {problem.obj});
+problem.Obj = Function('Obj', {problem.x}, {problem.J});
 Compl_L = Function('Compl_L', {problem.x}, {problem.compl_L});
 Compl_R = Function('Compl_R', {problem.x}, {problem.compl_R});
 problem.Phi = Function('Phi', {problem.x}, {Compl_L(problem.x)'*Compl_R(problem.x)});

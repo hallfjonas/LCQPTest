@@ -18,6 +18,7 @@ benchmark.solvers = { ...
     struct('fun', 'SolveIPOPTNLP'), ...
 };
 
+addpath("../helpers");
 addpath("helpers");
 
 % Add problems with 2 masses
@@ -38,7 +39,7 @@ addpath("../solvers");
 for i = 1:length(benchmark.problems)
     for j = 1:length(benchmark.solvers)
         solver = benchmark.solvers{j};
-        benchmark.problems{i}.solutions{j} = feval(solver.fun, benchmark.problems{i});
+        benchmark.problems{i}.solutions{j} = feval(solver.fun, benchmark.problems{i}.casadi_formulation);
         benchmark.problems{i}.solutions{j}.solver = benchmark.solvers{j};
     end
 end
@@ -48,6 +49,13 @@ if ~exist(outdir, 'dir')
    mkdir(outdir)
 end
 
+%% Get the solver visualization settings
+for s=1:length(benchmark.solvers)
+    for p=1:length(benchmark.problems)
+        benchmark.problems{p}.solutions{s}.solver.style = GetPlotStyle(benchmark.problems{p}.solutions{s}.solver.fun);
+    end
+end
+
 % Some warnings are thrown here because CasADi objects can't be stored
 % That's OK, because we don't need the CasADi objects for post-processing
 save(outdir + "/sol.mat");
@@ -55,10 +63,11 @@ save(outdir + "/sol.mat");
 %% Plot solutions
 close all;
 addpath("../plotters");
+addpath("helpers");
 
 % Warnings for similar reasons as above
-load('solutions/sol2.mat');
+load(outdir + "/sol.mat");
 
-% PlotSolutionsMM(benchmark.problems{end});
-PlotTimings(benchmark.problems, 'MovingMasses2');
-%PlotAccuracy(benchmark.problems, 'MovingMasses2');
+PlotSolutionsMM(benchmark.problems{end}, 'MovingMasses', outdir);
+%PlotTimings(benchmark.problems, 'MovingMasses', outdir);
+%PlotAccuracyMM(benchmark.problems, 'MovingMasses', outdir);
