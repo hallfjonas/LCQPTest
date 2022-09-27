@@ -20,16 +20,11 @@ for i = 1:nMasses
     ind_lambda1(i,:) = ind_z(i + 2*nMasses:3*nMasses:end);
 end
 
-% Set to latex
-set(groot,'defaultAxesTickLabelInterpreter','latex');
-set(groot,'defaulttextinterpreter','latex');
-set(groot,'defaultLegendInterpreter','latex');
-
 %% Figure 1: Plot States
 % Positions
 
 % Colors
-cmap = colormap(winter);
+cmap = colormap(winter); close all;
 cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
 col_indices = floor(linspace(1, size(cmap,1), nMasses));
 

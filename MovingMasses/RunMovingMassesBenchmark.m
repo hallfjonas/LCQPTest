@@ -69,5 +69,5 @@ addpath("helpers");
 load(outdir + "/sol.mat");
 
 PlotSolutionsMM(benchmark.problems{end}, 'MovingMasses', outdir);
-%PlotTimings(benchmark.problems, 'MovingMasses', outdir);
-%PlotAccuracyMM(benchmark.problems, 'MovingMasses', outdir);
+PlotTimings(benchmark.problems, 'MovingMasses', outdir);
+PlotAccuracyMM(benchmark.problems, 'MovingMasses', outdir);
