@@ -21,13 +21,6 @@ for i = 1:nMasses
 end
 
 %% Figure 1: Plot States
-% Positions
-
-% Colors
-cmap = colormap(winter); close all;
-cmap = cmap(1:(size(cmap,1)-30), :);   % Remove v bright colors
-col_indices = floor(linspace(1, size(cmap,1), nMasses));
-
 % Plot the states of the first solution
 i = 1;
 solution = problem.solutions{i};   
@@ -38,100 +31,124 @@ solution = problem.solutions{i};
 %    t, zeros(size(t)), ...
 %    ':k', 'DisplayName', 'Switch');
 
-
 % First plot positions, velocities, controles
 figure(62); box on; hold on; grid on;
+C = linspecer(nMasses+1);
+linestyles = ["-", "--", ":", "-."];
+tlo = tiledlayout(3,1,'TileSpacing','none','Padding','none');
+
+% Position plot
+ax1 = nexttile; hold on; box on;
+xlim([0,T]);
+ylim([-1.5,1.5]);
+set(gca,'Xticklabel',[]);
+legend('Location', 'northeast', 'Orientation', 'horizontal');
+
+% Velocity plot
+ax2 = nexttile; hold on; box on;
+xlim([0,T]);
+ylim([-1.5,1.5]);
+set(gca,'Xticklabel',[]);
+legend('Location', 'northeast', 'Orientation', 'horizontal');
+
+% Control plot
+ax3 = nexttile; hold on; box on;
+xlim([0,T]);    
+ylim([-1.5,1.5]);
+xlabel("$\mathrm{time}$");
+legend('Location', 'northeast', 'Orientation', 'horizontal');
 for j = 1:nMasses
+    
     % Positions
     plot(...
+        ax1, ...
         t, solution.x(ind_p(j,:)), ...
-        'LineStyle', '-', ...  
-        'Color', cmap(col_indices(j),:), ...
+        'LineStyle', linestyles(j), ...  
+        'Color', C(j,:), ...
         'DisplayName', ['$p_', num2str(j), '$'] ...
     );
 
-    legend('Location', 'southeast', 'Orientation', 'horizontal');
-
     plot(...
+        ax2, ...
         t, solution.x(ind_v(j,:)), ...
-        'LineStyle', '--', ...     
-        'Color', cmap(col_indices(j),:), ...
+        'LineStyle', linestyles(j), ...     
+        'Color', C(j,:), ...
         'DisplayName', ['$v_', num2str(j), '$'] ...
     );
-
-    xlabel('$t$');
-    legend;
 end
 
 % Controls
-yyaxis right
-ax = gca;
-ax.YColor = 'r';
 stairs(...
+    ax3, ...
     t(1:end), [solution.x(ind_u); NaN], ...
     'DisplayName', '$u$', ...
     'LineStyle', '-', ...
     'LineWidth', 2, ...
-    'Color', "red" ...
-);    
-hold off;
-
-% Plot legend
-legend("Location", "northeast");
-
-% Adjust limits
-xlim([0,T]);
-yyaxis left; ylim([-2,2]);
-yyaxis right; ylim([-0.4, 0.4]);
-
-% Update labels
-xlabel("$\mathrm{time}$");
-yyaxis left; ylabel("$\mathrm{states}$");
-yyaxis right; ylabel("$\mathrm{controls}$");
+    'Color', C(end,:) ...
+);
 
 % Final polish
-PreparePlotMM(gca);
+PreparePlotMM();
 
 % Export
 print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_states.pdf']));
 
 %% Plot complementarity variables
+
+C = linspecer(nMasses);
+linestyles = ["--", ":", "-"];
+
 figure(63); box on; hold on; grid on;
+tlo = tiledlayout(nMasses,1,'TileSpacing','none','Padding','none');
 for j = 1:nMasses
+    nexttile; hold on; box on;
+    % Remove x tick labels from all subplots but lowest
+    if j < nMasses
+        set(gca,'Xticklabel',[]); 
+    end
+
+    % Otherwise box is not printed lol
+    if j == 1
+        ylim([0,1.5]);
+    else
+        ylim([0,1.49]);
+    end
+
     plot(...
         t(2:end), solution.x(ind_lambda0(j,:)), ...
-        'LineStyle', '--', ...
-        'Color', cmap(col_indices(j),:)/2, ...
+        'LineStyle', linestyles(1), ...
+        'Color', C(j,:), ...
         'DisplayName', ['$\lambda^+_', num2str(j), '$'] ...
     );
 
     plot(...
         t(2:end), solution.x(ind_lambda1(j,:)), ...
-        'LineStyle', '--', ...
-        'Color', cmap(col_indices(j),:), ...
+        'LineStyle', linestyles(2), ...
+        'Color', C(j,:), ...
         'DisplayName', ['$\lambda^-_', num2str(j), '$'] ...
     );
 
     plot(...
         t(2:end), solution.x(ind_y(j,:)), ...
-        'LineStyle', ':', ...
-        'Color', cmap(col_indices(j),:), ...
+        'LineStyle', linestyles(3), ...
+        'Color', C(j,:), ...
         'DisplayName', ['$y_', num2str(j), '$'] ...
     );
+    
+    % Legend
+    legend(Location="northeast");
 end
 
-% Legend
-legend;
 
 % Update range
 xlim([0,T]);
 
 % Update labels
 xlabel("$\mathrm{time}$");
-ylabel("$\mathrm{states}$");
+% ylabel("$\mathrm{states}$");
 
 % Final polish
-PreparePlotMM(gca);
+PreparePlotMM();
 
 % Export
 print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_states_complementarities.pdf']));
