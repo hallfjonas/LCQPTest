@@ -1,5 +1,10 @@
 function [] = PreparePlot(gca)
 
+% Set to latex
+set(groot,'defaultAxesTickLabelInterpreter','latex');
+set(groot,'defaulttextinterpreter','latex');
+set(groot,'defaultLegendInterpreter','latex');
+
 % Want to change all linewidths?
 set(findall(gca, 'Type', 'Line'), 'LineWidth', 3);
 
