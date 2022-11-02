@@ -67,16 +67,15 @@ end
 save(outdir + "/sol.mat");
 
 %% Complementarity tolerance
-close all; 
+close all;
 
 outdir = 'solutions/paper';
 load(fullfile(outdir, 'sol.mat'));
-% Set to latex
-set(groot,'defaultAxesTickLabelInterpreter','latex');
-set(groot,'defaulttextinterpreter','latex');
-set(groot,'defaultLegendInterpreter','latex');
+
+outdir = 'solutions/paper';
+addpath("helpers");
 
 % Create the plots
 PlotTimings(benchmark.problems, 'IVOCP', outdir);
-PlotTimingswOverhead(benchmark.problems, 'IVOCP', outdir);
+% PlotTimingswOverhead(benchmark.problems, 'IVOCP', outdir);
 PlotAccuracyIVOCP(benchmark.problems, 'IVOCP', outdir);
