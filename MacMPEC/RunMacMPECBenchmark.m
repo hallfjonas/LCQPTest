@@ -2,6 +2,7 @@
 clc; clear; close all;
 
 %% Build benchmark
+addpath("helpers");
 benchmark = {};
 benchmark.problems = ReadMacMPECProblems('MacMPECMatlab');
 
@@ -50,11 +51,6 @@ for s=1:length(benchmark.solvers)
         benchmark.problems{p}.solutions{s}.solver.style = GetPlotStyle(benchmark.problems{p}.solutions{s}.solver.fun);
     end
 end
-
-% Set to latex
-set(groot,'defaultAxesTickLabelInterpreter','latex');
-set(groot,'defaulttextinterpreter','latex');
-set(groot,'defaultLegendInterpreter','latex');
 
 %% Create plots
 close all;
