@@ -30,7 +30,7 @@ for p = 1:np
         exit_flag(p,s) = solution.stats.exit_flag;
         
         % Update mins and max if solved
-        if (exit_flag(p,s) == 0 && solution.stats.compl < compl_tol)
+        if (solution.stats.compl < compl_tol)
             % Update minimum time
             if (t(p,s) < min_t_per_problem(p))
                 min_t_per_problem(p) = t(p,s);
@@ -51,7 +51,7 @@ for p = 1:np
         solution = problem.solutions{s};
         
         % Failed solutions are set to max val
-        if (exit_flag(p,s) ~= 0 || solution.stats.compl >= compl_tol)
+        if (solution.stats.compl >= compl_tol)
             t(p,s) = inf;
         end
                 
@@ -85,7 +85,7 @@ for s=1:ns
     ); hold on; box on; grid on;
 end
 xlabel('$\tau$');
-ylabel('$\bf{P}(p \in \mathcal{P} : r_{p,s} \leq \tau)$');
+ylabel('$P$');
 xticks([1, 10, 100, 1000, 10000]);
 set(gca,'xscale','log');
 

@@ -23,7 +23,7 @@ stats.exit_flag = 0;
 stats.elapsed_time = 0;
 
 tic;
-sol = CallIPOPTSolver( solver, IPOPT_formulation, complementaritySettings.complementarityTolerance*0.95 );
+sol = CallIPOPTSolver( solver, IPOPT_formulation, complementaritySettings.sigma_nlp );
 stats.elapsed_time_w_overhead = toc;
 
 stats.elapsed_time = solver.stats.t_proc_total;

@@ -30,7 +30,7 @@ for p = 1:np
         exit_flag(p,s) = solution.stats.exit_flag;
         
         % Update mins and max if solved
-        if (exit_flag(p,s) == 0 && solution.stats.compl < compl_tol)
+        if (solution.stats.compl < compl_tol)
             % Update minimum time
             if (t(p,s) < min_t_per_problem(p))
                 min_t_per_problem(p) = t(p,s);
@@ -51,7 +51,7 @@ for p = 1:np
         solution = problem.solutions{s};
         
         % Failed solutions are set to max val
-        if (exit_flag(p,s) ~= 0 || solution.stats.compl >= compl_tol)
+        if (solution.stats.compl >= compl_tol)
             t(p,s) = inf;
         end
                 
