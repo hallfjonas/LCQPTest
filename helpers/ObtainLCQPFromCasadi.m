@@ -111,4 +111,9 @@ if (~isfield(problem, "ub"))
     problem.ub = [];
 end
 
+% Has initial guess?
+if isfield(casadi_formulation, "x0")
+    problem.x0 = casadi_formulation.x0;
+end
+
 end

@@ -32,7 +32,11 @@ model.rhs = MIQP_formulation.rhs;
 model.sense = '<';
 model.lb = MIQP_formulation.lb;
 model.ub = MIQP_formulation.ub;
- 
+
+if isfield(MIQP_formulation, "x0")
+    model.start = MIQP_formulation.x0;
+end
+
 % Set variable types
 for i=1:nV
     model.vtype(i) = 'C';

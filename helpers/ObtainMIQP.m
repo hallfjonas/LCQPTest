@@ -42,6 +42,7 @@ ub_R = M*ones(nComp,1);
 if (isfield(lcqp_formulation, "lbL") && ~isempty(lcqp_formulation.lbL))
     lb_L = lcqp_formulation.lbL;
 end
+
 if (isfield(lcqp_formulation, "ubL") && ~isempty(lcqp_formulation.ubL))
     ub_L = lcqp_formulation.ubL;
 end
@@ -49,6 +50,7 @@ end
 if (isfield(lcqp_formulation, "lbR") && ~isempty(lcqp_formulation.lbR))
     lb_R = lcqp_formulation.lbR;
 end
+
 if (isfield(lcqp_formulation, "ubR") && ~isempty(lcqp_formulation.ubR))
     ub_R = lcqp_formulation.ubR;
 end
@@ -92,6 +94,12 @@ if ~isempty(ub)
     problem.ub = [ub; inf(2*nComp,1)];
 else
     problem.ub = inf(nV+2*nComp, 1);
+end
+
+% Have initial guess?
+if isfield(lcqp_formulation, "x0")
+    problem.x0 = zeros(size(problem.lb));
+    problem.x0(1:nV) = lcqp_formulation.x0;
 end
 
 
