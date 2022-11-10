@@ -106,7 +106,7 @@ ylab = ylabel("$\varepsilon_\mathrm{mach} + (J(x)-J(x^\ast))^+ + \varphi(x)$");
 set(gca, 'YScale', 'log')
 
 % Final polish
-PreparePlot(gca);
+PreparePlot();
 
 % Adapt xtick label font size
 a = get(gca,'XTickLabel');  

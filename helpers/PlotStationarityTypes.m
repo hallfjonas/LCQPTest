@@ -44,7 +44,7 @@ xtickangle(90);
 ylab = ylabel("$\mathrm{stationarity~types}$");
 
 % Final polish
-PreparePlot(gca);
+PreparePlot();
 
 % Adapt xtick label font size
 a = get(gca,'XTickLabel');  

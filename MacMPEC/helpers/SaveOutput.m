@@ -1,10 +1,12 @@
-function [] = SaveOutput(problems, outdir, compl_tol)
+function [] = SaveOutput(problems, outdir)
 
 % Number of problems
 np = length(problems);
 
 % Number of solvers (assume each problem has same set of solvers)
 ns = length(problems{1}.solutions);
+
+compl_tol = GetComplementaritySettings().complementarityTolerance;
 
 % A table containing the columns:
 %   - problem name

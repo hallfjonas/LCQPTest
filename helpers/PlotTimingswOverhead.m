@@ -94,7 +94,7 @@ xlim([1, 10000]);
 legend('Location', 'southeast');
 
 % Final polish
-PreparePlot(gca);
+PreparePlot();
 
 % Export
 print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_time_w_overhead.pdf']));

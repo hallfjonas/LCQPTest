@@ -86,25 +86,18 @@ for s=1:ns
 end
 xlabel('$\tau$');
 ylabel('$P$');
-xticks([1, 10, 100, 1000, 10000]);
 set(gca,'xscale','log');
-
-if exp_name == "MacMPEC"
-    xlim([1, 10000]);
-elseif exp_name == "IVOCP"
-    xlim([1, 5000]);
-else
-    % Don't adjust in default case
-end
+xlim([1, max(taut)]);
 
 % Legend
 legend('Location', 'southeast');
 
 % Final polish
-PreparePlot(gca);
+PreparePlot();
 
 % Export
 print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_time.pdf']));
+exportgraphics(gcf, fullfile(outdir, [exp_name, '_time.png']), 'Resolution',GetResolution());
 
 end
 

@@ -92,6 +92,7 @@ PreparePlotMM();
 
 % Export
 print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_states.pdf']));
+exportgraphics(gcf, fullfile(outdir, [exp_name, '_states.png']), 'Resolution',GetResolution());
 
 %% Plot complementarity variables
 
@@ -152,5 +153,7 @@ PreparePlotMM();
 
 % Export
 print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_states_complementarities.pdf']));
+exportgraphics(gcf, fullfile(outdir, [exp_name, '_states_complementarities.png']), 'Resolution',GetResolution());
+
 
 end

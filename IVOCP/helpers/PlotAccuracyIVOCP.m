@@ -99,10 +99,11 @@ xlabel("experiment number");
 set(gca, 'YScale', 'log');
 
 % Final polish
-PreparePlot(gca);
+PreparePlot();
 
 % Export
 print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_obj_plus_phi.pdf']));
+exportgraphics(gcf, fullfile(outdir, [exp_name, '_obj_plus_phi.png']), 'Resolution',GetResolution());
 
 %% Complementarity Plot
 figure(11); hold on; grid on; box on;
@@ -139,10 +140,11 @@ ylabel("$\varphi$")
 set(gca, 'YScale', 'log')
 
 % Final polish
-PreparePlot(gca);
+PreparePlot();
 
 % Export
 print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_compl.pdf']));
+exportgraphics(gcf, fullfile(outdir, [exp_name, '_compl.png']), 'Resolution',GetResolution());
 
 end
 
