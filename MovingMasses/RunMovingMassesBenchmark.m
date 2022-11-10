@@ -62,14 +62,16 @@ save(outdir + "/sol.mat");
 
 %% Plot solutions
 close all;
-addpath("../plotters");
+addpath("../helpers");
 addpath("helpers");
 outdir = 'solutions/paper';
 
 % Warnings for similar reasons as above
 load(outdir + "/sol.mat");
 
-PlotSolutionsMM(benchmark.problems{end}, 'MovingMasses', outdir);
 PlotTimings(benchmark.problems, 'MovingMasses', outdir);
-PlotTimingswOverhead(benchmark.problems, 'MovingMasses', outdir);
 PlotAccuracyMM(benchmark.problems, 'MovingMasses', outdir);
+
+PlotSolutionsMM(benchmark.problems{end}, 'MovingMasses', outdir);
+
+%PlotTimingswOverhead(benchmark.problems, 'MovingMasses', outdir);

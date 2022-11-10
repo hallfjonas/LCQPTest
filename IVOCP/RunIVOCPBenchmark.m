@@ -77,5 +77,6 @@ addpath("helpers");
 
 % Create the plots
 PlotTimings(benchmark.problems, 'IVOCP', outdir);
-% PlotTimingswOverhead(benchmark.problems, 'IVOCP', outdir);
 PlotAccuracyIVOCP(benchmark.problems, 'IVOCP', outdir);
+
+% PlotTimingswOverhead(benchmark.problems, 'IVOCP', outdir);

@@ -57,5 +57,8 @@ close all;
 
 % Create the plots
 PlotTimings(benchmark.problems, 'MacMPEC', outdir);
-PlotTimingswOverhead(benchmark.problems, 'MacMPEC', outdir);
-PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir, "cutoff_penalized");
+SaveOutput(benchmark.problems, outdir);
+
+% PlotTimingswOverhead(benchmark.problems, 'MacMPEC', outdir);
+% PlotAccuracyMacMPEC(benchmark.problems, 'MacMPEC', outdir, "cutoff_penalized");
+
