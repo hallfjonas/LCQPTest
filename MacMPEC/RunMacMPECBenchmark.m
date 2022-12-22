@@ -10,8 +10,8 @@ benchmark.problems = ReadMacMPECProblems('MacMPECMatlab');
 % Each solver is assumed to take the input of a CasADi formulated 
 % LCQP, and returns the primal and dual solution as well as some stats.
 benchmark.solvers = { ...
-    struct('fun', 'SolveLCQPow0'), ... 
     struct('fun', 'SolveLCQPow2'), ... 
+    struct('fun', 'SolveLCQPow0'), ...     
     struct('fun', 'SolveMIQP'), ... 
     struct('fun', 'SolveIPOPTPen'), ...
     struct('fun', 'SolveIPOPTRegEq'), ...
@@ -31,7 +31,7 @@ for i = 1:length(benchmark.problems)
     end
 end
 
-outdir = 'solutions/paper';
+outdir = 'solutions/mpc_review';
 if ~exist(outdir, 'dir')
    mkdir(outdir)
 end
@@ -40,7 +40,7 @@ save(outdir + "/sol.mat");
 
 %% Prepare Performance Plots
 close all; clear; clc;
-outdir = 'solutions/paper';
+outdir = 'solutions/mpc_review';
 load(fullfile(outdir, 'sol.mat'));
 addpath("helpers");
 addpath("../helpers");

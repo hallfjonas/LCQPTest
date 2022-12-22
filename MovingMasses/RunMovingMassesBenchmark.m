@@ -44,7 +44,7 @@ for i = 1:length(benchmark.problems)
     end
 end
 
-outdir = 'solutions/paper';
+outdir = 'solutions/mpc_review';
 if ~exist(outdir, 'dir')
    mkdir(outdir)
 end
@@ -64,7 +64,7 @@ save(outdir + "/sol.mat");
 close all;
 addpath("../helpers");
 addpath("helpers");
-outdir = 'solutions/paper';
+outdir = 'solutions/mpc_review';
 
 % Warnings for similar reasons as above
 load(outdir + "/sol.mat");

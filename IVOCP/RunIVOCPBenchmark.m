@@ -43,7 +43,7 @@ for i = 1:length(benchmark.problems)
     end
 end
 
-outdir = 'solutions/paper';
+outdir = 'solutions/mpc_review';
 if ~exist(outdir, 'dir')
    mkdir(outdir)
 end
@@ -52,7 +52,7 @@ save(outdir + "/sol.mat");
 
 %% Create Performance Plots
 close all; clear all; clc;
-outdir = 'solutions/paper';
+outdir = 'solutions/mpc_review';
 load(fullfile(outdir, 'sol.mat'));
 addpath("helpers");
 addpath("../helpers");
@@ -69,11 +69,8 @@ save(outdir + "/sol.mat");
 %% Complementarity tolerance
 close all;
 
-outdir = 'solutions/paper';
+outdir = 'solutions/mpc_review';
 load(fullfile(outdir, 'sol.mat'));
-
-outdir = 'solutions/paper';
-addpath("helpers");
 
 % Create the plots
 PlotTimings(benchmark.problems, 'IVOCP', outdir);
