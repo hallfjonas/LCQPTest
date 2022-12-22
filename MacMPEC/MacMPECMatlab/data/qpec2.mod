@@ -17,7 +17,7 @@ set NM := (n+1)..m;
 
 # ... constants
 param rr{N} := -1.0;
-param ss{M} := -2.0;
+param ssvec{M} := -2.0;
 
 # ... variables
 var x{N};
@@ -25,7 +25,7 @@ var y{M} >= 0;
 var s{N} >= 0;
 
 # ... problem statement
-minimize f: sum{i in N}( (x[i] + rr[i])^2 ) + sum{j in M}( (y[j] + ss[j])^2 );
+minimize f: sum{i in N}( (x[i] + rr[i])^2 ) + sum{j in M}( (y[j] + ssvec[j])^2 );
 
 subject to 
 
