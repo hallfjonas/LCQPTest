@@ -37,7 +37,7 @@ for j=1:length(N)
 end
 for i=1:length(M)
     j = M(i);
-    obj = obj + (y(j) + ss(j))^2;
+    obj = obj + (y(j) + ssvec(j))^2;
 end
 
 % Complementarities
