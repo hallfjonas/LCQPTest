@@ -12,7 +12,7 @@ addpath("~/casadi/");
 import casadi.*;
 
 % Load AMPL
-addpath("~/amplide.linux64/ampl.linux-intel64/amplapi/matlab/");
+addpath("~/ampl/ampl.linux-intel64/amplapi/matlab/");
 setUp;
 ampl = AMPL;
 

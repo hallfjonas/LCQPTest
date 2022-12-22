@@ -8,9 +8,9 @@ addpath("~/casadi/");
 import casadi.*;
 
 % Load AMPL
-addpath("~/amplide.linux64/ampl.linux-intel64/amplapi/matlab/");
+addpath("~/ampl/ampl.linux-intel64/amplapi/matlab/");
 setUp;
-ampl = AMPL("/home/jonas/amplide.linux64/ampl.linux-intel64/");
+ampl = AMPL("~/ampl/ampl.linux-intel64/");
 
 %% Load Data
 ampl.read("data/flp4.mod");
