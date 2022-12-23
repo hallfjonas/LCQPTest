@@ -6,6 +6,10 @@ benchmark = {};
 benchmark.problems = {};
 addpath("~/casadi");
 addpath("~/LCQPow/build/lib");
+curpath = pwd;
+cd /opt/gurobi911/linux64/matlab;
+gurobi_setup;
+cd(curpath);
 
 % Append solvers by specifying a solver strategy and solver name
 % Each solver is assumed to take the input of a benchmark.problem struct
