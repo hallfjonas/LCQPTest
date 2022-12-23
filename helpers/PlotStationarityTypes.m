@@ -19,7 +19,7 @@ for k=1:np
 end
 
 %% Plot stat-types
-figure(300,'Visible','off'); hold on; grid on; box on;
+figure('Visible','off'); hold on; grid on; box on;
 
 plot(sol_types, ...
     'LineWidth', 2 ...

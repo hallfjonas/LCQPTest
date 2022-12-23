@@ -75,7 +75,7 @@ for p = 1:np
 end
 
 %% Generate a obj-val comparison plot
-figure(3,'Visible','off'); hold on; grid on; box on;
+figure('Visible','off'); hold on; grid on; box on;
 for s = 1:ns
     solver = problems{1}.solutions{s}.solver;
     plot(eps + f(:,s), ...

@@ -83,7 +83,7 @@ set(groot,'defaultAxesTickLabelInterpreter','latex');
 set(groot,'defaulttextinterpreter','latex');
 set(groot,'defaultLegendInterpreter','latex');
 
-f = figure(1,'Visible','off'); 
+f = figure('Visible','off'); 
 for s=1:ns
     solver = problems{1}.solutions{s}.solver;
     
