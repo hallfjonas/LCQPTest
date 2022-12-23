@@ -139,7 +139,7 @@ J = J + (Xk_end-5/3)^2;
 
 %% Capture the LCQP
 
-x0 = BuildInitialGuess(F, x00, nz, h, N); 
+x0 = BuildInitialGuessIVOCP(F, x00, nz, h, N); 
 
 % States and box constraints
 problem.x = vertcat(w{:});
