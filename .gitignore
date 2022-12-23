@@ -4,3 +4,7 @@
 */solvers_old
 
 *.asv
+
+helpers/linspecer**
+helpers/license**
+**pathdef.m
