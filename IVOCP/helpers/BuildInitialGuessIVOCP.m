@@ -1,4 +1,4 @@
-function [w0] = BuildInitialGuess(ode, init_value, nz, h, N)
+function [w0] = BuildInitialGuessIVOCP(ode, init_value, nz, h, N)
 
 import casadi.*;
 

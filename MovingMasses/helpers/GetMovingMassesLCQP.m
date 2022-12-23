@@ -204,7 +204,7 @@ lbg = [lbg; -tol*ones(2*nMasses,1)];
 ubg = [ubg; tol*ones(2*nMasses,1)];
     
 %% Build a forward simulation initial guess
-forward_sim = BuildInitialGuess(ode_and_cost, x0, zeros(nu,1), nz, h, N, nMasses, false);
+forward_sim = BuildInitialGuessMM(ode_and_cost, x0, zeros(nu,1), nz, h, N, nMasses, false);
 
 %% Capture the LCQP
 % Name classification

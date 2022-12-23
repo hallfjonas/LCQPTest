@@ -1,4 +1,4 @@
-function [w0] = BuildInitialGuess(ode, init_value, u_fixed, nz, h, N, nMasses, condensed)
+function [w0] = BuildInitialGuessMM(ode, init_value, u_fixed, nz, h, N, nMasses, condensed)
 
 import casadi.*;
 
