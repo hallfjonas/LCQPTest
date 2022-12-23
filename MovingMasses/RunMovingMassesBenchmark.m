@@ -59,19 +59,3 @@ end
 % Some warnings are thrown here because CasADi objects can't be stored
 % That's OK, because we don't need the CasADi objects for post-processing
 save(outdir + "/sol.mat");
-
-%% Plot solutions
-close all;
-addpath("../helpers");
-addpath("helpers");
-outdir = 'solutions/mpc_review';
-
-% Warnings for similar reasons as above
-load(outdir + "/sol.mat");
-
-PlotTimings(benchmark.problems, 'MovingMasses', outdir);
-PlotAccuracyMM(benchmark.problems, 'MovingMasses', outdir);
-
-PlotSolutionsMM(benchmark.problems{end}, 'MovingMasses', outdir);
-
-%PlotTimingswOverhead(benchmark.problems, 'MovingMasses', outdir);
