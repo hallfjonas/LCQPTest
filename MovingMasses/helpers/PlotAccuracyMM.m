@@ -53,7 +53,7 @@ for p = 1:np
 end
 
 %% Generate a obj-val comparison plot
-figure(30); hold on; box on;
+figure(30,'Visible','off'); hold on; box on;
 
 min_y = inf;
 lines = gobjects(ns,1); names = strings(ns,1);
@@ -106,7 +106,7 @@ print(gcf, '-dpdf', fullfile(outdir, [exp_name, '_obj_plus_phi.pdf']));
 exportgraphics(gcf, fullfile(outdir, [exp_name, '_obj_plus_phi.png']), 'Resolution',GetResolution());
 
 %% Complementarity Plot
-figure(11); hold on; grid on; box on;
+figure(11,'Visible','off'); hold on; grid on; box on;
 
 % Show the unsuccessful area
 yMin = 10e-17;

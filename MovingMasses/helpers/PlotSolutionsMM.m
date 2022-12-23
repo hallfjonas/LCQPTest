@@ -32,7 +32,7 @@ solution = problem.solutions{i};
 %    ':k', 'DisplayName', 'Switch');
 
 % First plot positions, velocities, controles
-figure(62); box on; hold on; grid on;
+figure(62,'Visible','off'); box on; hold on; grid on;
 C = linspecer(nMasses+1);
 linestyles = ["-", "--", ":", "-."];
 tlo = tiledlayout(3,1,'TileSpacing','none','Padding','none');
@@ -99,7 +99,7 @@ exportgraphics(gcf, fullfile(outdir, [exp_name, '_states.png']), 'Resolution',Ge
 C = linspecer(nMasses);
 linestyles = ["--", ":", "-"];
 
-figure(63); box on; hold on; grid on;
+figure(63,'Visible','off'); box on; hold on; grid on;
 tlo = tiledlayout(nMasses,1,'TileSpacing','none','Padding','none');
 for j = 1:nMasses
     nexttile; hold on; box on;

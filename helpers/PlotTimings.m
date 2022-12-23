@@ -71,7 +71,7 @@ for t = 1:length(taut)
 end
 
 %% Create the plot
-figure(1); 
+figure(1,'Visible','off'); 
 for s=1:ns
     solver = problems{1}.solutions{s}.solver;
     
