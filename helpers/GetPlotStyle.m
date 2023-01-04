@@ -62,7 +62,7 @@ function [ res ] = GetPlotStyle(solname)
     end
 
     res.color = colors(res.colidx, :);
-    res.marker = markers(res.markidx);
-    res.linestyle = linestyles(res.lsidx);
+    res.marker = markers{res.markidx};
+    res.linestyle = linestyles{res.lsidx};
 end
 
