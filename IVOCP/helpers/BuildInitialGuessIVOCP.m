@@ -1,6 +1,7 @@
 function [w0] = BuildInitialGuessIVOCP(ode, init_value, nz, h, N)
 
-import casadi.*;
+% Import casadi
+import casadi.*
 
 xk = init_value;
 zk = zeros(nz,1);

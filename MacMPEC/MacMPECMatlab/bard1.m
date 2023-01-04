@@ -1,11 +1,7 @@
 %% Clean and Load
 close all; 
 
-% Load Helpers
-addpath("helpers");
-
 % Load CasADi
-addpath("~/casadi/");
 import casadi.*;
 
 %% Build Problem

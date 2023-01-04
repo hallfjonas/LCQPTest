@@ -1,7 +1,6 @@
 function [solution] = SolveIPOPTReg(casadi_formulation)
 
 import casadi.*
-addpath("~/LCQPow/build/lib");
 
 %% Get formulation
 IPOPT_formulation = ObtainIPOPTReg(casadi_formulation);

@@ -1,6 +1,5 @@
 function [ problem ] = GetMovingMassesLCQP(nMasses, T, N)
 
-addpath("~/casadi");
 import casadi.*
 
 % Step size and number of nodes

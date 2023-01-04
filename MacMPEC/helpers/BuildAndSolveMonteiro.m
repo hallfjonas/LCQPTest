@@ -1,19 +1,13 @@
 function [problem] = BuildAndSolveMonteiro(modFile)
 
-% Load LCQPow interface
-addpath('~/LCQPow/build/lib')
-
 % Load CasADi
-addpath("~/casadi/");
 import casadi.*;
 
 % Load AMPL
-addpath("~/ampl/ampl.linux-intel64/amplapi/matlab/");
-setUp;
 ampl = AMPL;
 
 %% Load Data
-ampl.read(['data/', modFile]);
+ampl.read(['MacMPEC/data/', modFile]);
 LoadAMPLParams(ampl);
 LoadAMPLSets(ampl);
 vars = LoadAMPLVariables(ampl);

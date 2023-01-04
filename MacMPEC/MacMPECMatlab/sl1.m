@@ -1,19 +1,9 @@
 %% Clean and Load
 close all; 
 
-% Load Helpers
-addpath("helpers");
-
-% Load LCQPow interface
-addpath('~/LCQPow/build/lib')
-
 % Load CasADi
-addpath("~/casadi/");
 import casadi.*;
 
-% Load AMPL
-addpath("~/ampl/ampl.linux-intel64/amplapi/matlab/");
-setUp;
 ampl = AMPL;
 
 %% Load Data

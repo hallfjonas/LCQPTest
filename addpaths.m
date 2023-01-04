@@ -7,7 +7,11 @@
 %addpath("/opt/casadi");
 
 % Add path to gurobi (some variants are solved with this
-%addpath("/opt/gurobi911");
+%addpath("/opt/gurobi911/linux64/matlab");
+
+% Add path to AMPL and set it up
+addpath("~/ampl/ampl.linux-intel64/amplapi/matlab/");
+setUp;
 
 %% Local paths (no changes needed)
 addpath("helpers/");

@@ -1,9 +1,9 @@
 function [ problem ] = GetIVOCP(T, N, x00)
 
+h = T/N;
+
 % Import casadi
 import casadi.*
-
-h = T/N;
 
 % Load CasADi collocation matrices
 collocation_times;

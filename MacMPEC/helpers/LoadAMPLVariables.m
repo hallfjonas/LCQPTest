@@ -1,7 +1,6 @@
 function [variables] = LoadAMPLVariables( ampl )
 
 % Load CasADi
-addpath("~/casadi/");
 import casadi.*;
 
 varray = ampl.getVariables.toArray;

@@ -1,14 +1,7 @@
 %% Clean and Load
 close all; 
 
-% Load Helpers
-addpath("helpers");
-
-% Load LCQPow interface
-addpath('~/LCQPow/build/lib')
-
 % Load CasADi
-addpath("~/casadi/");
 import casadi.*;
 
 %% Build Problem

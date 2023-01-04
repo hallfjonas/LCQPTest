@@ -1,15 +1,9 @@
 function [problem] = BuildAndSolveLiswet(dataFile)
 
-% Load LCQPow interface
-addpath('~/LCQPow/build/lib')
-
 % Load CasADi
-addpath("~/casadi/");
 import casadi.*;
 
 % Load AMPL
-addpath("~/ampl/ampl.linux-intel64/amplapi/matlab/");
-setUp;
 ampl = AMPL;
 
 %% Load Data
