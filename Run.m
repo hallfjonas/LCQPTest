@@ -21,7 +21,7 @@ if ~exist(outdir, 'dir')
 end
 
 % Run the benchmark (this will take up to an hours)
-%RunMacMPECBenchmark(outdir);
+RunMacMPECBenchmark(outdir);
 
 % Create the performance plots (this will take a few seconds)
 CreateMacMPECPlots(outdir);
@@ -34,7 +34,7 @@ if ~exist(outdir, 'dir')
 end
 
 % Run the benchmark (this will take up to a few hours)
-%RunIVOCPBenchmark(outdir);
+RunIVOCPBenchmark(outdir);
 
 % Create the performance plots (this will take a few seconds)
 CreateIVOCPPlots(outdir);
@@ -46,8 +46,8 @@ if ~exist(outdir, 'dir')
    mkdir(outdir)
 end
 
-% Run the benchmark (this will take up to a few hours)
-%RunIVOCPBenchmark(outdir);
+% Run the benchmark (this will take several hours)
+RunMovingMassesBenchmark(outdir);
 
 % Create the performance plots (this will take a few seconds)
-CreateIVOCPPlots(outdir);
+CreateMovingMassesPlots(outdir);
