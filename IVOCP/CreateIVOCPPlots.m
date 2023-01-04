@@ -1,4 +1,4 @@
-function [] = CreateMacMPECPlots(outdir)
+function [] = CreateIVOCPPlots(outdir)
 
 % Warnings: serializing casadi objects not supported, that's OK
 solutionFile = fullfile(outdir, "sol.mat");
@@ -16,6 +16,7 @@ for s=1:length(benchmark.solvers)
 end
 
 % Create the plots
-PlotTimings(benchmark.problems, 'MacMPEC', outdir);
+PlotTimings(benchmark.problems, 'IVOCP', outdir);
+PlotAccuracyIVOCP(benchmark.problems, 'IVOCP', outdir);
 
 end

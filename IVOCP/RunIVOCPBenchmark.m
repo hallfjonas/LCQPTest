@@ -1,11 +1,8 @@
-%% Clean Up
-close all; clear all; clc;
+function [] = RunIVOCPBenchmark(outdir)
 
 %% Build benchmark
 benchmark = {};
 benchmark.problems = {};
-addpath("~/casadi");
-addpath("~/LCQPow/build/lib");
 
 % Append solvers by specifying a solver strategy and solver name
 % Each solver is assumed to take the input of a benchmark.problem struct
@@ -32,10 +29,7 @@ for N = 50:5:100
     end
 end
 
-%% Run solvers
-addpath("../solvers");
-addpath("../solvers/LCQPowVariants/");
-addpath("../helpers")
+%% Run solvers and save
 for i = 1:length(benchmark.problems)    
     fprintf("Solving problem %s (%d/%d).\n", string(benchmark.problems{i}.N), i, length(benchmark.problems));
     for j = 1:length(benchmark.solvers)
@@ -45,25 +39,6 @@ for i = 1:length(benchmark.problems)
     end
 end
 
-outdir = 'solutions/mpc_review';
-if ~exist(outdir, 'dir')
-   mkdir(outdir)
+save(fullfile(outdir, "/sol.mat"));
+
 end
-
-save(outdir + "/sol.mat");
-
-%% Create Performance Plots
-close all; clear all; clc;
-outdir = 'solutions/mpc_review';
-load(fullfile(outdir, 'sol.mat'));
-addpath("helpers");
-addpath("../helpers");
-
-% Get the solver visualization settings
-for s=1:length(benchmark.solvers)
-    for p=1:length(benchmark.problems)
-        benchmark.problems{p}.solutions{s}.solver.style = GetPlotStyle(benchmark.problems{p}.solutions{s}.solver.fun);
-    end
-end
-
-save(outdir + "/sol.mat");

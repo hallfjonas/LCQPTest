@@ -1,10 +1,9 @@
-%% Clear and Close
-clc; clear; close all;
+
+function [] = RunMacMPECBenchmark(outdir)
 
 %% Build benchmark
-addpath("helpers");
 benchmark = {};
-benchmark.problems = ReadMacMPECProblems('MacMPECMatlab');
+benchmark.problems = ReadMacMPECProblems('MacMPEC/MacMPECMatlab');
 
 % Append solvers by specifying their function names.
 % Each solver is assumed to take the input of a CasADi formulated 
@@ -19,9 +18,7 @@ benchmark.solvers = { ...
     struct('fun', 'SolveIPOPTNLP'), ...
 };
 
-%% Run Solvers
-addpath("../solvers");
-addpath("../helpers/");
+%% Run Solvers and save
 for i = 1:length(benchmark.problems)
     fprintf("Solving problem %s (%d/%d).\n", benchmark.problems{i}.name, i, length(benchmark.problems));
     for j = 1:length(benchmark.solvers)
@@ -31,10 +28,7 @@ for i = 1:length(benchmark.problems)
     end
 end
 
-outdir = 'solutions/mpc_review';
-if ~exist(outdir, 'dir')
-   mkdir(outdir)
-end
+save(fullfile(outdir, "/sol.mat"));
 
-save(outdir + "/sol.mat");
+end
 

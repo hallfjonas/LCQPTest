@@ -1,4 +1,4 @@
-function [] = CreateMacMPECPlots(outdir)
+function [] = CreateMovingMassesPlots(outdir)
 
 % Warnings: serializing casadi objects not supported, that's OK
 solutionFile = fullfile(outdir, "sol.mat");
@@ -16,6 +16,7 @@ for s=1:length(benchmark.solvers)
 end
 
 % Create the plots
-PlotTimings(benchmark.problems, 'MacMPEC', outdir);
+PlotTimings(benchmark.problems, 'MovingMasses', outdir);
+PlotAccuracyMM(benchmark.problems, 'MovingMasses', outdir);
 
 end

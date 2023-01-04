@@ -1,5 +1,4 @@
-%% Clean Up
-close all; clear all; clc;
+function [] = RunMovingMassesBenchmark(outdir)
 
 %% Build benchmark
 benchmark = {};
@@ -18,9 +17,6 @@ benchmark.solvers = { ...
     struct('fun', 'SolveIPOPTNLP'), ...
 };
 
-addpath("../helpers");
-addpath("helpers");
-
 % Add problems with 2 masses
 i = 1;
 for N = 50:5:100
@@ -34,8 +30,7 @@ for N = 50:5:100
     end
 end
 
-%% Run solvers
-addpath("../solvers");
+%% Run solvers and save
 for i = 1:length(benchmark.problems)
     for j = 1:length(benchmark.solvers)
         solver = benchmark.solvers{j};
@@ -44,18 +39,8 @@ for i = 1:length(benchmark.problems)
     end
 end
 
-outdir = 'solutions/mpc_review';
-if ~exist(outdir, 'dir')
-   mkdir(outdir)
-end
-
-%% Get the solver visualization settings
-for s=1:length(benchmark.solvers)
-    for p=1:length(benchmark.problems)
-        benchmark.problems{p}.solutions{s}.solver.style = GetPlotStyle(benchmark.problems{p}.solutions{s}.solver.fun);
-    end
-end
-
 % Some warnings are thrown here because CasADi objects can't be stored
 % That's OK, because we don't need the CasADi objects for post-processing
-save(outdir + "/sol.mat");
+save(fullfile(outdir, "/sol.mat"));
+
+end

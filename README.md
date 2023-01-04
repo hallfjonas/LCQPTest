@@ -10,4 +10,6 @@ This repository was created for benchmarking LCQPow, a solver for quadratic prog
 1. [Gurobi](https://www.gurobi.com/)
 
 ## Usage
-This benchmark contains three test sets: *MacMPEC*, *IVOCP*, and *MovingMasses*. Each of those directories contain a file that runs the respective benchmark (navigate to the specific directory and run the file). In those files you may adapt which solvers to include (specify the solver function name in the given struct `benchmark.solvers`). The set of solvers are contained in the directory *solvers*. 
+This benchmark contains three test sets: *MacMPEC*, *IVOCP*, and *MovingMasses*. 
+Adjust the paths in the file *addpaths* to reflect your local settings.
+Then execute the script 'Run.m'. This will run all benchmarks and create performance plots.
