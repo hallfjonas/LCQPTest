@@ -21,7 +21,7 @@ if ~exist(outdir, 'dir')
 end
 
 % Run the benchmark (this will take up to an hours)
-%RunMacMPECBenchmark(outdir);
+RunMacMPECBenchmark(outdir);
 
 %% 2) Initial Value Optimal Control Problem Benchmark
 clearvars -except test_name;
@@ -31,7 +31,7 @@ if ~exist(outdir, 'dir')
 end
 
 % Run the benchmark (this will take up to a few hours)
-%RunIVOCPBenchmark(outdir);
+RunIVOCPBenchmark(outdir);
 
 %% 3) Moving Masses Benchmark
 clearvars -except test_name;
