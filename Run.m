@@ -5,9 +5,9 @@ if ~endsWith(pwd,'LCQPTest')
 end
 
 % Provide a test name. The solutions will be stored to the directories
-%     1) MacMPEC/solutions/test_name/...     
-%     2) IVOCP/solutions/test_name/...     
-%     3) MovingMasses/solutions/test_name/...     
+%     1) MacMPEC/solutions/<test_name>/sol.mat     
+%     2) IVOCP/solutions/<test_name>/sol.mat 
+%     3) MovingMasses/solutions/<test_name>/sol.mat     
 test_name = "mpc_review";
 
 % Adjust the paths in this file
@@ -23,9 +23,6 @@ end
 % Run the benchmark (this will take up to an hours)
 RunMacMPECBenchmark(outdir);
 
-% Create the performance plots (this will take a few seconds)
-CreateMacMPECPlots(outdir);
-
 %% 2) Initial Value Optimal Control Problem Benchmark
 clearvars -except test_name;
 outdir = fullfile("IVOCP/solutions", test_name);
@@ -36,9 +33,6 @@ end
 % Run the benchmark (this will take up to a few hours)
 RunIVOCPBenchmark(outdir);
 
-% Create the performance plots (this will take a few seconds)
-CreateIVOCPPlots(outdir);
-
 %% 3) Moving Masses Benchmark
 clearvars -except test_name;
 outdir = fullfile("MovingMasses/solutions", test_name);
@@ -48,6 +42,3 @@ end
 
 % Run the benchmark (this will take several hours)
 RunMovingMassesBenchmark(outdir);
-
-% Create the performance plots (this will take a few seconds)
-CreateMovingMassesPlots(outdir);
