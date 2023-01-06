@@ -1,16 +1,16 @@
 
 %% These paths may need adjustments
 % Add path to the main solver
-%addpath("/opt/LCQPow");
+addpath("/opt/LCQPow");
 
 % Add path to casadi (problems are built with this)
-%addpath("/opt/casadi");
+addpath("/opt/casadi");
 
 % Add path to gurobi (some variants are solved with this
-%addpath("/opt/gurobi911/linux64/matlab");
+addpath("/opt/gurobi911/linux64/matlab");
 
 % Add path to AMPL and set it up
-addpath("~/ampl/ampl.linux-intel64/amplapi/matlab/");
+addpath("/opt/ampl/ampl.linux-intel64/amplapi/matlab/");
 setUp;
 
 %% Local paths (no changes needed)
